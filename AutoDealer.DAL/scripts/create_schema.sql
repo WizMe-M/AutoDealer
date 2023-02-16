@@ -1,19 +1,30 @@
-﻿-- CREATE DATABASE AutoDealer;
+﻿drop schema if exists public cascade;
+create schema if not exists public;
 
-drop schema if exists public cascade;
-create schema public;
 
-create type post as enum
-    ('database_admin', 'assembly_chief', 'purchase_specialist', 'storekeeper', 'seller', 'tester');
+-- schema
 
-create type request_status as enum
-    ('sent', 'im_handling', 'closed');
+create type Post as enum
+    ('DatabaseAdmin', 'AssemblyChief', 'PurchaseSpecialist', 'Storekeeper', 'Seller', 'Tester');
 
-create type auto_status as enum
-    ('in_assembly', 'ready_to_test', 'in_test', 'ready_to_sale', 'sold');
+create type RequestStatus as enum
+    ('Sent', 'InHandling', 'Closed');
 
-create type test_status as enum
-    ('not_checked', 'certified', 'defective');
+create type AutoStatus as enum
+    ('InAssembly', 'ReadyToTest', 'InTest', 'ReadyToSale', 'Sold');
+
+create type TestStatus as enum
+    ('NotChecked', 'Certified', 'Defective');
+
+create type LogType as enum ('Error', 'Normal');
+
+create table logs
+(
+    id       serial primary key,
+    log_time timestamp not null default (now()),
+    log_type LogType   not null default ('Normal'::LogType),
+    log_text text      not null
+);
 
 create table lines
 (
@@ -107,10 +118,10 @@ create table users
 create table purchase_requests
 (
     id_purchase_requests serial,
-    id_user              int            null,
-    sent_date            timestamp      not null,
-    expected_supply_date date           not null,
-    status               request_status not null default ('sent'::request_status),
+    id_user              int           null,
+    sent_date            timestamp     not null,
+    expected_supply_date date          not null,
+    status               RequestStatus not null default ('Sent'::RequestStatus),
 
     constraint pk_purchase_requests primary key (id_purchase_requests),
     constraint fk_purchase_requests_users foreign key (id_user) references users (id_employee) on delete set null
@@ -175,10 +186,10 @@ create table contract_details
 create table autos
 (
     id_auto       serial,
-    id_trim       int         not null,
-    assembly_date date        null,
-    cost          decimal     null,
-    status        auto_status not null default ('in_assembly'::auto_status),
+    id_trim       int        not null,
+    assembly_date date       null,
+    cost          decimal    null,
+    status        AutoStatus not null default ('InAssembly'::AutoStatus),
 
     constraint pk_autos primary key (id_auto),
     constraint fk_autos_trims foreign key (id_trim) references trims (id_trim),
@@ -238,8 +249,8 @@ create table test_autos
 (
     id_test            int,
     id_auto            int,
-    certification_date date        not null,
-    status             test_status not null default ('not_checked'::test_status),
+    certification_date date       not null,
+    status             TestStatus not null default ('NotChecked'::TestStatus),
 
     constraint pk_test_autos primary key (id_test, id_auto),
     constraint fk_test_autos_tests foreign key (id_test) references tests (id_test),
@@ -276,3 +287,5 @@ create table sales
     constraint fk_sales_clients foreign key (id_client) references clients (id_client) on update restrict on delete restrict,
     constraint fk_sales_employees foreign key (id_employee) references employees (id_employee) on delete set null
 );
+
+-- schema
