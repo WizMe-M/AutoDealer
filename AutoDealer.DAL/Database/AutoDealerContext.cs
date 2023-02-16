@@ -54,6 +54,28 @@ public partial class AutoDealerContext : DbContext
 
     public virtual DbSet<WorkPlan> WorkPlans { get; set; }
 
+    public async Task ExecuteSetMargin(int trimId, DateOnly actsFrom, double margin)
+    {
+        await Database.ExecuteSqlRawAsync(
+            $"select set_margin(trim_id := {trimId}, begins_act_from := '{actsFrom}', margin_value := {margin});");
+    }
+
+    public async Task ExecuteAssemblyAuto(int auto)
+    {
+        await Database.ExecuteSqlRawAsync($"select assembly_auto(auto := {auto});");
+    }
+
+    public async Task ExecuteSellAuto(int auto, int client, int employee)
+    {
+        await Database.ExecuteSqlRawAsync(
+            $"select sell_auto(auto := {auto}, client := {client}, employee := {employee});");
+    }
+
+    public async Task ExecuteSellAuto(int auto, DateTime saleTime)
+    {
+        await Database.ExecuteSqlRawAsync($"select return_auto(auto := {auto}, sale_time := '{saleTime}');");
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
