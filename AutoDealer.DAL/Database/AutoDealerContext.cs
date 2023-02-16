@@ -2,6 +2,14 @@
 
 public partial class AutoDealerContext : DbContext
 {
+    protected AutoDealerContext()
+    {
+    }
+
+    public AutoDealerContext(DbContextOptions<AutoDealerContext> options) : base(options)
+    {
+    }
+
     public virtual DbSet<Auto> Autos { get; set; }
 
     public virtual DbSet<Client> Clients { get; set; }
