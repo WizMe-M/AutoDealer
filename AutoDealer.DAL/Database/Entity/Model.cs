@@ -1,4 +1,4 @@
-﻿namespace AutoDealer.DAL.Entity;
+﻿namespace AutoDealer.DAL.Database.Entity;
 
 public partial class Model
 {

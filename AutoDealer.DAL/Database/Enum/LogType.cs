@@ -1,4 +1,4 @@
-﻿namespace AutoDealer.DAL.Enum;
+﻿namespace AutoDealer.DAL.Database.Enum;
 
 public enum LogType
 {

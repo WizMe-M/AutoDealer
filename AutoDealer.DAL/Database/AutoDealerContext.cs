@@ -1,4 +1,4 @@
-﻿namespace AutoDealer.DAL;
+﻿namespace AutoDealer.DAL.Database;
 
 public partial class AutoDealerContext : DbContext
 {
