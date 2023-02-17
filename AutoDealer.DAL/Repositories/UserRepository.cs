@@ -1,6 +1,6 @@
-﻿namespace AutoDealer.API.Repositories;
+﻿namespace AutoDealer.DAL.Repositories;
 
-public class UserRepository : RepositoryBase
+public class UserRepository : CrudRepositoryBase<User>
 {
     public UserRepository(AutoDealerContext context) : base(context)
     {

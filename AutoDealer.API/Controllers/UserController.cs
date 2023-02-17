@@ -1,7 +1,4 @@
-﻿using AutoDealer.API.Repositories;
-using Microsoft.AspNetCore.Mvc;
-
-namespace AutoDealer.API.Controllers;
+﻿namespace AutoDealer.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]

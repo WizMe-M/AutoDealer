@@ -1,5 +1,3 @@
-using AutoDealer.API.Repositories;
-
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
