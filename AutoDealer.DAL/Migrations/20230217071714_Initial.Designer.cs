@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AutoDealer.DAL.Migrations
 {
     [DbContext(typeof(AutoDealerContext))]
-    [Migration("20230216201046_Initial")]
+    [Migration("20230217071714_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -54,9 +54,9 @@ namespace AutoDealer.DAL.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("AutoStatus")
+                        .HasColumnType("auto_status")
                         .HasColumnName("status")
-                        .HasDefaultValueSql("InAssembly");
+                        .HasDefaultValueSql("'in_assembly'");
 
                     b.HasKey("IdAuto")
                         .HasName("pk_autos");
@@ -300,7 +300,7 @@ namespace AutoDealer.DAL.Migrations
 
                     b.Property<string>("Post")
                         .IsRequired()
-                        .HasColumnType("Post")
+                        .HasColumnType("post")
                         .HasColumnName("post");
 
                     b.HasKey("IdEmployee")
@@ -355,9 +355,9 @@ namespace AutoDealer.DAL.Migrations
                     b.Property<string>("Type")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("LogType")
+                        .HasColumnType("log_type")
                         .HasColumnName("log_type")
-                        .HasDefaultValueSql("Normal");
+                        .HasDefaultValueSql("'normal'");
 
                     b.HasKey("Id")
                         .HasName("logs_pkey");
@@ -440,9 +440,9 @@ namespace AutoDealer.DAL.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("RequestStatus")
+                        .HasColumnType("request_status")
                         .HasColumnName("status")
-                        .HasDefaultValueSql("Sent");
+                        .HasDefaultValueSql("'sent'");
 
                     b.HasKey("IdPurchaseRequests")
                         .HasName("pk_purchase_requests");
@@ -596,9 +596,9 @@ namespace AutoDealer.DAL.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TestStatus")
+                        .HasColumnType("test_status")
                         .HasColumnName("status")
-                        .HasDefaultValueSql("NotChecked");
+                        .HasDefaultValueSql("'not_checked'");
 
                     b.HasKey("IdTest", "IdAuto")
                         .HasName("pk_test_autos");

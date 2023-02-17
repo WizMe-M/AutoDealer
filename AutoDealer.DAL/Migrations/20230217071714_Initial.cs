@@ -65,7 +65,7 @@ namespace AutoDealer.DAL.Migrations
                     middle_name = table.Column<string>(type: "text", nullable: true),
                     passport_series = table.Column<string>(type: "text", nullable: false),
                     passport_number = table.Column<string>(type: "text", nullable: false),
-                    post = table.Column<string>(type: "Post", nullable: false)
+                    post = table.Column<string>(type: "post", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -93,7 +93,7 @@ namespace AutoDealer.DAL.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     log_time = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "now()"),
                     log_text = table.Column<string>(type: "text", nullable: false),
-                    log_type = table.Column<string>(type: "LogType", nullable: false, defaultValueSql: "Normal")
+                    log_type = table.Column<string>(type: "log_type", nullable: false, defaultValueSql: "'normal'")
                 },
                 constraints: table =>
                 {
@@ -200,7 +200,7 @@ namespace AutoDealer.DAL.Migrations
                     id_user = table.Column<int>(type: "integer", nullable: true),
                     sent_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     expected_supply_date = table.Column<DateOnly>(type: "date", nullable: false),
-                    status = table.Column<string>(type: "RequestStatus", nullable: false, defaultValueSql: "Sent")
+                    status = table.Column<string>(type: "request_status", nullable: false, defaultValueSql: "'sent'")
                 },
                 constraints: table =>
                 {
@@ -298,7 +298,7 @@ namespace AutoDealer.DAL.Migrations
                     id_trim = table.Column<int>(type: "integer", nullable: false),
                     assembly_date = table.Column<DateOnly>(type: "date", nullable: true),
                     cost = table.Column<decimal>(type: "numeric", nullable: true),
-                    status = table.Column<string>(type: "AutoStatus", nullable: false, defaultValueSql: "InAssembly")
+                    status = table.Column<string>(type: "auto_status", nullable: false, defaultValueSql: "'in_assembly'")
                 },
                 constraints: table =>
                 {
@@ -449,7 +449,7 @@ namespace AutoDealer.DAL.Migrations
                     id_test = table.Column<int>(type: "integer", nullable: false),
                     id_auto = table.Column<int>(type: "integer", nullable: false),
                     certification_date = table.Column<DateOnly>(type: "date", nullable: false),
-                    status = table.Column<string>(type: "TestStatus", nullable: false, defaultValueSql: "NotChecked")
+                    status = table.Column<string>(type: "test_status", nullable: false, defaultValueSql: "'not_checked'")
                 },
                 constraints: table =>
                 {

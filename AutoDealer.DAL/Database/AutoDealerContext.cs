@@ -78,13 +78,12 @@ public partial class AutoDealerContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder
-            .HasPostgresEnum<AutoStatus>()
-            .HasPostgresEnum<Post>()
-            .HasPostgresEnum<RequestStatus>()
-            .HasPostgresEnum<TestStatus>()
-            .HasPostgresEnum<LogType>();
-
+        modelBuilder.HasPostgresEnum<AutoStatus>();
+        modelBuilder.HasPostgresEnum<Post>();
+        modelBuilder.HasPostgresEnum<RequestStatus>();
+        modelBuilder.HasPostgresEnum<TestStatus>();
+        modelBuilder.HasPostgresEnum<LogType>();
+        
         modelBuilder.Entity<Auto>(entity =>
         {
             entity.HasKey(e => e.IdAuto).HasName("pk_autos");
@@ -97,8 +96,8 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.IdTrim).HasColumnName("id_trim");
             entity.Property(e => e.Status).HasColumnName("status")
                 .HasConversion<string>()
-                .HasDefaultValueSql(AutoStatus.InAssembly.ToString())
-                .HasColumnType(nameof(AutoStatus));
+                .HasDefaultValueSql("'in_assembly'")
+                .HasColumnType("auto_status");
 
             entity.HasOne(d => d.IdTrimNavigation).WithMany(p => p.Autos)
                 .HasForeignKey(d => d.IdTrim)
@@ -236,7 +235,7 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.Post)
                 .HasColumnName("post")
                 .HasConversion<string>()
-                .HasColumnType(nameof(Post));
+                .HasColumnType("post");
         });
 
         modelBuilder.Entity<Line>(entity =>
@@ -261,8 +260,8 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.Text).HasColumnName("log_text");
             entity.Property(e => e.Type).HasColumnName("log_type")
                 .HasConversion<string>()
-                .HasDefaultValueSql(LogType.Normal.ToString())
-                .HasColumnType(nameof(LogType));
+                .HasDefaultValueSql("'normal'")
+                .HasColumnType("log_type");
 
             entity.Property(e => e.Time)
                 .HasDefaultValueSql("now()")
@@ -317,8 +316,8 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.IdUser).HasColumnName("id_user");
             entity.Property(e => e.Status).HasColumnName("status")
                 .HasConversion<string>()
-                .HasDefaultValueSql(RequestStatus.Sent.ToString())
-                .HasColumnType(nameof(RequestStatus));
+                .HasDefaultValueSql("'sent'")
+                .HasColumnType("request_status");
 
             entity.Property(e => e.SentDate)
                 .HasColumnType("timestamp without time zone")
@@ -426,8 +425,8 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.CertificationDate).HasColumnName("certification_date");
             entity.Property(e => e.Status).HasColumnName("status")
                 .HasConversion<string>()
-                .HasDefaultValueSql(TestStatus.NotChecked.ToString())
-                .HasColumnType(nameof(TestStatus));
+                .HasDefaultValueSql("'not_checked'")
+                .HasColumnType("test_status");
 
             entity.HasOne(d => d.IdAutoNavigation).WithMany(p => p.TestAutos)
                 .HasForeignKey(d => d.IdAuto)
