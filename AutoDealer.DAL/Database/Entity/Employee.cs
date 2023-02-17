@@ -2,7 +2,7 @@
 
 public partial class Employee
 {
-    public int IdEmployee { get; set; }
+    public int Id { get; set; }
 
     public string FirstName { get; set; } = null!;
 
@@ -16,11 +16,11 @@ public partial class Employee
 
     public Post Post { get; set; }
 
-    public virtual ICollection<Contract> Contracts { get; } = new List<Contract>();
+    public virtual IEnumerable<Contract> Contracts { get; } = new List<Contract>();
 
-    public virtual ICollection<Sale> Sales { get; } = new List<Sale>();
+    public virtual IEnumerable<Sale> Sales { get; } = new List<Sale>();
 
-    public virtual ICollection<Test> Tests { get; } = new List<Test>();
+    public virtual IEnumerable<Test> Tests { get; } = new List<Test>();
 
     public virtual User? User { get; set; }
 }

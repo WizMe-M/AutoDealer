@@ -222,11 +222,11 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Employee>(entity =>
         {
-            entity.HasKey(e => e.IdEmployee).HasName("pk_employee");
+            entity.HasKey(e => e.Id).HasName("pk_employee");
 
             entity.ToTable("employees");
 
-            entity.Property(e => e.IdEmployee).HasColumnName("id_employee");
+            entity.Property(e => e.Id).HasColumnName("id_employee");
             entity.Property(e => e.FirstName).HasColumnName("first_name");
             entity.Property(e => e.LastName).HasColumnName("last_name");
             entity.Property(e => e.MiddleName).HasColumnName("middle_name");
@@ -491,9 +491,9 @@ public partial class AutoDealerContext : DbContext
                 .HasColumnName("id_employee");
             entity.Property(e => e.Deleted).HasColumnName("deleted");
             entity.Property(e => e.Login).HasColumnName("login");
-            entity.Property(e => e.Password).HasColumnName("password");
+            entity.Property(e => e.PasswordHash).HasColumnName("password");
 
-            entity.HasOne(d => d.IdEmployeeNavigation).WithOne(p => p.User)
+            entity.HasOne(d => d.Employee).WithOne(p => p.User)
                 .HasForeignKey<User>(d => d.IdEmployee)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_users_employees");

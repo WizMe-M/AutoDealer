@@ -6,11 +6,11 @@ public partial class User
 
     public string Login { get; set; } = null!;
 
-    public string Password { get; set; } = null!;
+    public string PasswordHash { get; set; } = null!;
 
     public bool Deleted { get; set; }
 
-    public virtual Employee IdEmployeeNavigation { get; set; } = null!;
+    public virtual Employee Employee { get; set; } = null!;
 
-    public virtual ICollection<PurchaseRequest> PurchaseRequests { get; } = new List<PurchaseRequest>();
+    public virtual IEnumerable<PurchaseRequest> PurchaseRequests { get; } = new List<PurchaseRequest>();
 }
