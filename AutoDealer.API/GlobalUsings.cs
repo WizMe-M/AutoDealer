@@ -1,5 +1,7 @@
 ﻿// Global using directives
 
+global using AutoDealer.API.Services;
+global using AutoDealer.DAL;
 global using AutoDealer.DAL.Database;
 global using AutoDealer.DAL.Database.Entity;
 global using AutoDealer.DAL.Database.Enum;
