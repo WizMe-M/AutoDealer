@@ -6,16 +6,26 @@ public class UserRepository : CrudRepositoryBase<User>
     {
     }
 
-    public void CreateUser(Employee employee, string login, string passwordHash)
+    public void CreateUser(int employeeId, string login, string passwordHash)
     {
-        var user = new User()
+        var user = new User
         {
-            Employee = employee,
+            IdEmployee = employeeId,
             Login = login,
             PasswordHash = passwordHash
         };
         Context.Users.Add(user);
         Context.SaveChanges();
+    }
+    
+    public IEnumerable<User> GetAll()
+    {
+        return Context.Users.ToArray();
+    }
+
+    public User? GetById(int id)
+    {
+        return Context.Users.SingleOrDefault(user => user.IdEmployee == id);
     }
 
     public void EditUser(int id, string passwordHash)
@@ -28,10 +38,18 @@ public class UserRepository : CrudRepositoryBase<User>
         Context.SaveChanges();
     }
 
+    public void EditUser(int id, bool deletedStatus)
+    {
+        var user = Context.Users.SingleOrDefault(user => user.IdEmployee == id);
+        if (user is null) return;
+
+        user.Deleted = deletedStatus;
+        Context.Users.Update(user);
+        Context.SaveChanges();
+    }
+
     public void DeleteUserById(int id)
     {
-        var user = new User { IdEmployee = id };
-        Context.Users.Remove(user);
-        Context.SaveChanges();
+        EditUser(id, deletedStatus: true);
     }
 }
