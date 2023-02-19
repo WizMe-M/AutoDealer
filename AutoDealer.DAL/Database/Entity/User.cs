@@ -6,11 +6,14 @@ public partial class User
 
     public string Login { get; set; } = null!;
 
+    [JsonIgnore]
     public string PasswordHash { get; set; } = null!;
 
     public bool Deleted { get; set; }
 
+    [JsonIgnore]
     public virtual Employee Employee { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual IEnumerable<PurchaseRequest> PurchaseRequests { get; } = new List<PurchaseRequest>();
 }
