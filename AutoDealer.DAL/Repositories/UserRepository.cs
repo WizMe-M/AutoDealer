@@ -6,50 +6,38 @@ public class UserRepository : CrudRepositoryBase<User>
     {
     }
 
-    public void CreateUser(int employeeId, string login, string passwordHash)
-    {
-        var user = new User
-        {
-            IdEmployee = employeeId,
-            Login = login,
-            PasswordHash = passwordHash
-        };
-        Context.Users.Add(user);
-        Context.SaveChanges();
-    }
-    
-    public IEnumerable<User> GetAll()
+    public override IEnumerable<User> Get()
     {
         return Context.Users.ToArray();
     }
 
-    public User? GetById(int id)
+    public override User? Get(int id)
     {
         return Context.Users.SingleOrDefault(user => user.IdEmployee == id);
     }
 
-    public void EditUser(int id, string passwordHash)
+    public override void Create(User entity)
     {
-        var user = Context.Users.SingleOrDefault(user => user.IdEmployee == id);
-        if (user is null) return;
-
-        user.PasswordHash = passwordHash;
-        Context.Users.Update(user);
+        Context.Users.Add(entity);
         Context.SaveChanges();
     }
 
-    public void EditUser(int id, bool deletedStatus)
+    public override void Update(User entity)
     {
-        var user = Context.Users.SingleOrDefault(user => user.IdEmployee == id);
-        if (user is null) return;
-
-        user.Deleted = deletedStatus;
-        Context.Users.Update(user);
+        Context.Users.Update(entity);
         Context.SaveChanges();
     }
 
-    public void DeleteUserById(int id)
+    public override void Delete(User entity)
     {
-        EditUser(id, deletedStatus: true);
+        entity.Deleted = true;
+        Update(entity);
+    }
+
+    public override void Delete(int id)
+    {
+        var user = Context.Users.SingleOrDefault(user => user.IdEmployee == id);
+        if (user is null) return;
+        Delete(user);
     }
 }

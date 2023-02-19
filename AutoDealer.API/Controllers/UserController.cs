@@ -1,12 +1,12 @@
 ﻿namespace AutoDealer.API.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/users")]
 public class UserController : ControllerBase
 {
-    private readonly UserRepository _repository;
+    private readonly CrudRepositoryBase<User> _repository;
 
-    public UserController(UserRepository repository)
+    public UserController(CrudRepositoryBase<User> repository)
     {
         _repository = repository;
     }
@@ -14,36 +14,48 @@ public class UserController : ControllerBase
     [HttpGet]
     public IEnumerable<User> GetAll()
     {
-        return _repository.GetAll();
+        return _repository.Get();
     }
 
-    [HttpGet("[controller]/{id:int}")]
+    [HttpGet("{id:int}")]
     public User? GetById(int id)
     {
-        return _repository.GetById(id);
+        return _repository.Get(id);
     }
 
-    [HttpPost("/{employeeId:int}/create")]
+    [HttpPost("{employeeId:int}/create")]
     public void CreateUser(int employeeId, string login, string passwordHash)
     {
-        _repository.CreateUser(employeeId, login, passwordHash);
+        var user = new User
+        {
+            IdEmployee = employeeId,
+            Login = login,
+            PasswordHash = passwordHash
+        };
+        _repository.Create(user);
     }
 
-    [HttpPatch("/{id:int}/change-password")]
+    [HttpPatch("{id:int}/change-password")]
     public void ChangePassword(int id, string passwordHash)
     {
-        _repository.EditUser(id, passwordHash);
+        var user = _repository.Get(id);
+        if (user is null) return;
+        user.PasswordHash = passwordHash;
+        _repository.Update(user);
     }
 
-    [HttpPatch("/{id:int}/restore")]
+    [HttpPatch("{id:int}/restore")]
     public void RestoreUser(int id)
     {
-        _repository.EditUser(id, deletedStatus: false);
+        var user = _repository.Get(id);
+        if (user is null) return;
+        user.Deleted = false;
+        _repository.Update(user);
     }
 
-    [HttpDelete("/{id:int}/delete")]
+    [HttpDelete("{id:int}/delete")]
     public void DeleteUser(int id)
     {
-        _repository.DeleteUserById(id);
+        _repository.Delete( id);
     }
 }

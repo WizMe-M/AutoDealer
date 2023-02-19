@@ -4,7 +4,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<AutoDealerContext>(options => options.UseNpgsql(connectionString));
 
 // add repos
-builder.Services.AddTransient<UserRepository>();
+builder.Services.AddTransient<CrudRepositoryBase<User>, UserRepository>();
 
 // add services
 builder.Services.AddScoped<AuthService>();
