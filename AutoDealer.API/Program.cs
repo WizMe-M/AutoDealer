@@ -1,4 +1,5 @@
 using AutoDealer.API.Extensions;
+using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,13 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseExceptionHandler(applicationBuilder => applicationBuilder.Run(async context =>
+{
+    var exception = context.Features.Get<IExceptionHandlerPathFeature>()!.Error;
+    var response = new { error = exception.Message };
+    await context.Response.WriteAsJsonAsync(response);
+}));
 
 app.MapControllers();
 

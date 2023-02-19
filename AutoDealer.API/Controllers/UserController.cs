@@ -44,15 +44,10 @@ public class UserController : ControllerBase
             PasswordHash = newUser.Password
         };
 
-        try
-        {
-            var created = _repository.Create(user);
-            return Ok(created);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e);
-        }
+        if (_repository.Get(id) is { }) return BadRequest("User with this id already exists");
+
+        var created = _repository.Create(user);
+        return Ok(created);
     }
 
     [HttpPatch("{id:int}/change-password")]
@@ -64,8 +59,10 @@ public class UserController : ControllerBase
     {
         var user = _repository.Get(id);
         if (user is null) return NotFound();
+
         user.PasswordHash = passwordHash;
         _repository.Update(user);
+
         return Ok("User's password was changed");
     }
 
