@@ -13,6 +13,5 @@ public abstract class CrudRepositoryBase<TEntity>
     public abstract TEntity? Get(int id);
     public abstract TEntity Create(TEntity entity);
     public abstract void Update(TEntity entity);
-    public abstract TEntity? Delete(TEntity? entity);
-    public abstract TEntity? Delete(int id);
+    public abstract void Delete(TEntity entity);
 }

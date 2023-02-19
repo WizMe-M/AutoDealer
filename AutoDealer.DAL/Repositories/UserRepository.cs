@@ -29,17 +29,9 @@ public class UserRepository : CrudRepositoryBase<User>
         Context.SaveChanges();
     }
 
-    public override User? Delete(User? entity)
+    public override void Delete(User entity)
     {
-        if (entity is null) return null;
         entity.Deleted = true;
         Update(entity);
-        return entity;
-    }
-
-    public override User? Delete(int id)
-    {
-        var user = Context.Users.SingleOrDefault(user => user.IdEmployee == id);
-        return Delete(user);
     }
 }
