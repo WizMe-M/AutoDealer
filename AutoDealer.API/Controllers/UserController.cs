@@ -1,7 +1,7 @@
 ﻿namespace AutoDealer.API.Controllers;
 
 [ApiController]
-[Route("api/users")]
+[Route("users")]
 public class UserController : ControllerBase
 {
     private readonly CrudRepositoryBase<User> _repository;
