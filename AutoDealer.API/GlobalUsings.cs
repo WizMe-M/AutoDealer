@@ -1,5 +1,6 @@
 ﻿// Global using directives
 
+global using AutoDealer.API.BodyTypes;
 global using AutoDealer.API.Services;
 global using AutoDealer.DAL;
 global using AutoDealer.DAL.Database;

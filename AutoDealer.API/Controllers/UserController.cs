@@ -23,20 +23,20 @@ public class UserController : ControllerBase
         return _repository.Get(id);
     }
 
-    [HttpPost("{employeeId:int}/create")]
-    public void CreateUser(int employeeId, string login, string passwordHash)
+    [HttpPost("{id:int}/create")]
+    public void CreateUser([FromRoute] int id, [FromBody] NewUser newUser)
     {
         var user = new User
         {
-            IdEmployee = employeeId,
-            Login = login,
-            PasswordHash = passwordHash
+            IdEmployee = id,
+            Login = newUser.Login,
+            PasswordHash = newUser.Password
         };
         _repository.Create(user);
     }
 
     [HttpPatch("{id:int}/change-password")]
-    public void ChangePassword(int id, string passwordHash)
+    public void ChangePassword(int id, [FromBody] string passwordHash)
     {
         var user = _repository.Get(id);
         if (user is null) return;
