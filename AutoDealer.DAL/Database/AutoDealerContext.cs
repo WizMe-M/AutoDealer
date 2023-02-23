@@ -1,4 +1,6 @@
-﻿namespace AutoDealer.DAL.Database;
+﻿using Npgsql;
+
+namespace AutoDealer.DAL.Database;
 
 public partial class AutoDealerContext : DbContext
 {
@@ -76,14 +78,23 @@ public partial class AutoDealerContext : DbContext
         await Database.ExecuteSqlRawAsync($"select return_auto(auto := {auto}, sale_time := '{saleTime}');");
     }
 
+    public static void ConfigureBuilder(NpgsqlDataSourceBuilder builder)
+    {
+        builder.MapEnum<Post>("post");
+        builder.MapEnum<AutoStatus>("auto_status");
+        builder.MapEnum<RequestStatus>("request_status");
+        builder.MapEnum<TestStatus>("test_status");
+        builder.MapEnum<LogType>("log_type");
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasPostgresEnum<AutoStatus>();
         modelBuilder.HasPostgresEnum<Post>();
+        modelBuilder.HasPostgresEnum<AutoStatus>();
         modelBuilder.HasPostgresEnum<RequestStatus>();
         modelBuilder.HasPostgresEnum<TestStatus>();
         modelBuilder.HasPostgresEnum<LogType>();
-        
+
         modelBuilder.Entity<Auto>(entity =>
         {
             entity.HasKey(e => e.IdAuto).HasName("pk_autos");
@@ -94,10 +105,7 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.AssemblyDate).HasColumnName("assembly_date");
             entity.Property(e => e.Cost).HasColumnName("cost");
             entity.Property(e => e.IdTrim).HasColumnName("id_trim");
-            entity.Property(e => e.Status).HasColumnName("status")
-                .HasConversion<string>()
-                .HasDefaultValueSql("'in_assembly'")
-                .HasColumnType("auto_status");
+            entity.Property(e => e.Status).HasColumnName("status").HasDefaultValueSql("'in_assembly'");
 
             entity.HasOne(d => d.IdTrimNavigation).WithMany(p => p.Autos)
                 .HasForeignKey(d => d.IdTrim)
@@ -232,10 +240,7 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.MiddleName).HasColumnName("middle_name");
             entity.Property(e => e.PassportNumber).HasColumnName("passport_number");
             entity.Property(e => e.PassportSeries).HasColumnName("passport_series");
-            entity.Property(e => e.Post)
-                .HasColumnName("post")
-                .HasConversion<string>()
-                .HasColumnType("post");
+            entity.Property(e => e.Post).HasColumnName("post");
         });
 
         modelBuilder.Entity<Line>(entity =>
@@ -258,10 +263,7 @@ public partial class AutoDealerContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Text).HasColumnName("log_text");
-            entity.Property(e => e.Type).HasColumnName("log_type")
-                .HasConversion<string>()
-                .HasDefaultValueSql("'normal'")
-                .HasColumnType("log_type");
+            entity.Property(e => e.Type).HasColumnName("log_type").HasDefaultValueSql("'normal'");
 
             entity.Property(e => e.Time)
                 .HasDefaultValueSql("now()")
@@ -315,9 +317,7 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.ExpectedSupplyDate).HasColumnName("expected_supply_date");
             entity.Property(e => e.IdUser).HasColumnName("id_user");
             entity.Property(e => e.Status).HasColumnName("status")
-                .HasConversion<string>()
-                .HasDefaultValueSql("'sent'")
-                .HasColumnType("request_status");
+                .HasDefaultValueSql("'sent'");
 
             entity.Property(e => e.SentDate)
                 .HasColumnType("timestamp without time zone")
@@ -423,10 +423,7 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.IdTest).HasColumnName("id_test");
             entity.Property(e => e.IdAuto).HasColumnName("id_auto");
             entity.Property(e => e.CertificationDate).HasColumnName("certification_date");
-            entity.Property(e => e.Status).HasColumnName("status")
-                .HasConversion<string>()
-                .HasDefaultValueSql("'not_checked'")
-                .HasColumnType("test_status");
+            entity.Property(e => e.Status).HasColumnName("status").HasDefaultValueSql("'not_checked'");
 
             entity.HasOne(d => d.IdAutoNavigation).WithMany(p => p.TestAutos)
                 .HasForeignKey(d => d.IdAuto)
@@ -534,9 +531,5 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.WorkEndDate).HasColumnName("work_end_date");
             entity.Property(e => e.WorkStartDate).HasColumnName("work_start_date");
         });
-
-        OnModelCreatingPartial(modelBuilder);
     }
-
-    partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

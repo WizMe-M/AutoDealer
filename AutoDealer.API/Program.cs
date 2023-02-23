@@ -1,10 +1,14 @@
 using AutoDealer.API.Extensions;
 using Microsoft.AspNetCore.Diagnostics;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AutoDealerContext>(options => options.UseNpgsql(connectionString));
+var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
+AutoDealerContext.ConfigureBuilder(dataSourceBuilder);
+var dataSource = dataSourceBuilder.Build();
+builder.Services.AddDbContext<AutoDealerContext>(options => options.UseNpgsql(dataSource));
 
 // add repos
 builder.Services.AddTransient<CrudRepositoryBase<User>, UserRepository>();
