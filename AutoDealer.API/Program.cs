@@ -8,6 +8,7 @@ builder.Services.AddDbContext<AutoDealerContext>(options => options.UseNpgsql(co
 
 // add repos
 builder.Services.AddTransient<CrudRepositoryBase<User>, UserRepository>();
+builder.Services.AddTransient<CrudRepositoryBase<Employee>, EmployeeRepository>();
 
 // add services
 builder.Services.AddScoped<AuthService>();
