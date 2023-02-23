@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using AutoDealer.API.Extensions;
 using Microsoft.AspNetCore.Diagnostics;
 using Npgsql;
@@ -18,7 +19,10 @@ builder.Services.AddTransient<CrudRepositoryBase<Employee>, EmployeeRepository>(
 builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddControllers(options => options.UseGeneralRoutePrefix("api"));
-
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddRouting(options =>
