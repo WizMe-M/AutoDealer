@@ -13,9 +13,9 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<User>), StatusCodes.Status200OK)]
-    public IEnumerable<User> GetAll()
+    public IActionResult GetAll()
     {
-        return _repository.Get();
+        return Ok(_repository.GetAll());
     }
 
     [HttpGet("{id:int}")]

@@ -6,14 +6,24 @@ public class UserRepository : CrudRepositoryBase<User>
     {
     }
 
-    public override IEnumerable<User> Get()
+    public override IEnumerable<User> GetAll()
     {
         return Context.Users.ToArray();
     }
 
+    public override IEnumerable<User> GetAll(Func<User, bool> predicate)
+    {
+        return Context.Users.Where(predicate).ToArray();
+    }
+
     public override User? Get(int id)
     {
-        return Context.Users.SingleOrDefault(user => user.IdEmployee == id);
+        return Context.Users.FirstOrDefault(user => user.IdEmployee == id);
+    }
+
+    public override User? Get(Func<User, bool> predicate)
+    {
+        return Context.Users.FirstOrDefault(predicate);
     }
 
     public override User Create(User entity)
