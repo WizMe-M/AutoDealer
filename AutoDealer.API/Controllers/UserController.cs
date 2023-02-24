@@ -29,25 +29,21 @@ public class UserController : ControllerBase
         return user is { } ? Ok(user) : NotFound();
     }
 
-    [HttpPost("{id:int}/create")]
+    [HttpPost("create")]
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Consumes("application/json")]
-    public IActionResult CreateUser(int id, [FromBody] NewUser newUser)
+    public IActionResult CreateUser([FromBody] NewUser newUser)
     {
         if (newUser is not { Email: { }, Password: { } }) return NoContent();
 
         var hashedPassword = _hashService.HashPassword(newUser.Password);
-        var user = new User
-        {
-            IdEmployee = id,
-            Email = newUser.Email,
-            PasswordHash = hashedPassword
-        };
+        newUser = new NewUser(newUser.EmployeeId, newUser.Email, hashedPassword);
+        var user = newUser.Construct();
 
-        if (_repository.Get(id) is { }) return BadRequest("User with this id already exists");
+        if (_repository.Get(user.IdEmployee) is { }) return BadRequest("User with this id already exists");
 
         var created = _repository.Create(user);
         return Ok(created);
@@ -58,12 +54,13 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Consumes("application/json")]
-    public IActionResult ChangePassword(int id, [FromBody] string passwordHash)
+    public IActionResult ChangePassword(int id, [FromBody] string password)
     {
         var user = _repository.Get(id);
         if (user is null) return NotFound();
 
-        user.PasswordHash = passwordHash;
+        var hash = _hashService.HashPassword(password);
+        user.PasswordHash = hash;
         _repository.Update(user);
 
         return Ok("User's password was changed");

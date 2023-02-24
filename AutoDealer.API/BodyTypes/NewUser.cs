@@ -1,13 +1,14 @@
 ﻿namespace AutoDealer.API.BodyTypes;
 
-public class NewUser
+public record NewUser(int EmployeeId, string Email, string Password) : ConstructableEntity<User>
 {
-    public NewUser(string email, string password)
+    public override User Construct()
     {
-        Email = email;
-        Password = password;
+        return new User
+        {
+            IdEmployee = EmployeeId,
+            Email = Email,
+            PasswordHash = Password
+        };
     }
-
-    public string Email { get; }
-    public string Password { get; }
 }
