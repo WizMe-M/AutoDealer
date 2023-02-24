@@ -53,11 +53,11 @@ builder.Services.AddAuthentication(options =>
         {
             ClockSkew = TimeSpan.Zero,
             ValidateIssuer = true,
+            ValidIssuer = jwtConfig.Issuer,
             ValidateAudience = true,
+            ValidAudience = "apiWithAuthBackend",
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtConfig.Issuer,
-            ValidAudience = "apiWithAuthBackend",
             IssuerSigningKey = jwtConfig.SecretKey
         };
     });
@@ -84,7 +84,6 @@ app.UseExceptionHandler(applicationBuilder => applicationBuilder.Run(async conte
     await context.Response.WriteAsJsonAsync(response);
 }));
 
-app.MapControllers()
-    .RequireAuthorization();
+app.MapControllers().RequireAuthorization();
 
 app.Run();

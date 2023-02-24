@@ -1,4 +1,8 @@
-﻿namespace AutoDealer.API.Controllers;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+
+namespace AutoDealer.API.Controllers;
 
 [ApiController]
 [Route("users")]
@@ -6,11 +10,13 @@ public class UserController : ControllerBase
 {
     private readonly CrudRepositoryBase<User> _repository;
     private readonly HashService _hashService;
+    private readonly JwtConfig _jwtConfig;
 
-    public UserController(CrudRepositoryBase<User> repository, HashService hashService)
+    public UserController(CrudRepositoryBase<User> repository, HashService hashService, JwtConfig jwtConfig)
     {
         _repository = repository;
         _hashService = hashService;
+        _jwtConfig = jwtConfig;
     }
 
     [HttpGet]
@@ -40,8 +46,9 @@ public class UserController : ControllerBase
         if (newUser is not { Email: { }, Password: { } }) return NoContent();
 
         var hashedPassword = _hashService.HashPassword(newUser.Password);
-        newUser = new NewUser(newUser.EmployeeId, newUser.Email, hashedPassword);
         var user = newUser.Construct();
+        user.PasswordHash = hashedPassword;
+        var jwt = CreateJwtToken(user);
 
         if (_repository.Get(user.IdEmployee) is { }) return BadRequest("User with this id already exists");
 
@@ -95,5 +102,27 @@ public class UserController : ControllerBase
 
         _repository.Delete(user);
         return Ok("User was deleted");
+    }
+
+    private string CreateJwtToken(User user)
+    {
+        var now = DateTime.UtcNow;
+
+        var jwt = new JwtSecurityToken(
+            issuer: _jwtConfig.Issuer,
+            notBefore: now,
+            claims: new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, user.IdEmployee.ToString()),
+                new Claim(ClaimTypes.Role, user.Employee.Post.ToString())
+            },
+            expires: now.Add(TimeSpan.FromMinutes(120)),
+            signingCredentials: new SigningCredentials(
+                _jwtConfig.SecretKey,
+                SecurityAlgorithms.HmacSha256));
+
+        var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+        return encodedJwt;
     }
 }
