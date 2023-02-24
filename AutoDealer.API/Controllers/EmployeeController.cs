@@ -31,7 +31,6 @@ public class EmployeeController : ControllerBase
     [ProducesResponseType(typeof(Employee), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Consumes("application/json")]
     public IActionResult CreateEmployee([FromBody] NewEmployee newEmployee)
     {
@@ -64,8 +63,8 @@ public class EmployeeController : ControllerBase
 
         var foundWithPassport = _repository.Get(emp =>
             emp.Id != id
-            && emp.PassportNumber == employee.PassportNumber
-            && emp.PassportSeries == employee.PassportSeries) is { };
+            && emp.PassportSeries == passport.Series
+            && emp.PassportNumber == passport.Number) is { };
 
         if (foundWithPassport)
             return BadRequest("There is already another employee with set passport data");
