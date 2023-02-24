@@ -492,7 +492,7 @@ public partial class AutoDealerContext : DbContext
 
             entity.HasOne(d => d.Employee).WithOne(p => p.User)
                 .HasForeignKey<User>(d => d.IdEmployee)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_users_employees");
         });
 
