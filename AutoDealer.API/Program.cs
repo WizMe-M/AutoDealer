@@ -41,6 +41,29 @@ builder.Services.AddRouting(options =>
     options.LowercaseQueryStrings = true;
 });
 
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ClockSkew = TimeSpan.Zero,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtConfig.Issuer,
+            ValidAudience = "apiWithAuthBackend",
+            IssuerSigningKey = jwtConfig.SecretKey
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -51,6 +74,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseExceptionHandler(applicationBuilder => applicationBuilder.Run(async context =>
@@ -60,6 +84,7 @@ app.UseExceptionHandler(applicationBuilder => applicationBuilder.Run(async conte
     await context.Response.WriteAsJsonAsync(response);
 }));
 
-app.MapControllers();
+app.MapControllers()
+    .RequireAuthorization();
 
 app.Run();
