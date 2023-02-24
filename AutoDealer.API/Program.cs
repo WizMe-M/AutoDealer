@@ -1,6 +1,9 @@
 using System.Text.Json.Serialization;
+using AutoDealer.API;
 using AutoDealer.API.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,10 +23,16 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<HashService>();
 
 builder.Services.AddControllers(options => options.UseGeneralRoutePrefix("api"));
+
+var jwtConfigurationSection = builder.Configuration.GetSection(JwtConfig.SectionName);
+builder.Services.Configure<JwtConfig>(jwtConfigurationSection);
+var jwtConfig = jwtConfigurationSection.Get<JwtConfig>()!;
+
 builder.Services.Configure<JsonOptions>(options =>
 {
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddRouting(options =>
