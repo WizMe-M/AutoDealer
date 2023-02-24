@@ -1,5 +1,14 @@
 ﻿namespace AutoDealer.DAL.Database.Entity;
 
+public enum AutoStatus
+{
+    InAssembly,
+    ReadyToTest,
+    InTest,
+    ReadyToSale,
+    Sold
+}
+
 public partial class Auto
 {
     public int IdAuto { get; set; }

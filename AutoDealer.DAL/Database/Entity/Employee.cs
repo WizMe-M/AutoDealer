@@ -1,5 +1,15 @@
 ﻿namespace AutoDealer.DAL.Database.Entity;
 
+public enum Post
+{
+    DatabaseAdmin,
+    AssemblyChief,
+    PurchaseSpecialist,
+    Storekeeper,
+    Seller,
+    Tester
+}
+
 public partial class Employee
 {
     public int Id { get; set; }

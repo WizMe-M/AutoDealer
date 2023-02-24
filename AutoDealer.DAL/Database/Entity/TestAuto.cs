@@ -1,5 +1,12 @@
 ﻿namespace AutoDealer.DAL.Database.Entity;
 
+public enum TestStatus
+{
+    NotChecked,
+    Certified,
+    Defective
+}
+
 public partial class TestAuto
 {
     public int IdTest { get; set; }

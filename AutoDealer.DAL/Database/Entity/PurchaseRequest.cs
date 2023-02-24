@@ -1,5 +1,12 @@
 ﻿namespace AutoDealer.DAL.Database.Entity;
 
+public enum RequestStatus
+{
+    Sent,
+    InHandling,
+    Closed
+}
+
 public partial class PurchaseRequest
 {
     public int IdPurchaseRequests { get; set; }

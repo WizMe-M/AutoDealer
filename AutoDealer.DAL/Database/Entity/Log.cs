@@ -1,5 +1,11 @@
 ﻿namespace AutoDealer.DAL.Database.Entity;
 
+public enum LogType
+{
+    Error,
+    Normal
+}
+
 public partial class Log
 {
     public int Id { get; set; }
