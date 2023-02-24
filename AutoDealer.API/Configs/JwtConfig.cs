@@ -1,7 +1,4 @@
-﻿using System.Text;
-using Microsoft.IdentityModel.Tokens;
-
-namespace AutoDealer.API;
+﻿namespace AutoDealer.API.Configs;
 
 public class JwtConfig
 {

@@ -1,7 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-
-namespace AutoDealer.API.Services;
+﻿namespace AutoDealer.API.Services;
 
 public class HashService
 {

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.AspNetCore.Mvc.Routing;
-
-namespace AutoDealer.API.Configs;
+﻿namespace AutoDealer.API.Configs;
 
 public class RoutePrefixConvention : IApplicationModelConvention
 {

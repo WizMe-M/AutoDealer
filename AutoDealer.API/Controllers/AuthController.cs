@@ -1,21 +1,16 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-
-namespace AutoDealer.API.Controllers;
+﻿namespace AutoDealer.API.Controllers;
 
 [ApiController]
 [Route("auth")]
 public class AuthController : ControllerBase
 {
-    private readonly CrudRepositoryBase<User> _repository;
+    private readonly AuthService _authService;
     private readonly HashService _hashService;
     private readonly JwtConfig _jwtConfig;
 
-    public AuthController(CrudRepositoryBase<User> repository, HashService hashService, IOptions<JwtConfig> jwtConfig)
+    public AuthController(AuthService authService, HashService hashService, IOptions<JwtConfig> jwtConfig)
     {
-        _repository = repository;
+        _authService = authService;
         _hashService = hashService;
         _jwtConfig = jwtConfig.Value;
     }
@@ -27,7 +22,7 @@ public class AuthController : ControllerBase
     public IActionResult Login([FromBody] LoginUser loginUser)
     {
         var hash = _hashService.HashPassword(loginUser.Password);
-        var user = _repository.Get(u => u.Email == loginUser.Email && u.PasswordHash == hash);
+        var user = _authService.Authorize(loginUser.Email, hash, loginUser.Post);
         if (user is null) return Unauthorized("User can't be authorized");
 
         var response = new

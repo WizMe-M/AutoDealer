@@ -1,7 +1,4 @@
-﻿using AutoDealer.API.Configs;
-using Microsoft.AspNetCore.Mvc.Routing;
-
-namespace AutoDealer.API.Extensions;
+﻿namespace AutoDealer.API.Extensions;
 
 public static class MvcOptionsExtensions
 {

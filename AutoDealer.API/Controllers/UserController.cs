@@ -1,8 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-
-namespace AutoDealer.API.Controllers;
+﻿namespace AutoDealer.API.Controllers;
 
 [Authorize(Roles = nameof(Post.DatabaseAdmin))]
 [ApiController]
