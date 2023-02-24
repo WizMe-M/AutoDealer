@@ -531,5 +531,26 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.WorkEndDate).HasColumnName("work_end_date");
             entity.Property(e => e.WorkStartDate).HasColumnName("work_start_date");
         });
+
+
+        modelBuilder.Entity<Employee>().HasData(
+            new Employee
+            {
+                Id = 1,
+                LastName = "Timkin",
+                FirstName = "Maxim",
+                PassportSeries = "1199",
+                PassportNumber = "975717",
+                Post = Post.DatabaseAdmin
+            });
+        modelBuilder.Entity<User>().HasData(
+            new User
+            {
+                IdEmployee = 1,
+                Email = "timkin.moxim@mail.ru",
+                PasswordHash =
+                    "1ED6D5667B292B55FE629FCACB0027C808D6686C8C24B045E15212FC0207C73E" +
+                    "BBC97F796695FCD306E2E4D3E8CCBF64C031221403023CEBFE86738119C97C20"
+            });
     }
 }
