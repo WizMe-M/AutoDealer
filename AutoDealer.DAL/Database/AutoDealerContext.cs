@@ -245,13 +245,13 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Line>(entity =>
         {
-            entity.HasKey(e => e.IdLine).HasName("pk_lines");
+            entity.HasKey(e => e.Id).HasName("pk_lines");
 
             entity.ToTable("lines");
 
             entity.HasIndex(e => e.Name, "uq_lines_name").IsUnique();
 
-            entity.Property(e => e.IdLine).HasColumnName("id_line");
+            entity.Property(e => e.Id).HasColumnName("id_line");
             entity.Property(e => e.Name).HasColumnName("name");
         });
 
@@ -291,17 +291,17 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Model>(entity =>
         {
-            entity.HasKey(e => e.IdModel).HasName("pk_models");
+            entity.HasKey(e => e.Id).HasName("pk_models");
 
             entity.ToTable("models");
 
             entity.HasIndex(e => e.Name, "uq_models_name").IsUnique();
 
-            entity.Property(e => e.IdModel).HasColumnName("id_model");
+            entity.Property(e => e.Id).HasColumnName("id_model");
             entity.Property(e => e.IdLine).HasColumnName("id_line");
             entity.Property(e => e.Name).HasColumnName("name");
 
-            entity.HasOne(d => d.IdLineNavigation).WithMany(p => p.Models)
+            entity.HasOne(d => d.Line).WithMany(p => p.Models)
                 .HasForeignKey(d => d.IdLine)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_models_lines");
@@ -438,17 +438,17 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Trim>(entity =>
         {
-            entity.HasKey(e => e.IdTrim).HasName("pk_trims");
+            entity.HasKey(e => e.Id).HasName("pk_trims");
 
             entity.ToTable("trims");
 
             entity.HasIndex(e => e.Code, "uq_trims_code").IsUnique();
 
-            entity.Property(e => e.IdTrim).HasColumnName("id_trim");
+            entity.Property(e => e.Id).HasColumnName("id_trim");
             entity.Property(e => e.Code).HasColumnName("code");
             entity.Property(e => e.IdModel).HasColumnName("id_model");
 
-            entity.HasOne(d => d.IdModelNavigation).WithMany(p => p.Trims)
+            entity.HasOne(d => d.Model).WithMany(p => p.Trims)
                 .HasForeignKey(d => d.IdModel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_trims_models");
