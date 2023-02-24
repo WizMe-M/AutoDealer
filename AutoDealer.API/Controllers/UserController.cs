@@ -5,10 +5,12 @@
 public class UserController : ControllerBase
 {
     private readonly CrudRepositoryBase<User> _repository;
+    private readonly HashService _hashService;
 
-    public UserController(CrudRepositoryBase<User> repository)
+    public UserController(CrudRepositoryBase<User> repository, HashService hashService)
     {
         _repository = repository;
+        _hashService = hashService;
     }
 
     [HttpGet]
@@ -33,15 +35,16 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Consumes("application/json")]
-    public IActionResult CreateUser([FromRoute] int id, [FromBody] NewUser newUser)
+    public IActionResult CreateUser(int id, [FromBody] NewUser newUser)
     {
         if (newUser is not { Email: { }, Password: { } }) return NoContent();
 
+        var hashedPassword = _hashService.HashPassword(newUser.Password);
         var user = new User
         {
             IdEmployee = id,
             Email = newUser.Email,
-            PasswordHash = newUser.Password
+            PasswordHash = hashedPassword
         };
 
         if (_repository.Get(id) is { }) return BadRequest("User with this id already exists");

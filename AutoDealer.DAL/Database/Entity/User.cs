@@ -6,7 +6,6 @@ public partial class User
 
     public string Email { get; set; } = null!;
 
-    [JsonIgnore]
     public string PasswordHash { get; set; } = null!;
 
     public bool Deleted { get; set; }

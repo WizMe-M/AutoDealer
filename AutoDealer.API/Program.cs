@@ -17,6 +17,7 @@ builder.Services.AddTransient<CrudRepositoryBase<Employee>, EmployeeRepository>(
 
 // add services
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<HashService>();
 
 builder.Services.AddControllers(options => options.UseGeneralRoutePrefix("api"));
 builder.Services.Configure<JsonOptions>(options =>
