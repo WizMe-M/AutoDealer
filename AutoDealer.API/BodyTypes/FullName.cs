@@ -1,5 +1,3 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace AutoDealer.API.BodyTypes;
 
-namespace AutoDealer.API.BodyTypes;
-
-public record FullName([Required] string FirstName, [Required] string LastName, string MiddleName);
+public record FullName(string FirstName, string LastName, string? MiddleName);
