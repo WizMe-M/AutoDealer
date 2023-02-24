@@ -2,12 +2,12 @@
 
 public class NewUser
 {
-    public NewUser(string login, string password)
+    public NewUser(string email, string password)
     {
-        Login = login;
+        Email = email;
         Password = password;
     }
 
-    public string Login { get; }
+    public string Email { get; }
     public string Password { get; }
 }

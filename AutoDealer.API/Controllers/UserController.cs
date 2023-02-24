@@ -35,12 +35,12 @@ public class UserController : ControllerBase
     [Consumes("application/json")]
     public IActionResult CreateUser([FromRoute] int id, [FromBody] NewUser newUser)
     {
-        if (newUser is not { Login: { }, Password: { } }) return NoContent();
+        if (newUser is not { Email: { }, Password: { } }) return NoContent();
 
         var user = new User
         {
             IdEmployee = id,
-            Login = newUser.Login,
+            Email = newUser.Email,
             PasswordHash = newUser.Password
         };
 

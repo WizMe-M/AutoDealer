@@ -481,13 +481,13 @@ public partial class AutoDealerContext : DbContext
 
             entity.ToTable("users");
 
-            entity.HasIndex(e => e.Login, "uq_users_login").IsUnique();
+            entity.HasIndex(e => e.Email, "uq_users_login").IsUnique();
 
             entity.Property(e => e.IdEmployee)
                 .ValueGeneratedNever()
                 .HasColumnName("id_employee");
             entity.Property(e => e.Deleted).HasColumnName("deleted");
-            entity.Property(e => e.Login).HasColumnName("login");
+            entity.Property(e => e.Email).HasColumnName("login");
             entity.Property(e => e.PasswordHash).HasColumnName("password");
 
             entity.HasOne(d => d.Employee).WithOne(p => p.User)
