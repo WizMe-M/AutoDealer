@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace AutoDealer.API.Controllers;
 
+[Authorize(Roles = nameof(Post.DatabaseAdmin))]
 [ApiController]
 [Route("users")]
 public class UserController : ControllerBase
