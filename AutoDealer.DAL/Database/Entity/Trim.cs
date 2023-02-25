@@ -17,5 +17,5 @@ public partial class Trim
     [JsonIgnore]
     public virtual IEnumerable<Margin> Margins { get; } = new List<Margin>();
 
-    public virtual IEnumerable<TrimDetail> TrimDetails { get; } = new List<TrimDetail>();
+    public virtual ICollection<TrimDetail> TrimDetails { get; } = new List<TrimDetail>();
 }

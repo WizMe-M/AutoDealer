@@ -8,7 +8,7 @@ public partial class DetailSeries
 
     public string? Description { get; set; }
 
-    public virtual IEnumerable<TrimDetail> TrimDetails { get; } = new List<TrimDetail>();
+    [JsonIgnore] public virtual IEnumerable<TrimDetail> TrimDetails { get; } = new List<TrimDetail>();
 
     [JsonIgnore] public virtual IEnumerable<ContractDetail> ContractDetails { get; } = new List<ContractDetail>();
 

@@ -18,6 +18,8 @@ public class TrimController : ControllerBase
         var models = _context.Trims
             .Include(trim => trim.Model)
             .ThenInclude(model => model.Line)
+            .Include(trim => trim.TrimDetails)
+            .ThenInclude(detail => detail.DetailSeries)
             .ToArray();
         return Ok(models);
     }
@@ -33,7 +35,7 @@ public class TrimController : ControllerBase
     public IActionResult Create(NewTrim newTrim)
     {
         var trim = newTrim.Construct();
-        
+
         _context.Trims.Add(trim);
         _context.SaveChanges();
         _context.Trims.Entry(trim).Reference(e => e.Model).Load();
@@ -56,7 +58,7 @@ public class TrimController : ControllerBase
         _context.Trims.Entry(found).Reference(e => e.Model).Load();
         _context.Trims.Entry(found).Reference(e => e.Model).Query()
             .Include(m => m.Line).Load();
-        _context.Trims.Entry(found) .Collection(e => e.TrimDetails).Query()
+        _context.Trims.Entry(found).Collection(e => e.TrimDetails).Query()
             .Include(trimDetail => trimDetail.DetailSeries).Load();
 
         return Ok("Model was renamed");
@@ -74,11 +76,55 @@ public class TrimController : ControllerBase
         return Ok("Model was deleted");
     }
 
+    [HttpPatch("{id:int}/set-details")]
+    public async Task<IActionResult> SetDetailsForTrim(int id, [FromBody] IEnumerable<DetailInTrim> details)
+    {
+        var found = Find(id);
+        if (found is null) return NotFound();
+
+        var detailsInTrim = details as DetailInTrim[] ?? details.ToArray();
+        if (!ContainsUniqueDetails(detailsInTrim))
+            return BadRequest("Array of details for trims references on several identical details");
+
+        found.TrimDetails.Clear();
+
+        foreach (var (seriesId, count) in detailsInTrim)
+        {
+            found.TrimDetails.Add(new TrimDetail
+            {
+                IdTrim = id,
+                IdDetailSeries = seriesId,
+                Count = count
+            });
+        }
+
+        await _context.SaveChangesAsync();
+        await _context.Trims.Entry(found)
+            .Collection(e => e.TrimDetails).Query()
+            .Include(detail => detail.DetailSeries).LoadAsync();
+
+        return Ok(found);
+    }
+
     private Trim? Find(int id)
     {
         return _context.Trims
             .Include(trim => trim.Model)
             .ThenInclude(model => model.Line)
+            .Include(trim => trim.TrimDetails)
+            .ThenInclude(detail => detail.DetailSeries)
             .FirstOrDefault(trim => trim.Id == id);
+    }
+
+    private static bool ContainsUniqueDetails(IEnumerable<DetailInTrim> detailInTrims)
+    {
+        var id = -1;
+        foreach (var (currentId, _) in detailInTrims)
+        {
+            if (id == currentId) return false;
+            id = currentId;
+        }
+
+        return true;
     }
 }
