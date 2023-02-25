@@ -1,4 +1,4 @@
-﻿namespace AutoDealer.API.BodyTypes;
+﻿namespace AutoDealer.API.Abstractions;
 
 public abstract record ConstructableEntity<TEntity>
 {
