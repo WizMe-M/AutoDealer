@@ -1,10 +1,10 @@
 ﻿namespace AutoDealer.API.Abstractions;
 
-public abstract class ApiController : ControllerBase
+public abstract class DbContextController : ControllerBase
 {
     protected readonly AutoDealerContext Context;
 
-    protected ApiController(AutoDealerContext context)
+    protected DbContextController(AutoDealerContext context)
     {
         Context = context;
     }
