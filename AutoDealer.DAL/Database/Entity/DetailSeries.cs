@@ -10,10 +10,11 @@ public partial class DetailSeries
 
     public virtual IEnumerable<TrimDetail> TrimDetails { get; } = new List<TrimDetail>();
 
-    public virtual IEnumerable<ContractDetail> ContractDetails { get; } = new List<ContractDetail>();
+    [JsonIgnore] public virtual IEnumerable<ContractDetail> ContractDetails { get; } = new List<ContractDetail>();
 
+    [JsonIgnore]
     public virtual IEnumerable<PurchaseRequestDetail> PurchaseRequestDetails { get; } =
         new List<PurchaseRequestDetail>();
 
-    public virtual IEnumerable<Detail> Details { get; } = new List<Detail>();
+    [JsonIgnore] public virtual IEnumerable<Detail> Details { get; } = new List<Detail>();
 }

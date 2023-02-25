@@ -6,5 +6,6 @@ public partial class Line
 
     public string Name { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual IEnumerable<Model> Models { get; } = new List<Model>();
 }

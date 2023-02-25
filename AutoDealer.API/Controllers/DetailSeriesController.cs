@@ -26,34 +26,53 @@ public class DetailSeriesController : ControllerBase
     }
 
     [HttpPost("create")]
-    public IActionResult Create(string seriesCode)
+    public IActionResult Create([FromBody] string seriesCode)
     {
         var series = new DetailSeries { Code = seriesCode };
+        
         _context.DetailSeries.Add(series);
         _context.SaveChanges();
+        _context.DetailSeries.Entry(series)
+            .Collection(e => e.TrimDetails).Query()
+            .Include(trimDetail => trimDetail.Trim)
+            .ThenInclude(trim => trim.Model)
+            .ThenInclude(model => model.Line).Load();
+        
         return Ok(series);
     }
 
     [HttpPatch("{id:int}/rename")]
-    public IActionResult Rename(int id, string seriesCode)
+    public IActionResult Rename(int id, [FromBody] string seriesCode)
     {
         var found = FindById(id);
         if (found is null) return NotFound();
 
         found.Code = seriesCode;
         _context.DetailSeries.Update(found);
+        _context.SaveChanges();
+        _context.DetailSeries.Entry(found)
+            .Collection(e => e.TrimDetails).Query()
+            .Include(trimDetail => trimDetail.Trim)
+            .ThenInclude(trim => trim.Model)
+            .ThenInclude(model => model.Line).Load();
 
         return Ok("Detail's series was renamed");
     }
 
     [HttpPatch("{id:int}/change-description")]
-    public IActionResult ChangeDescription(int id, string description)
+    public IActionResult ChangeDescription(int id, [FromBody] string description)
     {
         var found = FindById(id);
         if (found is null) return NotFound();
 
         found.Description = description;
         _context.DetailSeries.Update(found);
+        _context.SaveChanges();
+        _context.DetailSeries.Entry(found)
+            .Collection(e => e.TrimDetails).Query()
+            .Include(trimDetail => trimDetail.Trim)
+            .ThenInclude(trim => trim.Model)
+            .ThenInclude(model => model.Line).Load();
 
         return Ok("Detail's series was renamed");
     }
@@ -65,6 +84,7 @@ public class DetailSeriesController : ControllerBase
         if (found is null) return NotFound();
 
         _context.DetailSeries.Remove(found);
+        _context.SaveChanges();
 
         return Ok("Detail's series was deleted");
     }

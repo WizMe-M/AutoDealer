@@ -78,13 +78,13 @@ public partial class AutoDealerContext : DbContext
         await Database.ExecuteSqlRawAsync($"select return_auto(auto := {auto}, sale_time := '{saleTime}');");
     }
 
-    public static void ConfigureBuilder(NpgsqlDataSourceBuilder builder)
+    public static void ConfigureBuilder(NpgsqlDataSourceBuilder dataSourceBuilder)
     {
-        builder.MapEnum<Post>("post");
-        builder.MapEnum<AutoStatus>("auto_status");
-        builder.MapEnum<RequestStatus>("request_status");
-        builder.MapEnum<TestStatus>("test_status");
-        builder.MapEnum<LogType>("log_type");
+        dataSourceBuilder.MapEnum<Post>("post");
+        dataSourceBuilder.MapEnum<AutoStatus>("auto_status");
+        dataSourceBuilder.MapEnum<RequestStatus>("request_status");
+        dataSourceBuilder.MapEnum<TestStatus>("test_status");
+        dataSourceBuilder.MapEnum<LogType>("log_type");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -464,12 +464,12 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.IdDetailSeries).HasColumnName("id_detail_series");
             entity.Property(e => e.Count).HasColumnName("count");
 
-            entity.HasOne(d => d.IdDetailSeriesNavigation).WithMany(p => p.TrimDetails)
+            entity.HasOne(d => d.DetailSeries).WithMany(p => p.TrimDetails)
                 .HasForeignKey(d => d.IdDetailSeries)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_trim_details_detail_series");
 
-            entity.HasOne(d => d.IdTrimNavigation).WithMany(p => p.TrimDetails)
+            entity.HasOne(d => d.Trim).WithMany(p => p.TrimDetails)
                 .HasForeignKey(d => d.IdTrim)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_trim_details_trims");

@@ -32,20 +32,32 @@ public class TrimController : ControllerBase
     [HttpPost("create")]
     public IActionResult Create(NewTrim newTrim)
     {
-        var model = newTrim.Construct();
-        _context.Trims.Add(model);
+        var trim = newTrim.Construct();
+        
+        _context.Trims.Add(trim);
         _context.SaveChanges();
-        return Ok(model);
+        _context.Trims.Entry(trim).Reference(e => e.Model).Load();
+        _context.Trims.Entry(trim).Reference(e => e.Model).Query()
+            .Include(m => m.Line).Load();
+        _context.Trims.Entry(trim).Collection(e => e.TrimDetails).Query()
+            .Include(trimDetail => trimDetail.DetailSeries).Load();
+        return Ok(trim);
     }
 
     [HttpPatch("{id:int}/rename")]
-    public IActionResult Rename(int id, string trimCode)
+    public IActionResult Rename(int id, [FromBody] string trimCode)
     {
         var found = Find(id);
         if (found is null) return NotFound();
 
         found.Code = trimCode;
         _context.Trims.Update(found);
+        _context.SaveChanges();
+        _context.Trims.Entry(found).Reference(e => e.Model).Load();
+        _context.Trims.Entry(found).Reference(e => e.Model).Query()
+            .Include(m => m.Line).Load();
+        _context.Trims.Entry(found) .Collection(e => e.TrimDetails).Query()
+            .Include(trimDetail => trimDetail.DetailSeries).Load();
 
         return Ok("Model was renamed");
     }
@@ -57,6 +69,7 @@ public class TrimController : ControllerBase
         if (found is null) return NotFound();
 
         _context.Trims.Remove(found);
+        _context.SaveChanges();
 
         return Ok("Model was deleted");
     }

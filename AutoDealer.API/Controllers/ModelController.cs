@@ -32,19 +32,24 @@ public class ModelController : ControllerBase
     public IActionResult Create(NewModel newModel)
     {
         var model = newModel.Construct();
+        
         _context.Models.Add(model);
         _context.SaveChanges();
+        _context.Models.Entry(model).Reference(e => e.Line).Load();
+        
         return Ok(model);
     }
 
     [HttpPatch("{id:int}/rename")]
-    public IActionResult Rename(int id, string modelName)
+    public IActionResult Rename(int id, [FromBody] string modelName)
     {
         var found = Find(id);
         if (found is null) return NotFound();
 
         found.Name = modelName;
         _context.Models.Update(found);
+        _context.SaveChanges();
+        _context.Models.Entry(found).Reference(e => e.Line).Load();
 
         return Ok("Model was renamed");
     }
@@ -56,6 +61,7 @@ public class ModelController : ControllerBase
         if (found is null) return NotFound();
 
         _context.Models.Remove(found);
+        _context.SaveChanges();
 
         return Ok("Model was deleted");
     }

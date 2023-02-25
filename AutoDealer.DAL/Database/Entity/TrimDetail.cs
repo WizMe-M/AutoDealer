@@ -2,13 +2,16 @@
 
 public partial class TrimDetail
 {
+    [JsonIgnore]
     public int IdTrim { get; set; }
 
+    [JsonIgnore]
     public int IdDetailSeries { get; set; }
 
     public int Count { get; set; }
 
-    public virtual DetailSeries IdDetailSeriesNavigation { get; set; } = null!;
+    public virtual DetailSeries DetailSeries { get; set; } = null!;
 
-    public virtual Trim IdTrimNavigation { get; set; } = null!;
+    [JsonIgnore]
+    public virtual Trim Trim { get; set; } = null!;
 }
