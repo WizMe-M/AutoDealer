@@ -15,13 +15,13 @@ public class TrimController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
-        var models = _context.Trims
+        var trims = _context.Trims
             .Include(trim => trim.Model)
             .ThenInclude(model => model.Line)
             .Include(trim => trim.TrimDetails)
             .ThenInclude(detail => detail.DetailSeries)
             .ToArray();
-        return Ok(models);
+        return Ok(trims);
     }
 
     [HttpGet("{id:int}")]
