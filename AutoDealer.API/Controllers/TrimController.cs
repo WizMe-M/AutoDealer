@@ -77,18 +77,18 @@ public class TrimController : ControllerBase
     }
 
     [HttpPatch("{id:int}/set-details")]
-    public async Task<IActionResult> SetDetailsForTrim(int id, [FromBody] IEnumerable<DetailInTrim> details)
+    public async Task<IActionResult> SetDetailsForTrim(int id, [FromBody] IEnumerable<DetailCountPair> detailCountPairs)
     {
         var found = Find(id);
         if (found is null) return NotFound();
 
-        var detailsInTrim = details as DetailInTrim[] ?? details.ToArray();
-        if (!ContainsUniqueDetails(detailsInTrim))
+        var details = detailCountPairs as DetailCountPair[] ?? detailCountPairs.ToArray();
+        if (!ContainsUniqueDetails(details))
             return BadRequest("Array of details for trims references on several identical details");
 
         found.TrimDetails.Clear();
 
-        foreach (var (seriesId, count) in detailsInTrim)
+        foreach (var (seriesId, count) in details)
         {
             found.TrimDetails.Add(new TrimDetail
             {
@@ -116,7 +116,7 @@ public class TrimController : ControllerBase
             .FirstOrDefault(trim => trim.Id == id);
     }
 
-    private static bool ContainsUniqueDetails(IEnumerable<DetailInTrim> detailInTrims)
+    private static bool ContainsUniqueDetails(IEnumerable<DetailCountPair> detailInTrims)
     {
         var id = -1;
         foreach (var (currentId, _) in detailInTrims)
