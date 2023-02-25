@@ -309,11 +309,11 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<PurchaseRequest>(entity =>
         {
-            entity.HasKey(e => e.IdPurchaseRequests).HasName("pk_purchase_requests");
+            entity.HasKey(e => e.Id).HasName("pk_purchase_requests");
 
             entity.ToTable("purchase_requests");
 
-            entity.Property(e => e.IdPurchaseRequests).HasColumnName("id_purchase_requests");
+            entity.Property(e => e.Id).HasColumnName("id_purchase_requests");
             entity.Property(e => e.ExpectedSupplyDate).HasColumnName("expected_supply_date");
             entity.Property(e => e.IdUser).HasColumnName("id_user");
             entity.Property(e => e.Status).HasColumnName("status")
@@ -323,7 +323,7 @@ public partial class AutoDealerContext : DbContext
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("sent_date");
 
-            entity.HasOne(d => d.IdUserNavigation).WithMany(p => p.PurchaseRequests)
+            entity.HasOne(d => d.User).WithMany(p => p.PurchaseRequests)
                 .HasForeignKey(d => d.IdUser)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("fk_purchase_requests_users");
@@ -341,12 +341,12 @@ public partial class AutoDealerContext : DbContext
                 .HasDefaultValueSql("1")
                 .HasColumnName("count");
 
-            entity.HasOne(d => d.IdDetailSeriesNavigation).WithMany(p => p.PurchaseRequestDetails)
+            entity.HasOne(d => d.DetailSeries).WithMany(p => p.PurchaseRequestDetails)
                 .HasForeignKey(d => d.IdDetailSeries)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_purchase_request_details_detail_series");
 
-            entity.HasOne(d => d.IdPurchaseRequestNavigation).WithMany(p => p.PurchaseRequestDetails)
+            entity.HasOne(d => d.PurchaseRequest).WithMany(p => p.PurchaseRequestDetails)
                 .HasForeignKey(d => d.IdPurchaseRequest)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_purchase_request_details_purchase_requests");
