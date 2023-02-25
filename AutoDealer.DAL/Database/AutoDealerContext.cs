@@ -217,13 +217,13 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<DetailSeries>(entity =>
         {
-            entity.HasKey(e => e.IdDetailSeries).HasName("pk_detail_series");
+            entity.HasKey(e => e.Id).HasName("pk_detail_series");
 
             entity.ToTable("detail_series");
 
             entity.HasIndex(e => e.Code, "uq_detail_series_code").IsUnique();
 
-            entity.Property(e => e.IdDetailSeries).HasColumnName("id_detail_series");
+            entity.Property(e => e.Id).HasColumnName("id_detail_series");
             entity.Property(e => e.Code).HasColumnName("code");
             entity.Property(e => e.Description).HasColumnName("description");
         });
