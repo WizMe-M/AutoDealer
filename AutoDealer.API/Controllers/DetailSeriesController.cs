@@ -74,7 +74,7 @@ public class DetailSeriesController : ControllerBase
             .ThenInclude(trim => trim.Model)
             .ThenInclude(model => model.Line).Load();
 
-        return Ok("Detail's series was renamed");
+        return Ok("Detail's series description was changed");
     }
 
     [HttpDelete("{id:int}/delete")]
