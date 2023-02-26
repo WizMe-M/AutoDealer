@@ -482,13 +482,13 @@ public partial class AutoDealerContext : DbContext
 
             entity.ToTable("users");
 
-            entity.HasIndex(e => e.Email, "uq_users_login").IsUnique();
+            entity.HasIndex(e => e.Email, "uq_users_email").IsUnique();
 
             entity.Property(e => e.IdEmployee)
                 .ValueGeneratedNever()
                 .HasColumnName("id_employee");
             entity.Property(e => e.Deleted).HasColumnName("deleted");
-            entity.Property(e => e.Email).HasColumnName("login");
+            entity.Property(e => e.Email).HasColumnName("email");
             entity.Property(e => e.PasswordHash).HasColumnName("password");
 
             entity.HasOne(d => d.Employee).WithOne(p => p.User)
@@ -549,6 +549,7 @@ public partial class AutoDealerContext : DbContext
             {
                 IdEmployee = 1,
                 Email = "timkin.moxim@mail.ru",
+                // equals to 'password'
                 PasswordHash =
                     "1ED6D5667B292B55FE629FCACB0027C808D6686C8C24B045E15212FC0207C73E" +
                     "BBC97F796695FCD306E2E4D3E8CCBF64C031221403023CEBFE86738119C97C20"
