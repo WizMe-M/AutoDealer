@@ -320,6 +320,7 @@ public partial class AutoDealerContext : DbContext
                 .HasDefaultValueSql("'sent'");
 
             entity.Property(e => e.SentDate)
+                .HasDefaultValueSql("now()")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("sent_date");
 
