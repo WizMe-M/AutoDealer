@@ -168,11 +168,11 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Contract>(entity =>
         {
-            entity.HasKey(e => e.IdContract).HasName("pk_contracts");
+            entity.HasKey(e => e.Id).HasName("pk_contracts");
 
             entity.ToTable("contracts");
 
-            entity.Property(e => e.IdContract).HasColumnName("id_contract");
+            entity.Property(e => e.Id).HasColumnName("id_contract");
             entity.Property(e => e.ConclusionDate)
                 .HasDefaultValueSql("now()")
                 .HasColumnName("conclusion_date");
@@ -183,15 +183,15 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.SupplyDate).HasColumnName("supply_date");
             entity.Property(e => e.TotalSum).HasColumnName("total_sum");
 
-            entity.HasOne(d => d.IdEmployeeNavigation).WithMany(p => p.Contracts)
+            entity.HasOne(d => d.Employee).WithMany(p => p.Contracts)
                 .HasForeignKey(d => d.IdEmployee)
                 .HasConstraintName("fk_contracts_employees");
 
-            entity.HasOne(d => d.IdPurchaseRequestNavigation).WithMany(p => p.Contracts)
+            entity.HasOne(d => d.PurchaseRequest).WithMany(p => p.Contracts)
                 .HasForeignKey(d => d.IdPurchaseRequest)
                 .HasConstraintName("fk_contracts_purchase_requests");
 
-            entity.HasOne(d => d.IdSupplierNavigation).WithMany(p => p.Contracts)
+            entity.HasOne(d => d.Supplier).WithMany(p => p.Contracts)
                 .HasForeignKey(d => d.IdSupplier)
                 .HasConstraintName("fk_contracts_suppliers");
         });
@@ -209,12 +209,12 @@ public partial class AutoDealerContext : DbContext
                 .HasDefaultValueSql("1")
                 .HasColumnName("count");
 
-            entity.HasOne(d => d.IdContractNavigation).WithMany(p => p.ContractDetails)
+            entity.HasOne(d => d.Contract).WithMany(p => p.ContractDetails)
                 .HasForeignKey(d => d.IdContract)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_contract_details_contracts");
 
-            entity.HasOne(d => d.IdDetailSeriesNavigation).WithMany(p => p.ContractDetails)
+            entity.HasOne(d => d.DetailSeries).WithMany(p => p.ContractDetails)
                 .HasForeignKey(d => d.IdDetailSeries)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_contract_details_detail_series");
@@ -234,17 +234,17 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.IdAuto).HasColumnName("id_auto");
             entity.Property(e => e.IdContract).HasColumnName("id_contract");
 
-            entity.HasOne(d => d.IdAutoNavigation).WithMany(p => p.Details)
+            entity.HasOne(d => d.Auto).WithMany(p => p.Details)
                 .HasForeignKey(d => d.IdAuto)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("fk_details_autos");
 
-            entity.HasOne(d => d.IdContractNavigation).WithMany(p => p.Details)
+            entity.HasOne(d => d.Contract).WithMany(p => p.Details)
                 .HasForeignKey(d => d.IdContract)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_details_contracts");
 
-            entity.HasOne(d => d.IdDetailSeriesNavigation).WithMany(p => p.Details)
+            entity.HasOne(d => d.DetailSeries).WithMany(p => p.Details)
                 .HasForeignKey(d => d.IdDetailSeries)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_details_detail_series");

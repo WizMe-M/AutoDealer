@@ -2,13 +2,13 @@
 
 public partial class Contract
 {
-    public int IdContract { get; set; }
+    public int Id { get; set; }
 
-    public int? IdEmployee { get; set; }
+    [JsonIgnore] public int? IdEmployee { get; set; }
 
-    public int? IdSupplier { get; set; }
+    [JsonIgnore] public int? IdSupplier { get; set; }
 
-    public int? IdPurchaseRequest { get; set; }
+    [JsonIgnore] public int? IdPurchaseRequest { get; set; }
 
     public DateOnly ConclusionDate { get; set; }
 
@@ -17,14 +17,14 @@ public partial class Contract
     public decimal TotalSum { get; set; }
 
     public DateOnly? LadingBillIssueDate { get; set; }
+    
+    public virtual IEnumerable<ContractDetail> ContractDetails { get; } = new List<ContractDetail>();
 
-    public virtual ICollection<ContractDetail> ContractDetails { get; } = new List<ContractDetail>();
+    public virtual IEnumerable<Detail> Details { get; } = new List<Detail>();
 
-    public virtual ICollection<Detail> Details { get; } = new List<Detail>();
+    public virtual Employee? Employee { get; set; }
 
-    public virtual Employee? IdEmployeeNavigation { get; set; }
+    public virtual PurchaseRequest? PurchaseRequest { get; set; }
 
-    public virtual PurchaseRequest? IdPurchaseRequestNavigation { get; set; }
-
-    public virtual Supplier? IdSupplierNavigation { get; set; }
+    public virtual Supplier? Supplier { get; set; }
 }
