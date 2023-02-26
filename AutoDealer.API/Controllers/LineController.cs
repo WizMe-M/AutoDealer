@@ -27,7 +27,7 @@ public class LineController : ControllerBase
     }
 
     [HttpPost("create")]
-    public IActionResult Create(string lineName)
+    public IActionResult Create([FromBody] string lineName)
     {
         var line = new Line { Name = lineName };
         _context.Lines.Add(line);
@@ -36,7 +36,7 @@ public class LineController : ControllerBase
     }
 
     [HttpPatch("{id:int}/rename")]
-    public IActionResult Rename(int id, string lineName)
+    public IActionResult Rename(int id, [FromBody] string lineName)
     {
         var found = FindById(id);
         if (found is null) return NotFound();
