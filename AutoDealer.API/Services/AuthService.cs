@@ -13,8 +13,10 @@ public class AuthService
     {
         return _context.Users
             .Include(user => user.Employee)
-            .FirstOrDefault(user => user.Email == email
-                                     && user.PasswordHash == passwordHash
-                                     && user.Employee.Post == post);
+            .FirstOrDefault(user =>
+                user.Email == email &&
+                user.PasswordHash == passwordHash &&
+                user.Employee.Post == post &&
+                user.Deleted == false);
     }
 }
