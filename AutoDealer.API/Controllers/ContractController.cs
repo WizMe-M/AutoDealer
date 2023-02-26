@@ -1,5 +1,8 @@
 ﻿namespace AutoDealer.API.Controllers;
 
+[Authorize(Roles = nameof(Post.PurchaseSpecialist))]
+[ApiController]
+[Route("contracts")]
 public class ContractController : DbContextController
 {
     public ContractController(AutoDealerContext context) : base(context)
