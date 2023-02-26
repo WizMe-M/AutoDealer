@@ -56,10 +56,10 @@ public partial class AutoDealerContext : DbContext
 
     #endregion
 
-    public async Task ExecuteSetMargin(int trimId, DateOnly actsFrom, double margin)
+    public async Task ExecuteSetMargin(int carModelId, DateOnly actsFrom, double margin)
     {
         await Database.ExecuteSqlRawAsync(
-            $"select set_margin(trim_id := {trimId}, begins_act_from := '{actsFrom}', margin_value := {margin});");
+            $"select set_margin(trim_id := {carModelId}, begins_act_from := '{actsFrom}', margin_value := {margin});");
     }
 
     public async Task ExecuteAssemblyAuto(int auto)
