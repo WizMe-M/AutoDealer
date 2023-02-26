@@ -237,12 +237,12 @@ namespace AutoDealer.DAL.Migrations
 
             modelBuilder.Entity("AutoDealer.DAL.Database.Entity.DetailSeries", b =>
                 {
-                    b.Property<int>("IdDetailSeries")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id_detail_series");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdDetailSeries"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -253,7 +253,7 @@ namespace AutoDealer.DAL.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
-                    b.HasKey("IdDetailSeries")
+                    b.HasKey("Id")
                         .HasName("pk_detail_series");
 
                     b.HasIndex(new[] { "Code" }, "uq_detail_series_code")
@@ -318,19 +318,19 @@ namespace AutoDealer.DAL.Migrations
 
             modelBuilder.Entity("AutoDealer.DAL.Database.Entity.Line", b =>
                 {
-                    b.Property<int>("IdLine")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id_line");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdLine"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.HasKey("IdLine")
+                    b.HasKey("Id")
                         .HasName("pk_lines");
 
                     b.HasIndex(new[] { "Name" }, "uq_lines_name")
@@ -395,12 +395,12 @@ namespace AutoDealer.DAL.Migrations
 
             modelBuilder.Entity("AutoDealer.DAL.Database.Entity.Model", b =>
                 {
-                    b.Property<int>("IdModel")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id_model");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdModel"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("IdLine")
                         .HasColumnType("integer")
@@ -411,7 +411,7 @@ namespace AutoDealer.DAL.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.HasKey("IdModel")
+                    b.HasKey("Id")
                         .HasName("pk_models");
 
                     b.HasIndex("IdLine");
@@ -424,12 +424,12 @@ namespace AutoDealer.DAL.Migrations
 
             modelBuilder.Entity("AutoDealer.DAL.Database.Entity.PurchaseRequest", b =>
                 {
-                    b.Property<int>("IdPurchaseRequests")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id_purchase_requests");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdPurchaseRequests"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly>("ExpectedSupplyDate")
                         .HasColumnType("date")
@@ -449,7 +449,7 @@ namespace AutoDealer.DAL.Migrations
                         .HasColumnName("status")
                         .HasDefaultValueSql("'sent'");
 
-                    b.HasKey("IdPurchaseRequests")
+                    b.HasKey("Id")
                         .HasName("pk_purchase_requests");
 
                     b.HasIndex("IdUser");
@@ -614,12 +614,12 @@ namespace AutoDealer.DAL.Migrations
 
             modelBuilder.Entity("AutoDealer.DAL.Database.Entity.Trim", b =>
                 {
-                    b.Property<int>("IdTrim")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id_trim");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTrim"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -630,7 +630,7 @@ namespace AutoDealer.DAL.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id_model");
 
-                    b.HasKey("IdTrim")
+                    b.HasKey("Id")
                         .HasName("pk_trims");
 
                     b.HasIndex("IdModel");
@@ -853,43 +853,43 @@ namespace AutoDealer.DAL.Migrations
 
             modelBuilder.Entity("AutoDealer.DAL.Database.Entity.Model", b =>
                 {
-                    b.HasOne("AutoDealer.DAL.Database.Entity.Line", "IdLineNavigation")
+                    b.HasOne("AutoDealer.DAL.Database.Entity.Line", "Line")
                         .WithMany("Models")
                         .HasForeignKey("IdLine")
                         .IsRequired()
                         .HasConstraintName("fk_models_lines");
 
-                    b.Navigation("IdLineNavigation");
+                    b.Navigation("Line");
                 });
 
             modelBuilder.Entity("AutoDealer.DAL.Database.Entity.PurchaseRequest", b =>
                 {
-                    b.HasOne("AutoDealer.DAL.Database.Entity.User", "IdUserNavigation")
+                    b.HasOne("AutoDealer.DAL.Database.Entity.User", "User")
                         .WithMany("PurchaseRequests")
                         .HasForeignKey("IdUser")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("fk_purchase_requests_users");
 
-                    b.Navigation("IdUserNavigation");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AutoDealer.DAL.Database.Entity.PurchaseRequestDetail", b =>
                 {
-                    b.HasOne("AutoDealer.DAL.Database.Entity.DetailSeries", "IdDetailSeriesNavigation")
+                    b.HasOne("AutoDealer.DAL.Database.Entity.DetailSeries", "DetailSeries")
                         .WithMany("PurchaseRequestDetails")
                         .HasForeignKey("IdDetailSeries")
                         .IsRequired()
                         .HasConstraintName("fk_purchase_request_details_detail_series");
 
-                    b.HasOne("AutoDealer.DAL.Database.Entity.PurchaseRequest", "IdPurchaseRequestNavigation")
+                    b.HasOne("AutoDealer.DAL.Database.Entity.PurchaseRequest", "PurchaseRequest")
                         .WithMany("PurchaseRequestDetails")
                         .HasForeignKey("IdPurchaseRequest")
                         .IsRequired()
                         .HasConstraintName("fk_purchase_request_details_purchase_requests");
 
-                    b.Navigation("IdDetailSeriesNavigation");
+                    b.Navigation("DetailSeries");
 
-                    b.Navigation("IdPurchaseRequestNavigation");
+                    b.Navigation("PurchaseRequest");
                 });
 
             modelBuilder.Entity("AutoDealer.DAL.Database.Entity.Sale", b =>
@@ -954,32 +954,32 @@ namespace AutoDealer.DAL.Migrations
 
             modelBuilder.Entity("AutoDealer.DAL.Database.Entity.Trim", b =>
                 {
-                    b.HasOne("AutoDealer.DAL.Database.Entity.Model", "IdModelNavigation")
+                    b.HasOne("AutoDealer.DAL.Database.Entity.Model", "Model")
                         .WithMany("Trims")
                         .HasForeignKey("IdModel")
                         .IsRequired()
                         .HasConstraintName("fk_trims_models");
 
-                    b.Navigation("IdModelNavigation");
+                    b.Navigation("Model");
                 });
 
             modelBuilder.Entity("AutoDealer.DAL.Database.Entity.TrimDetail", b =>
                 {
-                    b.HasOne("AutoDealer.DAL.Database.Entity.DetailSeries", "IdDetailSeriesNavigation")
+                    b.HasOne("AutoDealer.DAL.Database.Entity.DetailSeries", "DetailSeries")
                         .WithMany("TrimDetails")
                         .HasForeignKey("IdDetailSeries")
                         .IsRequired()
                         .HasConstraintName("fk_trim_details_detail_series");
 
-                    b.HasOne("AutoDealer.DAL.Database.Entity.Trim", "IdTrimNavigation")
+                    b.HasOne("AutoDealer.DAL.Database.Entity.Trim", "Trim")
                         .WithMany("TrimDetails")
                         .HasForeignKey("IdTrim")
                         .IsRequired()
                         .HasConstraintName("fk_trim_details_trims");
 
-                    b.Navigation("IdDetailSeriesNavigation");
+                    b.Navigation("DetailSeries");
 
-                    b.Navigation("IdTrimNavigation");
+                    b.Navigation("Trim");
                 });
 
             modelBuilder.Entity("AutoDealer.DAL.Database.Entity.User", b =>
