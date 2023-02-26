@@ -2,7 +2,7 @@
 
 public partial class Supplier
 {
-    public int IdSupplier { get; set; }
+    public int Id { get; set; }
 
     public string LegalAddress { get; set; } = null!;
 
@@ -14,5 +14,5 @@ public partial class Supplier
 
     public string Tin { get; set; } = null!;
 
-    public virtual ICollection<Contract> Contracts { get; } = new List<Contract>();
+    [JsonIgnore] public virtual IEnumerable<Contract> Contracts { get; } = new List<Contract>();
 }

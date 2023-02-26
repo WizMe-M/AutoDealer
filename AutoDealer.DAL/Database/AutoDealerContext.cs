@@ -391,11 +391,11 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Supplier>(entity =>
         {
-            entity.HasKey(e => e.IdSupplier).HasName("pk_suppliers");
+            entity.HasKey(e => e.Id).HasName("pk_suppliers");
 
             entity.ToTable("suppliers");
 
-            entity.Property(e => e.IdSupplier).HasColumnName("id_supplier");
+            entity.Property(e => e.Id).HasColumnName("id_supplier");
             entity.Property(e => e.CorrespondentAccount).HasColumnName("correspondent_account");
             entity.Property(e => e.LegalAddress).HasColumnName("legal_address");
             entity.Property(e => e.PostalAddress).HasColumnName("postal_address");
