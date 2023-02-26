@@ -13,7 +13,7 @@ public partial class Auto
 {
     public int IdAuto { get; set; }
 
-    public int IdTrim { get; set; }
+    public int IdCarModel { get; set; }
 
     public DateOnly? AssemblyDate { get; set; }
 
@@ -23,7 +23,7 @@ public partial class Auto
 
     public virtual ICollection<Detail> Details { get; } = new List<Detail>();
 
-    public virtual Trim IdTrimNavigation { get; set; } = null!;
+    public virtual CarModel CarModel { get; set; } = null!;
 
     public virtual ICollection<Sale> Sales { get; } = new List<Sale>();
 

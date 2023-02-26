@@ -2,26 +2,21 @@
 
 [Authorize(Roles = nameof(Post.AssemblyChief))]
 [ApiController]
-[Route("trims")]
-public class TrimController : ControllerBase
+[Route("car_models")]
+public class CarModelController : DbContextController
 {
-    private readonly AutoDealerContext _context;
-
-    public TrimController(AutoDealerContext context)
+    public CarModelController(AutoDealerContext context) : base(context)
     {
-        _context = context;
     }
 
     [HttpGet]
     public IActionResult GetAll()
     {
-        var trims = _context.Trims
-            .Include(trim => trim.Model)
-            .ThenInclude(model => model.Line)
-            .Include(trim => trim.TrimDetails)
+        var carModels = Context.CarModels
+            .Include(carModel => carModel.CarModelDetails)
             .ThenInclude(detail => detail.DetailSeries)
             .ToArray();
-        return Ok(trims);
+        return Ok(carModels);
     }
 
     [HttpGet("{id:int}")]
@@ -32,36 +27,37 @@ public class TrimController : ControllerBase
     }
 
     [HttpPost("create")]
-    public IActionResult Create(NewTrim newTrim)
+    public IActionResult Create([FromBody] CarModelData carModelData)
     {
-        var trim = newTrim.Construct();
+        var carModel = carModelData.Construct();
 
-        _context.Trims.Add(trim);
-        _context.SaveChanges();
-        _context.Trims.Entry(trim).Reference(e => e.Model).Load();
-        _context.Trims.Entry(trim).Reference(e => e.Model).Query()
-            .Include(m => m.Line).Load();
-        _context.Trims.Entry(trim).Collection(e => e.TrimDetails).Query()
+        Context.CarModels.Add(carModel);
+        Context.SaveChanges();
+        Context.CarModels.Entry(carModel)
+            .Collection(e => e.CarModelDetails).Query()
             .Include(trimDetail => trimDetail.DetailSeries).Load();
-        return Ok(trim);
+
+        return Ok(carModel);
     }
 
-    [HttpPatch("{id:int}/rename")]
-    public IActionResult Rename(int id, [FromBody] string trimCode)
+    [HttpPatch("{id:int}/change-model-name")]
+    public IActionResult ChangeModelName(int id, [FromBody] CarModelData carModelData)
     {
         var found = Find(id);
         if (found is null) return NotFound();
 
-        found.Code = trimCode;
-        _context.Trims.Update(found);
-        _context.SaveChanges();
-        _context.Trims.Entry(found).Reference(e => e.Model).Load();
-        _context.Trims.Entry(found).Reference(e => e.Model).Query()
-            .Include(m => m.Line).Load();
-        _context.Trims.Entry(found).Collection(e => e.TrimDetails).Query()
-            .Include(trimDetail => trimDetail.DetailSeries).Load();
+        var data = carModelData.Construct();
+        found.LineName = data.LineName;
+        found.ModelName = data.ModelName;
+        found.TrimCode = data.TrimCode;
+        
+        Context.CarModels.Update(found);
+        Context.SaveChanges();
+        Context.CarModels.Entry(found)
+            .Collection(e => e.CarModelDetails).Query()
+            .Include(carModelDetail => carModelDetail.DetailSeries).Load();
 
-        return Ok("Model was renamed");
+        return Ok("Car model was renamed");
     }
 
     [HttpDelete("{id:int}/delete")]
@@ -70,10 +66,10 @@ public class TrimController : ControllerBase
         var found = Find(id);
         if (found is null) return NotFound();
 
-        _context.Trims.Remove(found);
-        _context.SaveChanges();
+        Context.CarModels.Remove(found);
+        Context.SaveChanges();
 
-        return Ok("Model was deleted");
+        return Ok("Car model was deleted");
     }
 
     [HttpPatch("{id:int}/set-details")]
@@ -86,32 +82,30 @@ public class TrimController : ControllerBase
         if (!ContainsUniqueDetails(details))
             return BadRequest("Array of details for trims references on several identical details");
 
-        found.TrimDetails.Clear();
+        found.CarModelDetails.Clear();
 
         foreach (var (seriesId, count) in details)
         {
-            found.TrimDetails.Add(new TrimDetail
+            found.CarModelDetails.Add(new CarModelDetail
             {
-                IdTrim = id,
+                IdCarModel = id,
                 IdDetailSeries = seriesId,
                 Count = count
             });
         }
 
-        await _context.SaveChangesAsync();
-        await _context.Trims.Entry(found)
-            .Collection(e => e.TrimDetails).Query()
+        await Context.SaveChangesAsync();
+        await Context.CarModels.Entry(found)
+            .Collection(e => e.CarModelDetails).Query()
             .Include(detail => detail.DetailSeries).LoadAsync();
 
         return Ok(found);
     }
 
-    private Trim? Find(int id)
+    private CarModel? Find(int id)
     {
-        return _context.Trims
-            .Include(trim => trim.Model)
-            .ThenInclude(model => model.Line)
-            .Include(trim => trim.TrimDetails)
+        return Context.CarModels
+            .Include(trim => trim.CarModelDetails)
             .ThenInclude(detail => detail.DetailSeries)
             .FirstOrDefault(trim => trim.Id == id);
     }

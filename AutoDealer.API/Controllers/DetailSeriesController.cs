@@ -2,26 +2,23 @@
 
 [ApiController]
 [Route("detail_series")]
-public class DetailSeriesController : ControllerBase
+public class DetailSeriesController : DbContextController
 {
-    private readonly AutoDealerContext _context;
-
-    public DetailSeriesController(AutoDealerContext context)
+    public DetailSeriesController(AutoDealerContext context) : base(context)
     {
-        _context = context;
     }
 
     [HttpGet]
     public IActionResult GetAll()
     {
-        var detailSeries = _context.DetailSeries.ToArray();
+        var detailSeries = Context.DetailSeries.ToArray();
         return Ok(detailSeries);
     }
 
     [HttpGet("{id:int}")]
     public IActionResult GetById(int id)
     {
-        var found = FindById(id);
+        var found = Find(id);
         return found is { } ? Ok(found) : NotFound();
     }
 
@@ -30,13 +27,11 @@ public class DetailSeriesController : ControllerBase
     {
         var series = new DetailSeries { Code = seriesCode };
         
-        _context.DetailSeries.Add(series);
-        _context.SaveChanges();
-        _context.DetailSeries.Entry(series)
+        Context.DetailSeries.Add(series);
+        Context.SaveChanges();
+        Context.DetailSeries.Entry(series)
             .Collection(e => e.TrimDetails).Query()
-            .Include(trimDetail => trimDetail.Trim)
-            .ThenInclude(trim => trim.Model)
-            .ThenInclude(model => model.Line).Load();
+            .Include(trimDetail => trimDetail.CarModel).Load();
         
         return Ok(series);
     }
@@ -44,17 +39,15 @@ public class DetailSeriesController : ControllerBase
     [HttpPatch("{id:int}/rename")]
     public IActionResult Rename(int id, [FromBody] string seriesCode)
     {
-        var found = FindById(id);
+        var found = Find(id);
         if (found is null) return NotFound();
 
         found.Code = seriesCode;
-        _context.DetailSeries.Update(found);
-        _context.SaveChanges();
-        _context.DetailSeries.Entry(found)
+        Context.DetailSeries.Update(found);
+        Context.SaveChanges();
+        Context.DetailSeries.Entry(found)
             .Collection(e => e.TrimDetails).Query()
-            .Include(trimDetail => trimDetail.Trim)
-            .ThenInclude(trim => trim.Model)
-            .ThenInclude(model => model.Line).Load();
+            .Include(trimDetail => trimDetail.CarModel).Load();
 
         return Ok("Detail's series was renamed");
     }
@@ -62,17 +55,15 @@ public class DetailSeriesController : ControllerBase
     [HttpPatch("{id:int}/change-description")]
     public IActionResult ChangeDescription(int id, [FromBody] string description)
     {
-        var found = FindById(id);
+        var found = Find(id);
         if (found is null) return NotFound();
 
         found.Description = description;
-        _context.DetailSeries.Update(found);
-        _context.SaveChanges();
-        _context.DetailSeries.Entry(found)
+        Context.DetailSeries.Update(found);
+        Context.SaveChanges();
+        Context.DetailSeries.Entry(found)
             .Collection(e => e.TrimDetails).Query()
-            .Include(trimDetail => trimDetail.Trim)
-            .ThenInclude(trim => trim.Model)
-            .ThenInclude(model => model.Line).Load();
+            .Include(trimDetail => trimDetail.CarModel).Load();
 
         return Ok("Detail's series description was changed");
     }
@@ -80,14 +71,14 @@ public class DetailSeriesController : ControllerBase
     [HttpDelete("{id:int}/delete")]
     public IActionResult Delete(int id)
     {
-        var found = FindById(id);
+        var found = Find(id);
         if (found is null) return NotFound();
 
-        _context.DetailSeries.Remove(found);
-        _context.SaveChanges();
+        Context.DetailSeries.Remove(found);
+        Context.SaveChanges();
 
         return Ok("Detail's series was deleted");
     }
 
-    private DetailSeries? FindById(int id) => _context.DetailSeries.FirstOrDefault(series => series.Id == id);
+    private DetailSeries? Find(int id) => Context.DetailSeries.FirstOrDefault(series => series.Id == id);
 }

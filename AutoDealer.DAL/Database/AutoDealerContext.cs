@@ -12,6 +12,8 @@ public partial class AutoDealerContext : DbContext
     {
     }
 
+    #region Db sets
+
     public virtual DbSet<Auto> Autos { get; set; }
 
     public virtual DbSet<Client> Clients { get; set; }
@@ -26,13 +28,9 @@ public partial class AutoDealerContext : DbContext
 
     public virtual DbSet<Employee> Employees { get; set; }
 
-    public virtual DbSet<Line> Lines { get; set; }
-
     public virtual DbSet<Log> Logs { get; set; }
 
     public virtual DbSet<Margin> Margins { get; set; }
-
-    public virtual DbSet<Model> Models { get; set; }
 
     public virtual DbSet<PurchaseRequest> PurchaseRequests { get; set; }
 
@@ -46,15 +44,17 @@ public partial class AutoDealerContext : DbContext
 
     public virtual DbSet<TestAuto> TestAutos { get; set; }
 
-    public virtual DbSet<Trim> Trims { get; set; }
+    public virtual DbSet<CarModel> CarModels { get; set; }
 
-    public virtual DbSet<TrimDetail> TrimDetails { get; set; }
+    public virtual DbSet<CarModelDetail> TrimDetails { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Work> Works { get; set; }
 
     public virtual DbSet<WorkPlan> WorkPlans { get; set; }
+
+    #endregion
 
     public async Task ExecuteSetMargin(int trimId, DateOnly actsFrom, double margin)
     {
@@ -73,7 +73,7 @@ public partial class AutoDealerContext : DbContext
             $"select sell_auto(auto := {auto}, client := {client}, employee := {employee});");
     }
 
-    public async Task ExecuteSellAuto(int auto, DateTime saleTime)
+    public async Task ExecuteReturnAuto(int auto, DateTime saleTime)
     {
         await Database.ExecuteSqlRawAsync($"select return_auto(auto := {auto}, sale_time := '{saleTime}');");
     }
@@ -104,13 +104,48 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.IdAuto).HasColumnName("id_auto");
             entity.Property(e => e.AssemblyDate).HasColumnName("assembly_date");
             entity.Property(e => e.Cost).HasColumnName("cost");
-            entity.Property(e => e.IdTrim).HasColumnName("id_trim");
+            entity.Property(e => e.IdCarModel).HasColumnName("id_trim");
             entity.Property(e => e.Status).HasColumnName("status").HasDefaultValueSql("'in_assembly'");
 
-            entity.HasOne(d => d.IdTrimNavigation).WithMany(p => p.Autos)
-                .HasForeignKey(d => d.IdTrim)
+            entity.HasOne(d => d.CarModel).WithMany(p => p.Autos)
+                .HasForeignKey(d => d.IdCarModel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_autos_trims");
+        });
+
+        modelBuilder.Entity<CarModel>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("pk_car_models");
+
+            entity.ToTable("car_models");
+
+            entity.HasIndex(e => new { e.LineName, e.ModelName, Code = e.TrimCode }, "uq_car_models_name").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id_car_model");
+            entity.Property(e => e.LineName).HasColumnName("line_name");
+            entity.Property(e => e.ModelName).HasColumnName("model_name");
+            entity.Property(e => e.TrimCode).HasColumnName("trim_code");
+        });
+
+        modelBuilder.Entity<CarModelDetail>(entity =>
+        {
+            entity.HasKey(e => new { IdTrim = e.IdCarModel, e.IdDetailSeries }).HasName("pk_car_model_details");
+
+            entity.ToTable("car_model_details");
+
+            entity.Property(e => e.IdCarModel).HasColumnName("id_car_model");
+            entity.Property(e => e.IdDetailSeries).HasColumnName("id_detail_series");
+            entity.Property(e => e.Count).HasColumnName("count");
+
+            entity.HasOne(d => d.DetailSeries).WithMany(p => p.TrimDetails)
+                .HasForeignKey(d => d.IdDetailSeries)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_car_model_details_detail_series");
+
+            entity.HasOne(d => d.CarModel).WithMany(p => p.CarModelDetails)
+                .HasForeignKey(d => d.IdCarModel)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_car_model_details_trims");
         });
 
         modelBuilder.Entity<Client>(entity =>
@@ -243,18 +278,6 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.Post).HasColumnName("post");
         });
 
-        modelBuilder.Entity<Line>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_lines");
-
-            entity.ToTable("lines");
-
-            entity.HasIndex(e => e.Name, "uq_lines_name").IsUnique();
-
-            entity.Property(e => e.Id).HasColumnName("id_line");
-            entity.Property(e => e.Name).HasColumnName("name");
-        });
-
         modelBuilder.Entity<Log>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("logs_pkey");
@@ -273,38 +296,20 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Margin>(entity =>
         {
-            entity.HasKey(e => new { e.IdTrim, e.StartDate }).HasName("pk_margins");
+            entity.HasKey(e => new { IdTrim = e.IdCarModel, e.StartDate }).HasName("pk_margins");
 
             entity.ToTable("margins");
 
-            entity.Property(e => e.IdTrim).HasColumnName("id_trim");
+            entity.Property(e => e.IdCarModel).HasColumnName("id_trim");
             entity.Property(e => e.StartDate).HasColumnName("start_date");
-            entity.Property(e => e.Margin1)
+            entity.Property(e => e.Value)
                 .HasDefaultValueSql("10")
                 .HasColumnName("margin");
 
-            entity.HasOne(d => d.IdTrimNavigation).WithMany(p => p.Margins)
-                .HasForeignKey(d => d.IdTrim)
+            entity.HasOne(d => d.CarModel).WithMany(p => p.Margins)
+                .HasForeignKey(d => d.IdCarModel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_margins_trims");
-        });
-
-        modelBuilder.Entity<Model>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_models");
-
-            entity.ToTable("models");
-
-            entity.HasIndex(e => e.Name, "uq_models_name").IsUnique();
-
-            entity.Property(e => e.Id).HasColumnName("id_model");
-            entity.Property(e => e.IdLine).HasColumnName("id_line");
-            entity.Property(e => e.Name).HasColumnName("name");
-
-            entity.HasOne(d => d.Line).WithMany(p => p.Models)
-                .HasForeignKey(d => d.IdLine)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_models_lines");
         });
 
         modelBuilder.Entity<PurchaseRequest>(entity =>
@@ -437,44 +442,6 @@ public partial class AutoDealerContext : DbContext
                 .HasConstraintName("fk_test_autos_tests");
         });
 
-        modelBuilder.Entity<Trim>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_trims");
-
-            entity.ToTable("trims");
-
-            entity.HasIndex(e => e.Code, "uq_trims_code").IsUnique();
-
-            entity.Property(e => e.Id).HasColumnName("id_trim");
-            entity.Property(e => e.Code).HasColumnName("code");
-            entity.Property(e => e.IdModel).HasColumnName("id_model");
-
-            entity.HasOne(d => d.Model).WithMany(p => p.Trims)
-                .HasForeignKey(d => d.IdModel)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_trims_models");
-        });
-
-        modelBuilder.Entity<TrimDetail>(entity =>
-        {
-            entity.HasKey(e => new { e.IdTrim, e.IdDetailSeries }).HasName("pk_trim_details");
-
-            entity.ToTable("trim_details");
-
-            entity.Property(e => e.IdTrim).HasColumnName("id_trim");
-            entity.Property(e => e.IdDetailSeries).HasColumnName("id_detail_series");
-            entity.Property(e => e.Count).HasColumnName("count");
-
-            entity.HasOne(d => d.DetailSeries).WithMany(p => p.TrimDetails)
-                .HasForeignKey(d => d.IdDetailSeries)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_trim_details_detail_series");
-
-            entity.HasOne(d => d.Trim).WithMany(p => p.TrimDetails)
-                .HasForeignKey(d => d.IdTrim)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_trim_details_trims");
-        });
 
         modelBuilder.Entity<User>(entity =>
         {
@@ -532,7 +499,6 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.WorkEndDate).HasColumnName("work_end_date");
             entity.Property(e => e.WorkStartDate).HasColumnName("work_start_date");
         });
-
 
         modelBuilder.Entity<Employee>().HasData(
             new Employee
