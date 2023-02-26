@@ -59,6 +59,7 @@ Example: 'Bearer 12345abcdef'
         }
     });
 });
+
 builder.Services.AddRouting(options =>
 {
     options.LowercaseUrls = true;
@@ -103,7 +104,11 @@ app.UseAuthorization();
 app.UseExceptionHandler(applicationBuilder => applicationBuilder.Run(async context =>
 {
     var exception = context.Features.Get<IExceptionHandlerPathFeature>()!.Error;
-    var response = new { error = exception.Message };
+    var response = new
+    {
+        error = exception.Message,
+        innerException = exception.InnerException?.Message
+    };
     await context.Response.WriteAsJsonAsync(response);
 }));
 
