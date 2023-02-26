@@ -344,12 +344,12 @@ public partial class AutoDealerContext : DbContext
 
             entity.HasOne(d => d.DetailSeries).WithMany(p => p.PurchaseRequestDetails)
                 .HasForeignKey(d => d.IdDetailSeries)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .HasConstraintName("fk_purchase_request_details_detail_series");
 
             entity.HasOne(d => d.PurchaseRequest).WithMany(p => p.PurchaseRequestDetails)
                 .HasForeignKey(d => d.IdPurchaseRequest)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.ClientCascade)
                 .HasConstraintName("fk_purchase_request_details_purchase_requests");
         });
 
