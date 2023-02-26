@@ -114,7 +114,7 @@ public class UserController : ControllerBase
                 new Claim(JwtRegisteredClaimNames.Sub, user.IdEmployee.ToString()),
                 new Claim(ClaimTypes.Role, user.Employee.Post.ToString())
             },
-            expires: now.Add(TimeSpan.FromMinutes(120)),
+            expires: now.Add(TimeSpan.FromHours(6)),
             signingCredentials: new SigningCredentials(
                 _jwtConfig.SecretKey,
                 SecurityAlgorithms.HmacSha256));
