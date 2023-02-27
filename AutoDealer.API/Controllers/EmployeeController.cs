@@ -30,10 +30,19 @@ public class EmployeeController : DbContextController
     [ProducesResponseType(typeof(Employee), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult CreateEmployee([FromBody] NewEmployee newEmployee)
+    public IActionResult CreateEmployee([FromBody] EmployeeData data)
     {
         // TODO: add validation
-        var employee = newEmployee.Construct();
+        var employee = new Employee
+        {
+            FirstName = data.FullName.FirstName,
+            LastName = data.FullName.LastName,
+            MiddleName = data.FullName.MiddleName,
+            PassportNumber = data.Passport.Number,
+            PassportSeries = data.Passport.Series,
+            Post = data.Post
+        };
+        
         var foundWithPassport = Context.Employees.FirstOrDefault(emp =>
             emp.PassportNumber == employee.PassportNumber &&
             emp.PassportSeries == employee.PassportSeries) is { };
