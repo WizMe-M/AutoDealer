@@ -7,7 +7,6 @@ var dataSource = dataSourceBuilder.Build();
 builder.Services.AddDbContext<AutoDealerContext>(options => options.UseNpgsql(dataSource));
 
 // add repos
-builder.Services.AddTransient<CrudRepositoryBase<User>, UserRepository>();
 builder.Services.AddTransient<CrudRepositoryBase<Employee>, EmployeeRepository>();
 
 // add services
