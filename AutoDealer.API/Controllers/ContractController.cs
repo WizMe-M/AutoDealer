@@ -1,6 +1,5 @@
 ﻿namespace AutoDealer.API.Controllers;
 
-[Authorize(Roles = nameof(Post.PurchaseSpecialist))]
 [ApiController]
 [Route("contracts")]
 public class ContractController : DbContextController
@@ -9,6 +8,7 @@ public class ContractController : DbContextController
     {
     }
 
+    [Authorize(Roles = $"{nameof(Post.PurchaseSpecialist)},{nameof(Post.Storekeeper)}")]
     [HttpGet]
     public IActionResult GetAll()
     {
@@ -31,6 +31,7 @@ public class ContractController : DbContextController
         return Ok(contracts);
     }
 
+    [Authorize(Roles = $"{nameof(Post.PurchaseSpecialist)},{nameof(Post.Storekeeper)}")]
     [HttpGet("{id:int}")]
     public IActionResult Get(int id)
     {
@@ -38,6 +39,7 @@ public class ContractController : DbContextController
         return found is { } ? Ok(found) : NotFound();
     }
 
+    [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     [HttpPost("create")]
     public IActionResult Create([FromBody] NewContract newContract)
     {
@@ -79,6 +81,8 @@ public class ContractController : DbContextController
         return Ok(contract);
     }
 
+    [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
+    [HttpPatch("reschedule")]
     public IActionResult Reschedule(int id, [FromBody] DateOnly supplyDate)
     {
         var found = Find(id);
@@ -98,6 +102,7 @@ public class ContractController : DbContextController
         return Ok(found);
     }
 
+    [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     [HttpDelete("{id:int}/break")]
     public IActionResult Delete(int id)
     {
@@ -113,7 +118,7 @@ public class ContractController : DbContextController
         return Ok();
     }
 
-    public Contract? Find(int id)
+    private Contract? Find(int id)
     {
         return Context.Contracts
             .Include(contract => contract.Supplier)
