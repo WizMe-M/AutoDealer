@@ -9,11 +9,11 @@ public class UserController : ControllerBase
     private readonly HashService _hashService;
     private readonly JwtConfig _jwtConfig;
 
-    public UserController(CrudRepositoryBase<User> repository, HashService hashService, JwtConfig jwtConfig)
+    public UserController(CrudRepositoryBase<User> repository, HashService hashService, IOptions<JwtConfig> jwtConfig)
     {
         _repository = repository;
         _hashService = hashService;
-        _jwtConfig = jwtConfig;
+        _jwtConfig = jwtConfig.Value;
     }
 
     [HttpGet]
