@@ -56,6 +56,8 @@ public partial class AutoDealerContext : DbContext
 
     #endregion
 
+    #region db functions
+
     public async Task ExecuteSetMarginAsync(int carModelId, DateOnly actsFrom, double margin)
     {
         await Database.ExecuteSqlRawAsync(
@@ -83,6 +85,10 @@ public partial class AutoDealerContext : DbContext
         await Database.ExecuteSqlRawAsync($"select process_lading_bill(contract := {contractId})");
     }
 
+    #endregion
+
+    #region config
+
     public static void ConfigureBuilder(NpgsqlDataSourceBuilder dataSourceBuilder)
     {
         dataSourceBuilder.MapEnum<Post>("post");
@@ -99,6 +105,8 @@ public partial class AutoDealerContext : DbContext
         modelBuilder.HasPostgresEnum<RequestStatus>();
         modelBuilder.HasPostgresEnum<TestStatus>();
         modelBuilder.HasPostgresEnum<LogType>();
+
+        #region configure entities
 
         modelBuilder.Entity<Auto>(entity =>
         {
@@ -505,6 +513,10 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.WorkStartDate).HasColumnName("work_start_date");
         });
 
+        #endregion
+
+        #region preset data
+
         modelBuilder.Entity<Employee>().HasData(
             new Employee
             {
@@ -514,16 +526,126 @@ public partial class AutoDealerContext : DbContext
                 PassportSeries = "1199",
                 PassportNumber = "975717",
                 Post = Post.DatabaseAdmin
+            },
+            new Employee
+            {
+                Id = 2,
+                LastName = "Ivanov",
+                FirstName = "Ivan",
+                PassportSeries = "1111",
+                PassportNumber = "111111",
+                Post = Post.AssemblyChief
+            },
+            new Employee
+            {
+                Id = 3,
+                LastName = "Andreev",
+                FirstName = "Andrey",
+                PassportSeries = "2222",
+                PassportNumber = "222222",
+                Post = Post.PurchaseSpecialist
+            },
+            new Employee
+            {
+                Id = 4,
+                LastName = "Igorev",
+                FirstName = "Igor",
+                PassportSeries = "3333",
+                PassportNumber = "333333",
+                Post = Post.Storekeeper
+            },
+            new Employee
+            {
+                Id = 5,
+                LastName = "Sergeev",
+                FirstName = "Sergey",
+                PassportSeries = "4444",
+                PassportNumber = "444444",
+                Post = Post.Seller
+            },
+            new Employee
+            {
+                Id = 6,
+                LastName = "Alexeev",
+                FirstName = "Alexey",
+                PassportSeries = "5555",
+                PassportNumber = "555555",
+                Post = Post.Tester
             });
+
         modelBuilder.Entity<User>().HasData(
             new User
             {
                 IdEmployee = 1,
-                Email = "timkin.moxim@mail.ru",
+                Email = "db@mail.ru",
                 // equals to 'password'
                 PasswordHash =
                     "1ED6D5667B292B55FE629FCACB0027C808D6686C8C24B045E15212FC0207C73E" +
                     "BBC97F796695FCD306E2E4D3E8CCBF64C031221403023CEBFE86738119C97C20"
+            },
+            new User
+            {
+                IdEmployee = 2,
+                Email = "chief@mail.ru",
+                PasswordHash =
+                    "1ED6D5667B292B55FE629FCACB0027C808D6686C8C24B045E15212FC0207C73E" +
+                    "BBC97F796695FCD306E2E4D3E8CCBF64C031221403023CEBFE86738119C97C20"
+            },
+            new User
+            {
+                IdEmployee = 3,
+                Email = "spec@mail.ru",
+                PasswordHash =
+                    "1ED6D5667B292B55FE629FCACB0027C808D6686C8C24B045E15212FC0207C73E" +
+                    "BBC97F796695FCD306E2E4D3E8CCBF64C031221403023CEBFE86738119C97C20"
+            },
+            new User
+            {
+                IdEmployee = 4,
+                Email = "store@mail.ru",
+                PasswordHash =
+                    "1ED6D5667B292B55FE629FCACB0027C808D6686C8C24B045E15212FC0207C73E" +
+                    "BBC97F796695FCD306E2E4D3E8CCBF64C031221403023CEBFE86738119C97C20"
+            },
+            new User
+            {
+                IdEmployee = 5,
+                Email = "sell@mail.ru",
+                PasswordHash =
+                    "1ED6D5667B292B55FE629FCACB0027C808D6686C8C24B045E15212FC0207C73E" +
+                    "BBC97F796695FCD306E2E4D3E8CCBF64C031221403023CEBFE86738119C97C20"
+            },
+            new User
+            {
+                IdEmployee = 6,
+                Email = "test@mail.ru",
+                PasswordHash =
+                    "1ED6D5667B292B55FE629FCACB0027C808D6686C8C24B045E15212FC0207C73E" +
+                    "BBC97F796695FCD306E2E4D3E8CCBF64C031221403023CEBFE86738119C97C20"
             });
+
+        modelBuilder.Entity<CarModel>().HasData(
+            new CarModel
+            {
+                Id = 1,
+                LineName = "Sun",
+                ModelName = "Crawler",
+                TrimCode = "SC-4"
+            });
+
+        modelBuilder.Entity<Supplier>().HasData(
+            new Supplier
+            {
+                Id = 1,
+                LegalAddress = "г. Москва, ул. Ленина, 19",
+                PostalAddress = "г. Ленинград, ул. Дзерджинского, 17б",
+                CorrespondentAccount = "30101810600000000957",
+                SettlementAccount = "40817810099910004312",
+                Tin = "123456789000"
+            });
+
+        #endregion
     }
+
+    #endregion
 }
