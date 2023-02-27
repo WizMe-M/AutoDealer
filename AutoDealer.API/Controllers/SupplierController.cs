@@ -20,13 +20,20 @@ public class SupplierController : DbContextController
     public IActionResult Get(int id)
     {
         var found = Find(id);
-        return found is { } ? Ok(found) : NotFound();
+        return found is { } ? Ok(found) : NotFound("Supplier with such ID doesn't exist");
     }
 
     [HttpPost("create")]
     public IActionResult Create([FromBody] SupplierData data)
     {
-        var supplier = data.Construct();
+        var supplier = new Supplier
+        {
+            LegalAddress = data.Addresses.Legal,
+            PostalAddress = data.Addresses.Postal,
+            CorrespondentAccount = data.Accounts.Correspondent,
+            SettlementAccount = data.Accounts.Settlement,
+            Tin = data.Tin
+        };
 
         Context.Suppliers.Add(supplier);
         Context.SaveChanges();
@@ -34,18 +41,62 @@ public class SupplierController : DbContextController
         return Ok(supplier);
     }
 
-    [HttpPut("{id:int}/change-data")]
-    public IActionResult ChangeData(int id, [FromBody] SupplierData data)
+    [HttpPatch("{id:int}/change-addresses")]
+    public IActionResult ChangeAddress(int id, [FromBody] Addresses addresses)
     {
         var found = Find(id);
-        if (found is null) return NotFound();
+        if (found is null) return NotFound("Supplier with such ID doesn't exist");
 
-        var supplier = data.Construct();
-        found.LegalAddress = supplier.LegalAddress;
-        found.PostalAddress = supplier.PostalAddress;
-        found.CorrespondentAccount = supplier.CorrespondentAccount;
-        found.SettlementAccount = supplier.SettlementAccount;
-        found.Tin = supplier.Tin;
+        found.LegalAddress = addresses.Legal;
+        found.PostalAddress = addresses.Postal;
+
+        Context.Suppliers.Update(found);
+        Context.SaveChanges();
+
+        return Ok("Supplier's addresses were updated");
+    }
+
+    [HttpPatch("{id:int}/change-accounts")]
+    public IActionResult ChangeAccount(int id, [FromBody] Accounts accounts)
+    {
+        var found = Find(id);
+        if (found is null) return NotFound("Supplier with such ID doesn't exist");
+
+        found.CorrespondentAccount = accounts.Correspondent;
+        found.SettlementAccount = accounts.Settlement;
+
+        Context.Suppliers.Update(found);
+        Context.SaveChanges();
+
+        return Ok("Supplier's accounts were updated");
+    }
+
+    [HttpPatch("{id:int}/change-tin")]
+    public IActionResult ChangeTin(int id, [FromBody] string tin)
+    {
+        var found = Find(id);
+        if (found is null) return NotFound("Supplier with such ID doesn't exist");
+
+        found.Tin = tin;
+
+        Context.Suppliers.Update(found);
+        Context.SaveChanges();
+
+        return Ok("Supplier's tin was updated");
+    }
+
+    [HttpPut("{id:int}/update-data")]
+    public IActionResult UpdateData(int id, [FromBody] SupplierData data)
+    {
+        var found = Find(id);
+        if (found is null) return NotFound("Supplier with such ID doesn't exist");
+
+        found.LegalAddress = data.Addresses.Legal;
+        found.PostalAddress = data.Addresses.Postal;
+        found.CorrespondentAccount = data.Accounts.Correspondent;
+        found.SettlementAccount = data.Accounts.Settlement;
+        found.Tin = data.Tin;
+
         Context.Suppliers.Update(found);
         Context.SaveChanges();
 
@@ -56,7 +107,7 @@ public class SupplierController : DbContextController
     public IActionResult Delete(int id)
     {
         var found = Find(id);
-        if (found is null) return NotFound();
+        if (found is null) return NotFound("Supplier with such ID doesn't exist");
 
         Context.Suppliers.Remove(found);
         Context.SaveChanges();
