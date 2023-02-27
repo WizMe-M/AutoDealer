@@ -3,20 +3,18 @@
 [Authorize(Roles = nameof(Post.DatabaseAdmin))]
 [ApiController]
 [Route("employees")]
-public class EmployeeController : ControllerBase
+public class EmployeeController : DbContextController
 {
-    private readonly CrudRepositoryBase<Employee> _repository;
-
-    public EmployeeController(CrudRepositoryBase<Employee> repository)
+    public EmployeeController(AutoDealerContext context) : base(context)
     {
-        _repository = repository;
     }
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Employee>), StatusCodes.Status200OK)]
     public IActionResult GetAll()
     {
-        return Ok(_repository.GetAll());
+        var employees = Context.Employees.ToArray();
+        return Ok(employees);
     }
 
     [HttpGet("{id:int}")]
@@ -24,55 +22,50 @@ public class EmployeeController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult GetById(int id)
     {
-        var employee = _repository.Get(id);
-        return employee is { } ? Ok(employee) : NotFound();
+        var employee = Find(id);
+        return employee is { } ? Ok(employee) : NotFound("Employee with such ID doesn't exist");
     }
 
     [HttpPost("create")]
     [ProducesResponseType(typeof(Employee), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [Consumes("application/json")]
     public IActionResult CreateEmployee([FromBody] NewEmployee newEmployee)
     {
-        if (newEmployee is not { FirstName: { }, LastName: { }, PassportNumber: { }, PassportSeries: { }, Post: { } })
-            return NoContent();
-
         // TODO: add validation
         var employee = newEmployee.Construct();
-        var foundWithPassport = _repository.Get(emp =>
+        var foundWithPassport = Context.Employees.FirstOrDefault(emp =>
             emp.PassportNumber == employee.PassportNumber &&
             emp.PassportSeries == employee.PassportSeries) is { };
 
         if (foundWithPassport) return BadRequest("There is already employee with set passport data");
 
-        var created = _repository.Create(employee);
-        return Ok(created);
+        Context.Employees.Add(employee);
+        Context.SaveChanges();
+
+        return Ok(employee);
     }
 
     [HttpPatch("{id:int}/update-passport")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [Consumes("application/json")]
     public IActionResult UpdatePassport(int id, [FromBody] Passport passport)
     {
-        if (passport is not { Series: { }, Number: { } }) return NoContent();
+        var employee = Find(id);
+        if (employee is null) return NotFound("Employee with such ID doesn't exist");
 
-        var employee = _repository.Get(id);
-        if (employee is null) return NotFound();
-
-        var foundWithPassport = _repository.Get(emp =>
+        var foundWithPassport = Context.Employees.FirstOrDefault(emp =>
             emp.Id != id
             && emp.PassportSeries == passport.Series
             && emp.PassportNumber == passport.Number) is { };
-
         if (foundWithPassport)
             return BadRequest("There is already another employee with set passport data");
 
         employee.PassportSeries = passport.Series;
         employee.PassportNumber = passport.Number;
-        _repository.Update(employee);
+        Context.Employees.Update(employee);
+        Context.SaveChanges();
 
         return Ok("Employee's passport was updated");
     }
@@ -81,18 +74,16 @@ public class EmployeeController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [Consumes("application/json")]
     public IActionResult UpdateFullName(int id, [FromBody] FullName fullName)
     {
-        if (fullName is not { FirstName: { }, LastName: { } }) return NoContent();
-
-        var employee = _repository.Get(id);
-        if (employee is null) return NotFound();
+        var employee = Find(id);
+        if (employee is null) return NotFound("Employee with such ID doesn't exist");
 
         employee.FirstName = fullName.FirstName;
         employee.LastName = fullName.LastName;
         employee.MiddleName = fullName.MiddleName;
-        _repository.Update(employee);
+        Context.Employees.Update(employee);
+        Context.SaveChanges();
 
         return Ok("Employee's full name was updated");
     }
@@ -102,11 +93,12 @@ public class EmployeeController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult PromoteToPost(int id, [FromBody] Post post)
     {
-        var employee = _repository.Get(id);
-        if (employee is null) return NotFound();
+        var employee = Find(id);
+        if (employee is null) return NotFound("Employee with such ID doesn't exist");
 
         employee.Post = post;
-        _repository.Update(employee);
+        Context.Employees.Update(employee);
+        Context.SaveChanges();
 
         return Ok("Employee was promoted to new post");
     }
@@ -116,11 +108,14 @@ public class EmployeeController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult Delete(int id)
     {
-        var employee = _repository.Get(id);
-        if (employee is null) return NotFound();
-        
-        _repository.Delete(employee);
-        
+        var employee = Find(id);
+        if (employee is null) return NotFound("Employee with such ID doesn't exist");
+
+        Context.Employees.Remove(employee);
+        Context.SaveChanges();
+
         return Ok("Employee was deleted");
     }
+
+    private Employee? Find(int id) => Context.Employees.FirstOrDefault(e => e.Id == id);
 }
