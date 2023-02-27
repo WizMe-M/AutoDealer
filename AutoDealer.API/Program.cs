@@ -25,14 +25,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "AutoDealer API", Version = "v1" });
-    options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+    options.AddSecurityDefinition(
+        JwtBearerDefaults.AuthenticationScheme,
+        new OpenApiSecurityScheme
     {
         Description = """
 JWT Authorization header using the Bearer scheme. 
 Enter 'Bearer' [space] and then your token in the text input below.
 Example: 'Bearer 12345abcdef'
 """,
-        Name = "Authorization",
+        Name = "Bearer Auth",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
         Scheme = JwtBearerDefaults.AuthenticationScheme
