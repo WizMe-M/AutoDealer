@@ -56,26 +56,31 @@ public partial class AutoDealerContext : DbContext
 
     #endregion
 
-    public async Task ExecuteSetMargin(int carModelId, DateOnly actsFrom, double margin)
+    public async Task ExecuteSetMarginAsync(int carModelId, DateOnly actsFrom, double margin)
     {
         await Database.ExecuteSqlRawAsync(
             $"select set_margin(trim_id := {carModelId}, begins_act_from := '{actsFrom}', margin_value := {margin});");
     }
 
-    public async Task ExecuteAssemblyAuto(int auto)
+    public async Task ExecuteAssemblyAutoAsync(int auto)
     {
         await Database.ExecuteSqlRawAsync($"select assembly_auto(auto := {auto});");
     }
 
-    public async Task ExecuteSellAuto(int auto, int client, int employee)
+    public async Task ExecuteSellAutoAsync(int auto, int client, int employee)
     {
         await Database.ExecuteSqlRawAsync(
             $"select sell_auto(auto := {auto}, client := {client}, employee := {employee});");
     }
 
-    public async Task ExecuteReturnAuto(int auto, DateTime saleTime)
+    public async Task ExecuteReturnAutoAsync(int auto, DateTime saleTime)
     {
         await Database.ExecuteSqlRawAsync($"select return_auto(auto := {auto}, sale_time := '{saleTime}');");
+    }
+
+    public async Task ExecuteProcessLadingBillAsync(int contractId)
+    {
+        await Database.ExecuteSqlRawAsync($"select process_lading_bill(contract := {contractId})");
     }
 
     public static void ConfigureBuilder(NpgsqlDataSourceBuilder dataSourceBuilder)

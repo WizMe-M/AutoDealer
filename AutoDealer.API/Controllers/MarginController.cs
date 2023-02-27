@@ -42,7 +42,7 @@ public class MarginController : DbContextController
     [HttpPost("set-margin")]
     public async Task<IActionResult> SetMargin([FromBody] MarginData marginData)
     {
-        await Context.ExecuteSetMargin(marginData.CarModelId, marginData.StartsFrom, marginData.MarginValue);
+        await Context.ExecuteSetMarginAsync(marginData.CarModelId, marginData.StartsFrom, marginData.MarginValue);
 
         return Ok("Margin was successfully set");
     }
