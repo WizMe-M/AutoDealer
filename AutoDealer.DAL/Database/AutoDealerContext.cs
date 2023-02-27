@@ -633,6 +633,14 @@ public partial class AutoDealerContext : DbContext
                 TrimCode = "SC-4"
             });
 
+        modelBuilder.Entity<DetailSeries>().HasData(
+            new DetailSeries
+            {
+                Id = 1,
+                Code = "SDH-242-790.1",
+                Description = "Full completed and assembled automobile"
+            });
+
         modelBuilder.Entity<Supplier>().HasData(
             new Supplier
             {
