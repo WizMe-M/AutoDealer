@@ -2,10 +2,9 @@
 
 public enum AutoStatus
 {
-    InAssembly,
-    ReadyToTest,
-    InTest,
-    ReadyToSale,
+    Assembled,
+    Testing,
+    Selling,
     Sold
 }
 
