@@ -13,7 +13,7 @@ public partial class Auto
 {
     public int IdAuto { get; set; }
 
-    public int IdCarModel { get; set; }
+    [JsonIgnore] public int IdCarModel { get; set; }
 
     public DateOnly? AssemblyDate { get; set; }
 
@@ -21,13 +21,11 @@ public partial class Auto
 
     public AutoStatus Status { get; set; }
 
-    public virtual ICollection<Detail> Details { get; } = new List<Detail>();
+    public virtual IEnumerable<Detail> Details { get; } = new List<Detail>();
 
     public virtual CarModel CarModel { get; set; } = null!;
 
-    public virtual ICollection<Sale> Sales { get; } = new List<Sale>();
+    [JsonIgnore] public virtual IEnumerable<Sale> Sales { get; } = new List<Sale>();
 
-    public virtual ICollection<TestAuto> TestAutos { get; } = new List<TestAuto>();
-
-    public virtual ICollection<Work> Works { get; } = new List<Work>();
+    [JsonIgnore] public virtual IEnumerable<TestAuto> TestAutos { get; } = new List<TestAuto>();
 }

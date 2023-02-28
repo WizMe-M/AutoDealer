@@ -50,10 +50,6 @@ public partial class AutoDealerContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<Work> Works { get; set; }
-
-    public virtual DbSet<WorkPlan> WorkPlans { get; set; }
-
     #endregion
 
     #region db functions
@@ -475,42 +471,6 @@ public partial class AutoDealerContext : DbContext
                 .HasForeignKey<User>(d => d.IdEmployee)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_users_employees");
-        });
-
-        modelBuilder.Entity<Work>(entity =>
-        {
-            entity.HasKey(e => new { e.IdWorkPlan, e.IdAuto }).HasName("pk_works");
-
-            entity.ToTable("works");
-
-            entity.Property(e => e.IdWorkPlan).HasColumnName("id_work_plan");
-            entity.Property(e => e.IdAuto).HasColumnName("id_auto");
-            entity.Property(e => e.Description).HasColumnName("description");
-            entity.Property(e => e.Name).HasColumnName("name");
-
-            entity.HasOne(d => d.IdAutoNavigation).WithMany(p => p.Works)
-                .HasForeignKey(d => d.IdAuto)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_works_autos");
-
-            entity.HasOne(d => d.IdWorkPlanNavigation).WithMany(p => p.Works)
-                .HasForeignKey(d => d.IdWorkPlan)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_works_work_plans");
-        });
-
-        modelBuilder.Entity<WorkPlan>(entity =>
-        {
-            entity.HasKey(e => e.IdWorkPlan).HasName("pk_work_plans");
-
-            entity.ToTable("work_plans");
-
-            entity.Property(e => e.IdWorkPlan).HasColumnName("id_work_plan");
-            entity.Property(e => e.ConclusionDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnName("conclusion_date");
-            entity.Property(e => e.WorkEndDate).HasColumnName("work_end_date");
-            entity.Property(e => e.WorkStartDate).HasColumnName("work_start_date");
         });
 
         #endregion
