@@ -36,32 +36,54 @@ public class ContractController : DbContextController
     public IActionResult Get(int id)
     {
         var found = Find(id);
-        return found is { } ? Ok(found) : NotFound();
+        return found is { } ? Ok(found) : NotFound("Contract with such ID doesn't exis");
     }
 
     [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     [HttpPost("create")]
-    public IActionResult Create([FromBody] NewContract newContract)
+    public IActionResult Create([FromBody] ContractData data)
     {
-        var supplier = Context.Suppliers.FirstOrDefault(supplier => supplier.Id == newContract.SupplierId);
+        var supplier = Context.Suppliers.FirstOrDefault(supplier => supplier.Id == data.SupplierId);
         if (supplier is null)
             return NotFound("Referenced supplier doesn't exist");
 
-        var employee = Context.Employees.FirstOrDefault(employee => employee.Id == newContract.EmployeeId);
+        var employee = Context.Employees.FirstOrDefault(employee => employee.Id == data.EmployeeId);
         if (employee is null)
             return NotFound("Referenced employee doesn't exist");
 
-        var request = Context.PurchaseRequests.FirstOrDefault(request => request.Id == newContract.PurchaseRequestId);
-        if (request is null && newContract.PurchaseRequestId is { })
+        var request = Context.PurchaseRequests.FirstOrDefault(request => request.Id == data.PurchaseRequestId);
+        if (request is null && data.PurchaseRequestId is { })
             return NotFound("Referenced purchase request doesn't exist");
 
-        if (!ContainsUniqueDetails(newContract.Details))
+        if (!ContainsUniqueDetails(data.Details))
             return BadRequest("Contract contains duplicated details");
 
         if (employee is { Post: not Post.Storekeeper })
             return BadRequest("Employee should be storekeeper");
 
-        var contract = newContract.Construct();
+        var contract = new Contract
+        {
+            IdEmployee = data.EmployeeId,
+            IdSupplier = data.SupplierId,
+            IdPurchaseRequest = data.PurchaseRequestId,
+            SupplyDate = data.SupplyDate
+        };
+
+        var sum = 0m;
+        foreach (var (series, count, cost) in data.Details)
+        {
+            contract.ContractDetails.Add(
+                new ContractDetail
+                {
+                    IdDetailSeries = series,
+                    Count = count,
+                    CostPerOne = cost
+                });
+            sum += count * cost;
+        }
+
+        contract.TotalSum = sum;
+
         Context.Contracts.Add(contract);
         Context.SaveChanges();
 
@@ -86,7 +108,7 @@ public class ContractController : DbContextController
     public IActionResult Reschedule(int id, [FromBody] DateOnly supplyDate)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Contract not found");
+        if (found is null) return NotFound("Contract with such ID doesn't exist");
 
         if (found.LadingBillIssueDate is { })
             return BadRequest("Can't reschedule finished contract");
@@ -107,7 +129,7 @@ public class ContractController : DbContextController
     public IActionResult Delete(int id)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Contract not found");
+        if (found is null) return NotFound("Contract with such ID doesn't exis");
 
         if (found.LadingBillIssueDate is { })
             return BadRequest("Can't delete finished contract");
