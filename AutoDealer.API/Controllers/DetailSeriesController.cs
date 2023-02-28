@@ -2,7 +2,7 @@
 
 [ApiController]
 [Route("detail_series")]
-public class DetailSeriesController : DbContextController
+public class DetailSeriesController : DbContextController<DetailSeries>
 {
     public DetailSeriesController(AutoDealerContext context) : base(context)
     {
@@ -12,73 +12,76 @@ public class DetailSeriesController : DbContextController
     public IActionResult GetAll()
     {
         var detailSeries = Context.DetailSeries.ToArray();
-        return Ok(detailSeries);
+        return Ok("All detail series listed", detailSeries);
     }
 
     [HttpGet("{id:int}")]
-    public IActionResult GetById(int id)
+    public IActionResult Get(int id)
     {
         var found = Find(id);
-        return found is { } ? Ok(found) : NotFound();
+        return found is { }
+            ? Ok("Detail series found", found)
+            : NotFound("Detail's series with such ID doesn't exist");
     }
 
     [HttpPost("create")]
-    public IActionResult Create([FromBody] string seriesCode)
+    public async Task<IActionResult> Create([FromBody] string seriesCode)
     {
         var series = new DetailSeries { Code = seriesCode };
-        
+
         Context.DetailSeries.Add(series);
-        Context.SaveChanges();
-        Context.DetailSeries.Entry(series)
-            .Collection(e => e.TrimDetails).Query()
-            .Include(trimDetail => trimDetail.CarModel).Load();
-        
-        return Ok(series);
+        await Context.SaveChangesAsync();
+        await LoadReferencesAsync(series);
+
+        return Ok("Detail series created", series);
     }
 
     [HttpPatch("{id:int}/rename")]
-    public IActionResult Rename(int id, [FromBody] string seriesCode)
+    public async Task<IActionResult> Rename(int id, [FromBody] string seriesCode)
     {
         var found = Find(id);
-        if (found is null) return NotFound();
+        if (found is null) return NotFound("Detail's series with such ID doesn't exist");
 
         found.Code = seriesCode;
         Context.DetailSeries.Update(found);
-        Context.SaveChanges();
-        Context.DetailSeries.Entry(found)
-            .Collection(e => e.TrimDetails).Query()
-            .Include(trimDetail => trimDetail.CarModel).Load();
+        await Context.SaveChangesAsync();
+        await LoadReferencesAsync(found);
 
-        return Ok("Detail's series was renamed");
+        return Ok("Detail's series was renamed", found);
     }
 
     [HttpPatch("{id:int}/change-description")]
-    public IActionResult ChangeDescription(int id, [FromBody] string description)
+    public async Task<IActionResult> ChangeDescription(int id, [FromBody] string description)
     {
         var found = Find(id);
-        if (found is null) return NotFound();
+        if (found is null) return NotFound("Detail's series with such ID doesn't exist");
 
         found.Description = description;
         Context.DetailSeries.Update(found);
-        Context.SaveChanges();
-        Context.DetailSeries.Entry(found)
-            .Collection(e => e.TrimDetails).Query()
-            .Include(trimDetail => trimDetail.CarModel).Load();
+        await Context.SaveChangesAsync();
+        await LoadReferencesAsync(found);
 
-        return Ok("Detail's series description was changed");
+        return Ok("Detail's series description was changed", found);
     }
 
     [HttpDelete("{id:int}/delete")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         var found = Find(id);
-        if (found is null) return NotFound();
+        if (found is null) return NotFound("Detail's series with such ID doesn't exist");
 
         Context.DetailSeries.Remove(found);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
 
-        return Ok("Detail's series was deleted");
+        return Ok("Detail's series was deleted", found);
     }
 
     private DetailSeries? Find(int id) => Context.DetailSeries.FirstOrDefault(series => series.Id == id);
+
+    protected override async Task LoadReferencesAsync(DetailSeries entity)
+    {
+        await Context.DetailSeries.Entry(entity)
+            .Collection(e => e.TrimDetails).Query()
+            .Include(trimDetail => trimDetail.CarModel).LoadAsync();
+    }
 }

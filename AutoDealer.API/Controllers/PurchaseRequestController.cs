@@ -3,7 +3,7 @@
 [Authorize(Roles = nameof(Post.AssemblyChief))]
 [ApiController]
 [Route("purchase_requests")]
-public class PurchaseRequestController : DbContextController
+public class PurchaseRequestController : DbContextController<PurchaseRequest>
 {
     public PurchaseRequestController(AutoDealerContext context) : base(context)
     {
@@ -18,18 +18,20 @@ public class PurchaseRequestController : DbContextController
             .Include(request => request.PurchaseRequestDetails)
             .ThenInclude(detail => detail.DetailSeries)
             .ToArray();
-        return Ok(purchaseRequests);
+        return Ok("All purchase request listed", purchaseRequests);
     }
 
     [HttpGet("{id:int}")]
     public IActionResult Get(int id)
     {
         var found = Find(id);
-        return found is { } ? Ok(found) : NotFound("Purchase request with such ID doesn't exist");
+        return found is { }
+            ? Ok("Purchase request found", found)
+            : NotFound("Purchase request with such ID doesn't exist");
     }
 
     [HttpPost("create")]
-    public IActionResult Create(PurchaseRequestData data)
+    public async Task<IActionResult> Create(PurchaseRequestData data)
     {
         if (!ContainsUniqueDetails(data.DetailCounts))
             return BadRequest("Array of details for purchase request references on several identical details");
@@ -51,20 +53,14 @@ public class PurchaseRequestController : DbContextController
         }
 
         Context.PurchaseRequests.Add(purchaseRequest);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
+        await LoadReferencesAsync(purchaseRequest);
 
-        Context.PurchaseRequests.Entry(purchaseRequest)
-            .Reference(e => e.User).Query()
-            .Include(user => user.Employee).Load();
-        Context.PurchaseRequests.Entry(purchaseRequest)
-            .Collection(e => e.PurchaseRequestDetails).Query()
-            .Include(details => details.DetailSeries).Load();
-
-        return Ok(purchaseRequest);
+        return Ok("Purchase request was sent", purchaseRequest);
     }
 
     [HttpPatch("{id:int}/reschedule")]
-    public IActionResult Reschedule(int id, [FromBody] DateOnly supplyDate)
+    public async Task<IActionResult> Reschedule(int id, [FromBody] DateOnly supplyDate)
     {
         var found = Find(id);
         if (found is null) return NotFound("Purchase request with such ID doesn't exist");
@@ -78,9 +74,10 @@ public class PurchaseRequestController : DbContextController
 
         found.ExpectedSupplyDate = supplyDate;
         Context.PurchaseRequests.Update(found);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
+        await LoadReferencesAsync(found);
 
-        return Ok("Purchase request's expected supply date was rescheduled");
+        return Ok("Purchase request's expected supply date was rescheduled", found);
     }
 
     [HttpDelete("{id:int}/cancel")]
@@ -95,7 +92,7 @@ public class PurchaseRequestController : DbContextController
         Context.PurchaseRequests.Remove(found);
         Context.SaveChanges();
 
-        return Ok("Purchase request was cancelled");
+        return Ok("Purchase request was cancelled", found);
     }
 
     private PurchaseRequest? Find(int id)
@@ -118,5 +115,15 @@ public class PurchaseRequestController : DbContextController
         }
 
         return true;
+    }
+
+    protected override async Task LoadReferencesAsync(PurchaseRequest entity)
+    {
+        await Context.PurchaseRequests.Entry(entity)
+            .Reference(e => e.User).Query()
+            .Include(user => user.Employee).LoadAsync();
+        await Context.PurchaseRequests.Entry(entity)
+            .Collection(e => e.PurchaseRequestDetails).Query()
+            .Include(details => details.DetailSeries).LoadAsync();
     }
 }

@@ -3,7 +3,7 @@
 [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
 [ApiController]
 [Route("suppliers")]
-public class SupplierController : DbContextController
+public class SupplierController : DbContextController<Supplier>
 {
     public SupplierController(AutoDealerContext context) : base(context)
     {
@@ -13,14 +13,16 @@ public class SupplierController : DbContextController
     public IActionResult GetAll()
     {
         var suppliers = Context.Suppliers.ToArray();
-        return Ok(suppliers);
+        return Ok("All suppliers listed", suppliers);
     }
 
     [HttpGet("{id:int}")]
     public IActionResult Get(int id)
     {
         var found = Find(id);
-        return found is { } ? Ok(found) : NotFound("Supplier with such ID doesn't exist");
+        return found is { }
+            ? Ok("Supplier found", found)
+            : NotFound("Supplier with such ID doesn't exist");
     }
 
     [HttpPost("create")]
@@ -38,7 +40,7 @@ public class SupplierController : DbContextController
         Context.Suppliers.Add(supplier);
         Context.SaveChanges();
 
-        return Ok(supplier);
+        return Ok("Supplier successfully created", supplier);
     }
 
     [HttpPatch("{id:int}/change-addresses")]
@@ -53,7 +55,7 @@ public class SupplierController : DbContextController
         Context.Suppliers.Update(found);
         Context.SaveChanges();
 
-        return Ok("Supplier's addresses were updated");
+        return Ok("Supplier's addresses were updated", found);
     }
 
     [HttpPatch("{id:int}/change-accounts")]
@@ -68,7 +70,7 @@ public class SupplierController : DbContextController
         Context.Suppliers.Update(found);
         Context.SaveChanges();
 
-        return Ok("Supplier's accounts were updated");
+        return Ok("Supplier's accounts were updated", found);
     }
 
     [HttpPatch("{id:int}/change-tin")]
@@ -82,7 +84,7 @@ public class SupplierController : DbContextController
         Context.Suppliers.Update(found);
         Context.SaveChanges();
 
-        return Ok("Supplier's tin was updated");
+        return Ok("Supplier's tin was updated", found);
     }
 
     [HttpPut("{id:int}/update-data")]
@@ -100,7 +102,7 @@ public class SupplierController : DbContextController
         Context.Suppliers.Update(found);
         Context.SaveChanges();
 
-        return Ok("Supplier data was updated");
+        return Ok("Supplier data was updated", found);
     }
 
     [HttpDelete("delete")]
@@ -112,8 +114,10 @@ public class SupplierController : DbContextController
         Context.Suppliers.Remove(found);
         Context.SaveChanges();
 
-        return Ok("Supplier was deleted");
+        return Ok("Supplier was deleted", found);
     }
 
     private Supplier? Find(int id) => Context.Suppliers.FirstOrDefault(supplier => supplier.Id == id);
+
+    protected override Task LoadReferencesAsync(Supplier entity) => throw new NotSupportedException();
 }

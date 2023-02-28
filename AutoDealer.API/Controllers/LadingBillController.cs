@@ -3,7 +3,7 @@
 [Authorize(Roles = nameof(Post.Storekeeper))]
 [ApiController]
 [Route("lading_bills")]
-public class LadingBillController : DbContextController
+public class LadingBillController : DbContextController<Contract>
 {
     public LadingBillController(AutoDealerContext context) : base(context)
     {
@@ -29,7 +29,7 @@ public class LadingBillController : DbContextController
             .Where(contract => contract.LadingBillIssueDate != null)
             .ToArray();
 
-        return Ok(ladingBills);
+        return Ok("All lading bills (closed contracts) listed", ladingBills);
     }
 
     [HttpPost("{contractId:int}")]
@@ -43,8 +43,9 @@ public class LadingBillController : DbContextController
             return BadRequest("Lading bill for such supply was already processed");
 
         await Context.ExecuteProcessLadingBillAsync(found.Id);
+        await LoadReferencesAsync(found);
 
-        return Ok("Lading bill was successfully processed");
+        return Ok("Lading bill was successfully processed", found);
     }
 
     private Contract? Find(int id)
@@ -64,5 +65,26 @@ public class LadingBillController : DbContextController
             .Include(contract => contract.Details)
             .ThenInclude(detail => detail.DetailSeries)
             .FirstOrDefault(contract => contract.Id == id);
+    }
+
+    protected override async Task LoadReferencesAsync(Contract entity)
+    {
+        await Context.Contracts.Entry(entity)
+            .Reference(contract => contract.Supplier).LoadAsync();
+        await Context.Contracts.Entry(entity)
+            .Reference(contract => contract.Employee).Query()
+            .Include(employee => employee.User).LoadAsync();
+        await Context.Contracts.Entry(entity)
+            .Reference(contract => contract.PurchaseRequest).Query()
+            .Include(request => request.PurchaseRequestDetails)
+            .ThenInclude(detail => detail.DetailSeries)
+            .Include(request => request.User)
+            .ThenInclude(detail => detail!.Employee).LoadAsync();
+        await Context.Contracts.Entry(entity)
+            .Collection(contract => contract.ContractDetails).Query()
+            .Include(detail => detail.DetailSeries).LoadAsync();
+        await Context.Contracts.Entry(entity)
+            .Collection(contract => contract.Details).Query()
+            .Include(detail => detail.DetailSeries).LoadAsync();
     }
 }

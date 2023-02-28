@@ -2,7 +2,7 @@
 
 [ApiController]
 [Route("contracts")]
-public class ContractController : DbContextController
+public class ContractController : DbContextController<Contract>
 {
     public ContractController(AutoDealerContext context) : base(context)
     {
@@ -28,7 +28,7 @@ public class ContractController : DbContextController
             .ThenInclude(detail => detail.DetailSeries)
             .ToArray();
 
-        return Ok(contracts);
+        return Ok("All contracts listed", contracts);
     }
 
     [Authorize(Roles = $"{nameof(Post.PurchaseSpecialist)},{nameof(Post.Storekeeper)}")]
@@ -36,12 +36,14 @@ public class ContractController : DbContextController
     public IActionResult Get(int id)
     {
         var found = Find(id);
-        return found is { } ? Ok(found) : NotFound("Contract with such ID doesn't exis");
+        return found is { }
+            ? Ok("Contract found", found)
+            : NotFound("Contract with such ID doesn't exist");
     }
 
     [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     [HttpPost("create")]
-    public IActionResult Create([FromBody] ContractData data)
+    public async Task<IActionResult> Create([FromBody] ContractData data)
     {
         var supplier = Context.Suppliers.FirstOrDefault(supplier => supplier.Id == data.SupplierId);
         if (supplier is null)
@@ -85,27 +87,15 @@ public class ContractController : DbContextController
         contract.TotalSum = sum;
 
         Context.Contracts.Add(contract);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
+        await LoadReferencesAsync(contract);
 
-        Context.Contracts.Entry(contract).Reference(e => e.Supplier).Load();
-        Context.Contracts.Entry(contract).Reference(e => e.Employee).Query()
-            .Include(emp => emp.User).Load();
-        Context.Contracts.Entry(contract).Reference(e => e.PurchaseRequest).Query()
-            .Include(req => req.User)
-            .ThenInclude(u => u!.Employee)
-            .Include(req => req.PurchaseRequestDetails)
-            .ThenInclude(detail => detail.DetailSeries).Load();
-        Context.Contracts.Entry(contract).Collection(e => e.ContractDetails).Query()
-            .Include(cd => cd.DetailSeries).Load();
-        Context.Contracts.Entry(contract).Collection(e => e.Details).Query()
-            .Include(cd => cd.DetailSeries).Load();
-
-        return Ok(contract);
+        return Ok("Contract was processed", contract);
     }
 
     [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     [HttpPatch("reschedule")]
-    public IActionResult Reschedule(int id, [FromBody] DateOnly supplyDate)
+    public async Task<IActionResult> Reschedule(int id, [FromBody] DateOnly supplyDate)
     {
         var found = Find(id);
         if (found is null) return NotFound("Contract with such ID doesn't exist");
@@ -119,9 +109,10 @@ public class ContractController : DbContextController
 
         found.SupplyDate = supplyDate;
         Context.Contracts.Update(found);
-        Context.SaveChanges();
+        await Context.SaveChangesAsync();
+        await LoadReferencesAsync(found);
 
-        return Ok(found);
+        return Ok("Contract was rescheduled", found);
     }
 
     [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
@@ -129,7 +120,7 @@ public class ContractController : DbContextController
     public IActionResult Delete(int id)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Contract with such ID doesn't exis");
+        if (found is null) return NotFound("Contract with such ID doesn't exist");
 
         if (found.LadingBillIssueDate is { })
             return BadRequest("Can't delete finished contract");
@@ -137,7 +128,7 @@ public class ContractController : DbContextController
         Context.Contracts.Remove(found);
         Context.SaveChanges();
 
-        return Ok();
+        return Ok("Contract was deleted", found);
     }
 
     private Contract? Find(int id)
@@ -169,5 +160,26 @@ public class ContractController : DbContextController
         }
 
         return true;
+    }
+
+    protected override async Task LoadReferencesAsync(Contract entity)
+    {
+        await Context.Contracts.Entry(entity)
+            .Reference(e => e.Supplier).LoadAsync();
+        await Context.Contracts.Entry(entity)
+            .Reference(e => e.Employee).Query()
+            .Include(emp => emp.User).LoadAsync();
+        await Context.Contracts.Entry(entity)
+            .Reference(e => e.PurchaseRequest).Query()
+            .Include(req => req.User)
+            .ThenInclude(u => u!.Employee)
+            .Include(req => req.PurchaseRequestDetails)
+            .ThenInclude(detail => detail.DetailSeries).LoadAsync();
+        await Context.Contracts.Entry(entity)
+            .Collection(e => e.ContractDetails).Query()
+            .Include(cd => cd.DetailSeries).LoadAsync();
+        await Context.Contracts.Entry(entity)
+            .Collection(e => e.Details).Query()
+            .Include(cd => cd.DetailSeries).LoadAsync();
     }
 }

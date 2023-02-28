@@ -2,7 +2,7 @@
 
 [ApiController]
 [Route("margins")]
-public class MarginController : DbContextController
+public class MarginController : DbContextController<Margin>
 {
     public MarginController(AutoDealerContext context) : base(context)
     {
@@ -14,7 +14,8 @@ public class MarginController : DbContextController
         var margins = Context.Margins
             .Include(margin => margin.CarModel)
             .ToArray();
-        return Ok(margins);
+
+        return Ok("All margins listed", margins);
     }
 
     [HttpGet("{carModelId:int}")]
@@ -24,27 +25,34 @@ public class MarginController : DbContextController
             .Where(margin => margin.IdCarModel == carModelId)
             .Include(margin => margin.CarModel)
             .ToArray();
-        return Ok(margins);
+
+        return Ok($"Margins for car model with ID {carModelId} listed", margins);
     }
 
     [HttpGet("get-in-range")]
-    public IActionResult GetMarginsInRange(DateOnly from, DateOnly? to)
+    public IActionResult GetMarginsInRange(DateOnly? from, DateOnly? to)
     {
+        var startDate = from ?? DateOnly.MinValue;
         var endDate = to ?? DateOnly.MaxValue;
 
         var margins = Context.Margins
-            .Where(margin => from <= margin.StartDate && margin.StartDate <= endDate)
-            .Include(margin => margin.CarModel)
-            .ToArray();
-        return Ok(margins);
+            .Where(margin => startDate <= margin.StartDate && margin.StartDate <= endDate)
+            .Include(margin => margin.CarModel).ToArray();
+
+        return Ok($"Margins in range from {from} to {to} listed", margins);
     }
 
     [HttpPost("set-margin")]
-    public async Task<IActionResult> SetMargin([FromBody] MarginData marginData)
+    public async Task<IActionResult> SetMargin([FromBody] MarginData data)
     {
-        await Context.ExecuteSetMarginAsync(marginData.CarModelId, marginData.StartsFrom, marginData.MarginValue);
+        await Context.ExecuteSetMarginAsync(data.CarModelId, data.StartsFrom, data.MarginValue);
 
-        return Ok("Margin was successfully set");
+        var created = await Context.Margins.FirstAsync(margin =>
+            margin.IdCarModel == data.CarModelId &&
+            margin.StartDate == data.StartsFrom);
+        await LoadReferencesAsync(created);
+
+        return Ok("Margin was successfully set", created);
     }
 
     [HttpDelete("delete")]
@@ -54,11 +62,20 @@ public class MarginController : DbContextController
             margin.IdCarModel == identifier.CarModelId &&
             margin.StartDate == identifier.StartsFrom);
 
-        if (found is null) return NotFound();
+        if (found is null)
+            return NotFound("Margin with such identifying data can't be found");
 
         Context.Margins.Remove(found);
         Context.SaveChanges();
 
-        return Ok("Margin was successfully deleted");
+        return Ok("Margin was successfully deleted", found);
+    }
+
+    protected override async Task LoadReferencesAsync(Margin entity)
+    {
+        await Context.Margins.Entry(entity)
+            .Reference(margin => margin.CarModel).Query()
+            .Include(model => model.CarModelDetails)
+            .ThenInclude(detail => detail.DetailSeries).LoadAsync();
     }
 }

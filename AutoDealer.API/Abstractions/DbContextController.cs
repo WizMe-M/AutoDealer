@@ -1,6 +1,6 @@
 ﻿namespace AutoDealer.API.Abstractions;
 
-public abstract class DbContextController : ControllerBase
+public abstract class DbContextController<T> : ControllerBase
 {
     protected readonly AutoDealerContext Context;
 
@@ -8,4 +8,12 @@ public abstract class DbContextController : ControllerBase
     {
         Context = context;
     }
+
+    protected OkObjectResult Ok(string message, object? data = null)
+    {
+        var result = new { message, data };
+        return base.Ok(result);
+    }
+
+    protected abstract Task LoadReferencesAsync(T entity);
 }

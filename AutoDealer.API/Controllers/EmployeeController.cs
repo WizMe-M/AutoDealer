@@ -3,7 +3,7 @@
 [Authorize(Roles = nameof(Post.DatabaseAdmin))]
 [ApiController]
 [Route("employees")]
-public class EmployeeController : DbContextController
+public class EmployeeController : DbContextController<Employee>
 {
     public EmployeeController(AutoDealerContext context) : base(context)
     {
@@ -14,7 +14,7 @@ public class EmployeeController : DbContextController
     public IActionResult GetAll()
     {
         var employees = Context.Employees.ToArray();
-        return Ok(employees);
+        return Ok("All employees listed", employees);
     }
 
     [HttpGet("{id:int}")]
@@ -23,7 +23,9 @@ public class EmployeeController : DbContextController
     public IActionResult GetById(int id)
     {
         var employee = Find(id);
-        return employee is { } ? Ok(employee) : NotFound("Employee with such ID doesn't exist");
+        return employee is { }
+            ? Ok("Employee found", employee)
+            : NotFound("Employee with such ID doesn't exist");
     }
 
     [HttpPost("create")]
@@ -42,7 +44,7 @@ public class EmployeeController : DbContextController
             PassportSeries = data.Passport.Series,
             Post = data.Post
         };
-        
+
         var foundWithPassport = Context.Employees.FirstOrDefault(emp =>
             emp.PassportNumber == employee.PassportNumber &&
             emp.PassportSeries == employee.PassportSeries) is { };
@@ -52,7 +54,7 @@ public class EmployeeController : DbContextController
         Context.Employees.Add(employee);
         Context.SaveChanges();
 
-        return Ok(employee);
+        return Ok("Employee was successfully created", employee);
     }
 
     [HttpPatch("{id:int}/update-passport")]
@@ -61,8 +63,8 @@ public class EmployeeController : DbContextController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult UpdatePassport(int id, [FromBody] Passport passport)
     {
-        var employee = Find(id);
-        if (employee is null) return NotFound("Employee with such ID doesn't exist");
+        var found = Find(id);
+        if (found is null) return NotFound("Employee with such ID doesn't exist");
 
         var foundWithPassport = Context.Employees.FirstOrDefault(emp =>
             emp.Id != id
@@ -71,12 +73,12 @@ public class EmployeeController : DbContextController
         if (foundWithPassport)
             return BadRequest("There is already another employee with set passport data");
 
-        employee.PassportSeries = passport.Series;
-        employee.PassportNumber = passport.Number;
-        Context.Employees.Update(employee);
+        found.PassportSeries = passport.Series;
+        found.PassportNumber = passport.Number;
+        Context.Employees.Update(found);
         Context.SaveChanges();
 
-        return Ok("Employee's passport was updated");
+        return Ok("Employee's passport was updated", found);
     }
 
     [HttpPatch("{id:int}/update-full-name")]
@@ -85,16 +87,16 @@ public class EmployeeController : DbContextController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult UpdateFullName(int id, [FromBody] FullName fullName)
     {
-        var employee = Find(id);
-        if (employee is null) return NotFound("Employee with such ID doesn't exist");
+        var found = Find(id);
+        if (found is null) return NotFound("Employee with such ID doesn't exist");
 
-        employee.FirstName = fullName.FirstName;
-        employee.LastName = fullName.LastName;
-        employee.MiddleName = fullName.MiddleName;
-        Context.Employees.Update(employee);
+        found.FirstName = fullName.FirstName;
+        found.LastName = fullName.LastName;
+        found.MiddleName = fullName.MiddleName;
+        Context.Employees.Update(found);
         Context.SaveChanges();
 
-        return Ok("Employee's full name was updated");
+        return Ok("Employee's full name was updated", found);
     }
 
     [HttpPatch("{id:int}/promote-to-post")]
@@ -102,14 +104,14 @@ public class EmployeeController : DbContextController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult PromoteToPost(int id, [FromBody] Post post)
     {
-        var employee = Find(id);
-        if (employee is null) return NotFound("Employee with such ID doesn't exist");
+        var found = Find(id);
+        if (found is null) return NotFound("Employee with such ID doesn't exist");
 
-        employee.Post = post;
-        Context.Employees.Update(employee);
+        found.Post = post;
+        Context.Employees.Update(found);
         Context.SaveChanges();
 
-        return Ok("Employee was promoted to new post");
+        return Ok("Employee was promoted to new post", found);
     }
 
     [HttpDelete("{id:int}/delete")]
@@ -123,8 +125,10 @@ public class EmployeeController : DbContextController
         Context.Employees.Remove(employee);
         Context.SaveChanges();
 
-        return Ok("Employee was deleted");
+        return Ok("Employee was deleted", employee);
     }
 
     private Employee? Find(int id) => Context.Employees.FirstOrDefault(e => e.Id == id);
+
+    protected override Task LoadReferencesAsync(Employee entity) => throw new NotSupportedException();
 }

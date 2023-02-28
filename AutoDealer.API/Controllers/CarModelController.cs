@@ -3,7 +3,7 @@
 [Authorize(Roles = nameof(Post.AssemblyChief))]
 [ApiController]
 [Route("car_models")]
-public class CarModelController : DbContextController
+public class CarModelController : DbContextController<CarModel>
 {
     public CarModelController(AutoDealerContext context) : base(context)
     {
@@ -16,18 +16,20 @@ public class CarModelController : DbContextController
             .Include(carModel => carModel.CarModelDetails)
             .ThenInclude(detail => detail.DetailSeries)
             .ToArray();
-        return Ok(carModels);
+        return Ok("Car models listed", carModels);
     }
 
     [HttpGet("{id:int}")]
     public IActionResult GetById(int id)
     {
         var found = Find(id);
-        return found is { } ? Ok(found) : NotFound("Car model with such ID doesn't exist");
+        return found is { }
+            ? Ok("Car model found", found)
+            : NotFound("Car model with such ID doesn't exist");
     }
 
     [HttpPost("create")]
-    public IActionResult Create([FromBody] CarModelData data)
+    public async Task<IActionResult> Create([FromBody] CarModelData data)
     {
         var carModel = new CarModel
         {
@@ -37,16 +39,14 @@ public class CarModelController : DbContextController
         };
 
         Context.CarModels.Add(carModel);
-        Context.SaveChanges();
-        Context.CarModels.Entry(carModel)
-            .Collection(e => e.CarModelDetails).Query()
-            .Include(trimDetail => trimDetail.DetailSeries).Load();
+        await Context.SaveChangesAsync();
+        await LoadReferencesAsync(carModel);
 
-        return Ok(carModel);
+        return Ok("Car model created", carModel);
     }
 
     [HttpPatch("{id:int}/change-model-name")]
-    public IActionResult ChangeModelName(int id, [FromBody] CarModelData data)
+    public async Task<IActionResult> ChangeModelName(int id, [FromBody] CarModelData data)
     {
         var found = Find(id);
         if (found is null) return NotFound("Car model with such ID doesn't exist");
@@ -56,12 +56,10 @@ public class CarModelController : DbContextController
         found.TrimCode = data.Code;
 
         Context.CarModels.Update(found);
-        Context.SaveChanges();
-        Context.CarModels.Entry(found)
-            .Collection(e => e.CarModelDetails).Query()
-            .Include(carModelDetail => carModelDetail.DetailSeries).Load();
+        await Context.SaveChangesAsync();
+        await LoadReferencesAsync(found);
 
-        return Ok("Car model was renamed");
+        return Ok("Car model was renamed", found);
     }
 
     [HttpPatch("{id:int}/set-details")]
@@ -87,11 +85,9 @@ public class CarModelController : DbContextController
         }
 
         await Context.SaveChangesAsync();
-        await Context.CarModels.Entry(found)
-            .Collection(e => e.CarModelDetails).Query()
-            .Include(detail => detail.DetailSeries).LoadAsync();
+        await LoadReferencesAsync(found);
 
-        return Ok(found);
+        return Ok("Details for car model were set", found);
     }
 
     [HttpDelete("{id:int}/delete")]
@@ -103,7 +99,7 @@ public class CarModelController : DbContextController
         Context.CarModels.Remove(found);
         Context.SaveChanges();
 
-        return Ok("Car model was deleted");
+        return Ok("Car model was deleted", found);
     }
 
     private CarModel? Find(int id)
@@ -124,5 +120,12 @@ public class CarModelController : DbContextController
         }
 
         return true;
+    }
+
+    protected override async Task LoadReferencesAsync(CarModel entity)
+    {
+        await Context.CarModels.Entry(entity)
+            .Collection(e => e.CarModelDetails).Query()
+            .Include(detail => detail.DetailSeries).LoadAsync();
     }
 }
