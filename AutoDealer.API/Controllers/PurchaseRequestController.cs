@@ -22,29 +22,40 @@ public class PurchaseRequestController : DbContextController
     }
 
     [HttpGet("{id:int}")]
-    public IActionResult GetById(int id)
+    public IActionResult Get(int id)
     {
         var found = Find(id);
-        return found is { } ? Ok(found) : NotFound();
+        return found is { } ? Ok(found) : NotFound("Purchase request with such ID doesn't exist");
     }
 
     [HttpPost("create")]
-    public IActionResult Create(NewPurchaseRequest newPurchaseRequest)
+    public IActionResult Create(PurchaseRequestData data)
     {
-        if (!ContainsUniqueDetails(newPurchaseRequest.DetailCountPairs))
+        if (!ContainsUniqueDetails(data.DetailCounts))
             return BadRequest("Array of details for purchase request references on several identical details");
 
-        var purchaseRequest = newPurchaseRequest.Construct();
+        var purchaseRequest = new PurchaseRequest
+        {
+            ExpectedSupplyDate = data.ExpectedSupplyDate,
+            IdUser = data.IdUser
+        };
+
+        foreach (var (seriesId, count) in data.DetailCounts)
+        {
+            purchaseRequest.PurchaseRequestDetails.Add(
+                new PurchaseRequestDetail
+                {
+                    IdDetailSeries = seriesId,
+                    Count = count
+                });
+        }
 
         Context.PurchaseRequests.Add(purchaseRequest);
         Context.SaveChanges();
-        if (purchaseRequest.IdUser is { })
-        {
-            Context.PurchaseRequests.Entry(purchaseRequest)
-                .Reference(e => e.User).Query()
-                .Include(user => user.Employee).Load();
-        }
 
+        Context.PurchaseRequests.Entry(purchaseRequest)
+            .Reference(e => e.User).Query()
+            .Include(user => user.Employee).Load();
         Context.PurchaseRequests.Entry(purchaseRequest)
             .Collection(e => e.PurchaseRequestDetails).Query()
             .Include(details => details.DetailSeries).Load();
@@ -56,7 +67,7 @@ public class PurchaseRequestController : DbContextController
     public IActionResult Reschedule(int id, [FromBody] DateOnly supplyDate)
     {
         var found = Find(id);
-        if (found is null) return NotFound();
+        if (found is null) return NotFound("Purchase request with such ID doesn't exist");
 
         var minimumSupplyDate = DateOnly.FromDateTime(DateTime.UtcNow);
         if (minimumSupplyDate >= supplyDate)
@@ -76,7 +87,7 @@ public class PurchaseRequestController : DbContextController
     public IActionResult Cancel(int id)
     {
         var found = Find(id);
-        if (found is null) return NotFound();
+        if (found is null) return NotFound("Purchase request with such ID doesn't exist");
 
         if (found.Status is not RequestStatus.Sent)
             return BadRequest("Can delete only requests with status 'Sent'");
@@ -97,7 +108,7 @@ public class PurchaseRequestController : DbContextController
             .FirstOrDefault(purchaseRequest => purchaseRequest.Id == id);
     }
 
-    private static bool ContainsUniqueDetails(IEnumerable<DetailCountPair> detailCountPairs)
+    private static bool ContainsUniqueDetails(IEnumerable<DetailCount> detailCountPairs)
     {
         var id = -1;
         foreach (var (currentId, _) in detailCountPairs)

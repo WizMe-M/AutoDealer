@@ -73,12 +73,12 @@ public class CarModelController : DbContextController
     }
 
     [HttpPatch("{id:int}/set-details")]
-    public async Task<IActionResult> SetDetailsForTrim(int id, [FromBody] IEnumerable<DetailCountPair> detailCountPairs)
+    public async Task<IActionResult> SetDetailsForTrim(int id, [FromBody] IEnumerable<DetailCount> detailCountPairs)
     {
         var found = Find(id);
         if (found is null) return NotFound();
 
-        var details = detailCountPairs as DetailCountPair[] ?? detailCountPairs.ToArray();
+        var details = detailCountPairs as DetailCount[] ?? detailCountPairs.ToArray();
         if (!ContainsUniqueDetails(details))
             return BadRequest("Array of details for trims references on several identical details");
 
@@ -110,7 +110,7 @@ public class CarModelController : DbContextController
             .FirstOrDefault(trim => trim.Id == id);
     }
 
-    private static bool ContainsUniqueDetails(IEnumerable<DetailCountPair> detailInTrims)
+    private static bool ContainsUniqueDetails(IEnumerable<DetailCount> detailInTrims)
     {
         var id = -1;
         foreach (var (currentId, _) in detailInTrims)
