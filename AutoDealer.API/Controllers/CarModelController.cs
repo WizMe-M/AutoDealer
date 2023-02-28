@@ -23,13 +23,18 @@ public class CarModelController : DbContextController
     public IActionResult GetById(int id)
     {
         var found = Find(id);
-        return found is { } ? Ok(found) : NotFound();
+        return found is { } ? Ok(found) : NotFound("Car model with such ID doesn't exist");
     }
 
     [HttpPost("create")]
-    public IActionResult Create([FromBody] CarModelData carModelData)
+    public IActionResult Create([FromBody] CarModelData data)
     {
-        var carModel = carModelData.Construct();
+        var carModel = new CarModel
+        {
+            LineName = data.Line,
+            ModelName = data.Model,
+            TrimCode = data.Code
+        };
 
         Context.CarModels.Add(carModel);
         Context.SaveChanges();
@@ -41,16 +46,15 @@ public class CarModelController : DbContextController
     }
 
     [HttpPatch("{id:int}/change-model-name")]
-    public IActionResult ChangeModelName(int id, [FromBody] CarModelData carModelData)
+    public IActionResult ChangeModelName(int id, [FromBody] CarModelData data)
     {
         var found = Find(id);
-        if (found is null) return NotFound();
+        if (found is null) return NotFound("Car model with such ID doesn't exist");
 
-        var data = carModelData.Construct();
-        found.LineName = data.LineName;
-        found.ModelName = data.ModelName;
-        found.TrimCode = data.TrimCode;
-        
+        found.LineName = data.Line;
+        found.ModelName = data.Model;
+        found.TrimCode = data.Code;
+
         Context.CarModels.Update(found);
         Context.SaveChanges();
         Context.CarModels.Entry(found)
@@ -60,23 +64,11 @@ public class CarModelController : DbContextController
         return Ok("Car model was renamed");
     }
 
-    [HttpDelete("{id:int}/delete")]
-    public IActionResult Delete(int id)
-    {
-        var found = Find(id);
-        if (found is null) return NotFound();
-
-        Context.CarModels.Remove(found);
-        Context.SaveChanges();
-
-        return Ok("Car model was deleted");
-    }
-
     [HttpPatch("{id:int}/set-details")]
     public async Task<IActionResult> SetDetailsForTrim(int id, [FromBody] IEnumerable<DetailCount> detailCountPairs)
     {
         var found = Find(id);
-        if (found is null) return NotFound();
+        if (found is null) return NotFound("Car model with such ID doesn't exist");
 
         var details = detailCountPairs as DetailCount[] ?? detailCountPairs.ToArray();
         if (!ContainsUniqueDetails(details))
@@ -100,6 +92,18 @@ public class CarModelController : DbContextController
             .Include(detail => detail.DetailSeries).LoadAsync();
 
         return Ok(found);
+    }
+
+    [HttpDelete("{id:int}/delete")]
+    public IActionResult Delete(int id)
+    {
+        var found = Find(id);
+        if (found is null) return NotFound("Car model with such ID doesn't exist");
+
+        Context.CarModels.Remove(found);
+        Context.SaveChanges();
+
+        return Ok("Car model was deleted");
     }
 
     private CarModel? Find(int id)
