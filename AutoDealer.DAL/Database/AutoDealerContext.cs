@@ -114,7 +114,9 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.AssemblyDate).HasColumnName("assembly_date");
             entity.Property(e => e.Cost).HasColumnName("cost");
             entity.Property(e => e.IdCarModel).HasColumnName("id_trim");
-            entity.Property(e => e.Status).HasColumnName("status").HasDefaultValueSql("'in_assembly'");
+            entity.Property(e => e.Status)
+                .HasColumnName("status")
+                .HasDefaultValueSql("'assembled'");
 
             entity.HasOne(d => d.CarModel).WithMany(p => p.Autos)
                 .HasForeignKey(d => d.IdCarModel)
