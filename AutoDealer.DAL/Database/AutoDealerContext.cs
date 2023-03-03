@@ -32,10 +32,6 @@ public partial class AutoDealerContext : DbContext
 
     public virtual DbSet<Margin> Margins { get; set; }
 
-    public virtual DbSet<PurchaseRequest> PurchaseRequests { get; set; }
-
-    public virtual DbSet<PurchaseRequestDetail> PurchaseRequestDetails { get; set; }
-
     public virtual DbSet<Sale> Sales { get; set; }
 
     public virtual DbSet<Supplier> Suppliers { get; set; }
@@ -89,7 +85,6 @@ public partial class AutoDealerContext : DbContext
     {
         dataSourceBuilder.MapEnum<Post>("post");
         dataSourceBuilder.MapEnum<AutoStatus>("auto_status");
-        dataSourceBuilder.MapEnum<RequestStatus>("request_status");
         dataSourceBuilder.MapEnum<TestStatus>("test_status");
         dataSourceBuilder.MapEnum<LogType>("log_type");
     }
@@ -98,7 +93,6 @@ public partial class AutoDealerContext : DbContext
     {
         modelBuilder.HasPostgresEnum<Post>();
         modelBuilder.HasPostgresEnum<AutoStatus>();
-        modelBuilder.HasPostgresEnum<RequestStatus>();
         modelBuilder.HasPostgresEnum<TestStatus>();
         modelBuilder.HasPostgresEnum<LogType>();
 
@@ -187,14 +181,14 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.ConclusionDate)
                 .HasDefaultValueSql("now()")
                 .HasColumnName("conclusion_date");
-            entity.Property(e => e.IdEmployee).HasColumnName("id_employee");
+            entity.Property(e => e.IdStorekeeper).HasColumnName("id_storekeeper");
             entity.Property(e => e.IdSupplier).HasColumnName("id_supplier");
             entity.Property(e => e.LadingBillIssueDate).HasColumnName("lading_bill_issue_date");
             entity.Property(e => e.SupplyDate).HasColumnName("supply_date");
             entity.Property(e => e.TotalSum).HasColumnName("total_sum");
 
             entity.HasOne(d => d.Storekeeper).WithMany(p => p.Contracts)
-                .HasForeignKey(d => d.IdEmployee)
+                .HasForeignKey(d => d.IdStorekeeper)
                 .HasConstraintName("fk_contracts_employees");
 
             entity.HasOne(d => d.Supplier).WithMany(p => p.Contracts)
@@ -317,52 +311,6 @@ public partial class AutoDealerContext : DbContext
                 .HasForeignKey(d => d.IdCarModel)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_margins_trims");
-        });
-
-        modelBuilder.Entity<PurchaseRequest>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("pk_purchase_requests");
-
-            entity.ToTable("purchase_requests");
-
-            entity.Property(e => e.Id).HasColumnName("id_purchase_requests");
-            entity.Property(e => e.ExpectedSupplyDate).HasColumnName("expected_supply_date");
-            entity.Property(e => e.IdUser).HasColumnName("id_user");
-            entity.Property(e => e.Status).HasColumnName("status")
-                .HasDefaultValueSql("'sent'");
-
-            entity.Property(e => e.SentDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("sent_date");
-
-            entity.HasOne(d => d.User).WithMany(p => p.PurchaseRequests)
-                .HasForeignKey(d => d.IdUser)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_purchase_requests_users");
-        });
-
-        modelBuilder.Entity<PurchaseRequestDetail>(entity =>
-        {
-            entity.HasKey(e => new { e.IdPurchaseRequest, e.IdDetailSeries }).HasName("pk_purchase_request_details");
-
-            entity.ToTable("purchase_request_details");
-
-            entity.Property(e => e.IdPurchaseRequest).HasColumnName("id_purchase_request");
-            entity.Property(e => e.IdDetailSeries).HasColumnName("id_detail_series");
-            entity.Property(e => e.Count)
-                .HasDefaultValueSql("1")
-                .HasColumnName("count");
-
-            entity.HasOne(d => d.DetailSeries).WithMany(p => p.PurchaseRequestDetails)
-                .HasForeignKey(d => d.IdDetailSeries)
-                .OnDelete(DeleteBehavior.ClientNoAction)
-                .HasConstraintName("fk_purchase_request_details_detail_series");
-
-            entity.HasOne(d => d.PurchaseRequest).WithMany(p => p.PurchaseRequestDetails)
-                .HasForeignKey(d => d.IdPurchaseRequest)
-                .OnDelete(DeleteBehavior.ClientCascade)
-                .HasConstraintName("fk_purchase_request_details_purchase_requests");
         });
 
         modelBuilder.Entity<Sale>(entity =>

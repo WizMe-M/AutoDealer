@@ -42,7 +42,7 @@ public class ContractController : DbContextController<Contract>
         if (supplier is null)
             return NotFound("Referenced supplier doesn't exist");
 
-        var employee = Context.Employees.FirstOrDefault(employee => employee.Id == data.EmployeeId);
+        var employee = Context.Employees.FirstOrDefault(employee => employee.Id == data.StorekeeperId);
         if (employee is null)
             return NotFound("Referenced employee doesn't exist");
 
@@ -54,7 +54,7 @@ public class ContractController : DbContextController<Contract>
 
         var contract = new Contract
         {
-            IdEmployee = data.EmployeeId,
+            IdStorekeeper = data.StorekeeperId,
             IdSupplier = data.SupplierId,
             SupplyDate = data.SupplyDate
         };

@@ -11,6 +11,4 @@ public partial class User
     public bool Deleted { get; set; }
 
     public virtual Employee Employee { get; set; } = null!;
-
-    [JsonIgnore] public virtual IEnumerable<PurchaseRequest> PurchaseRequests { get; } = new List<PurchaseRequest>();
 }

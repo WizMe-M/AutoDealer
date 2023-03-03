@@ -4,7 +4,7 @@ public partial class Contract
 {
     public int Id { get; set; }
 
-    [JsonIgnore] public int? IdEmployee { get; set; }
+    [JsonIgnore] public int? IdStorekeeper { get; set; }
 
     [JsonIgnore] public int? IdSupplier { get; set; }
 

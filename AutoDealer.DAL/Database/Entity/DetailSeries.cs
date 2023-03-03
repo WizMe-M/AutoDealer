@@ -12,9 +12,5 @@ public partial class DetailSeries
 
     [JsonIgnore] public virtual IEnumerable<ContractDetail> ContractDetails { get; } = new List<ContractDetail>();
 
-    [JsonIgnore]
-    public virtual IEnumerable<PurchaseRequestDetail> PurchaseRequestDetails { get; } =
-        new List<PurchaseRequestDetail>();
-
     [JsonIgnore] public virtual IEnumerable<Detail> Details { get; } = new List<Detail>();
 }
