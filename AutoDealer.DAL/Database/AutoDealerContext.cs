@@ -56,11 +56,6 @@ public partial class AutoDealerContext : DbContext
             $"select set_margin(trim_id := {carModelId}, begins_act_from := '{actsFrom}', margin_value := {margin});");
     }
 
-    public async Task ExecuteAssemblyAutoAsync(int auto)
-    {
-        await Database.ExecuteSqlRawAsync($"select assembly_auto(auto := {auto});");
-    }
-
     public async Task ExecuteSellAutoAsync(int auto, int client, int employee)
     {
         await Database.ExecuteSqlRawAsync(
