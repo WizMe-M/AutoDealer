@@ -1,5 +1,6 @@
 ﻿namespace AutoDealer.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("margins")]
 public class MarginController : DbContextController<Margin>
@@ -42,6 +43,7 @@ public class MarginController : DbContextController<Margin>
         return Ok($"Margins in range from {from} to {to} listed", margins);
     }
 
+    [Authorize(Roles = nameof(Post.Seller))]
     [HttpPost("set-margin")]
     public async Task<IActionResult> SetMargin([FromBody] MarginData data)
     {
@@ -55,6 +57,7 @@ public class MarginController : DbContextController<Margin>
         return Ok("Margin was successfully set", created);
     }
 
+    [Authorize(Roles = nameof(Post.Seller))]
     [HttpDelete("delete")]
     public IActionResult Delete([FromBody] MarginIdentifier identifier)
     {

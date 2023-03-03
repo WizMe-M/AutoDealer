@@ -1,6 +1,6 @@
 ﻿namespace AutoDealer.API.Controllers;
 
-[Authorize(Roles = nameof(Post.PurchaseSpecialist))]
+[Authorize]
 [ApiController]
 [Route("suppliers")]
 public class SupplierController : DbContextController<Supplier>
@@ -25,6 +25,7 @@ public class SupplierController : DbContextController<Supplier>
             : NotFound("Supplier with such ID doesn't exist");
     }
 
+    [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     [HttpPost("create")]
     public IActionResult Create([FromBody] SupplierData data)
     {
@@ -43,6 +44,7 @@ public class SupplierController : DbContextController<Supplier>
         return Ok("Supplier successfully created", supplier);
     }
 
+    [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     [HttpPatch("{id:int}/change-addresses")]
     public IActionResult ChangeAddress(int id, [FromBody] Addresses addresses)
     {
@@ -58,6 +60,7 @@ public class SupplierController : DbContextController<Supplier>
         return Ok("Supplier's addresses were updated", found);
     }
 
+    [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     [HttpPatch("{id:int}/change-accounts")]
     public IActionResult ChangeAccount(int id, [FromBody] Accounts accounts)
     {
@@ -73,6 +76,7 @@ public class SupplierController : DbContextController<Supplier>
         return Ok("Supplier's accounts were updated", found);
     }
 
+    [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     [HttpPatch("{id:int}/change-tin")]
     public IActionResult ChangeTin(int id, [FromBody] string tin)
     {
@@ -87,6 +91,7 @@ public class SupplierController : DbContextController<Supplier>
         return Ok("Supplier's tin was updated", found);
     }
 
+    [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     [HttpPut("{id:int}/update-data")]
     public IActionResult UpdateData(int id, [FromBody] SupplierData data)
     {
@@ -105,6 +110,7 @@ public class SupplierController : DbContextController<Supplier>
         return Ok("Supplier data was updated", found);
     }
 
+    [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     [HttpDelete("delete")]
     public IActionResult Delete(int id)
     {

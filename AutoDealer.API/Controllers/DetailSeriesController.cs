@@ -1,5 +1,6 @@
 ﻿namespace AutoDealer.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("detail_series")]
 public class DetailSeriesController : DbContextController<DetailSeries>
@@ -24,6 +25,7 @@ public class DetailSeriesController : DbContextController<DetailSeries>
             : NotFound("Detail's series with such ID doesn't exist");
     }
 
+    [Authorize(Roles = $"{nameof(Post.PurchaseSpecialist)},{nameof(Post.AssemblyChief)}")]
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] string seriesCode)
     {
@@ -36,6 +38,7 @@ public class DetailSeriesController : DbContextController<DetailSeries>
         return Ok("Detail series created", series);
     }
 
+    [Authorize(Roles = $"{nameof(Post.PurchaseSpecialist)},{nameof(Post.AssemblyChief)}")]
     [HttpPatch("{id:int}/rename")]
     public async Task<IActionResult> Rename(int id, [FromBody] string seriesCode)
     {
@@ -50,6 +53,7 @@ public class DetailSeriesController : DbContextController<DetailSeries>
         return Ok("Detail's series was renamed", found);
     }
 
+    [Authorize(Roles = $"{nameof(Post.PurchaseSpecialist)},{nameof(Post.AssemblyChief)}")]
     [HttpPatch("{id:int}/change-description")]
     public async Task<IActionResult> ChangeDescription(int id, [FromBody] string description)
     {
@@ -64,6 +68,7 @@ public class DetailSeriesController : DbContextController<DetailSeries>
         return Ok("Detail's series description was changed", found);
     }
 
+    [Authorize(Roles = nameof(Post.AssemblyChief))]
     [HttpDelete("{id:int}/delete")]
     public async Task<IActionResult> Delete(int id)
     {

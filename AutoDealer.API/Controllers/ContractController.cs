@@ -1,5 +1,6 @@
 ﻿namespace AutoDealer.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("contracts")]
 public class ContractController : DbContextController<Contract>
@@ -8,7 +9,6 @@ public class ContractController : DbContextController<Contract>
     {
     }
 
-    [Authorize(Roles = $"{nameof(Post.PurchaseSpecialist)},{nameof(Post.Storekeeper)}")]
     [HttpGet]
     public IActionResult GetAll()
     {
@@ -25,7 +25,6 @@ public class ContractController : DbContextController<Contract>
         return Ok("All contracts listed", contracts);
     }
 
-    [Authorize(Roles = $"{nameof(Post.PurchaseSpecialist)},{nameof(Post.Storekeeper)}")]
     [HttpGet("{id:int}")]
     public IActionResult Get(int id)
     {

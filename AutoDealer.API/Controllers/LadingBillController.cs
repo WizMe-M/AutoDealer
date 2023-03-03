@@ -1,6 +1,6 @@
 ﻿namespace AutoDealer.API.Controllers;
 
-[Authorize(Roles = nameof(Post.Storekeeper))]
+[Authorize]
 [ApiController]
 [Route("lading_bills")]
 public class LadingBillController : DbContextController<Contract>
@@ -26,6 +26,7 @@ public class LadingBillController : DbContextController<Contract>
         return Ok("All lading bills (closed contracts) listed", ladingBills);
     }
 
+    [Authorize(Roles = nameof(Post.Storekeeper))]
     [HttpPost("{contractId:int}")]
     public async Task<IActionResult> ProcessSupply(int contractId)
     {

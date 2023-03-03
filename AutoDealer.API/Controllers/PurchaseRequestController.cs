@@ -1,6 +1,6 @@
 ﻿namespace AutoDealer.API.Controllers;
 
-[Authorize(Roles = nameof(Post.AssemblyChief))]
+[Authorize]
 [ApiController]
 [Route("purchase_requests")]
 public class PurchaseRequestController : DbContextController<PurchaseRequest>
@@ -30,6 +30,7 @@ public class PurchaseRequestController : DbContextController<PurchaseRequest>
             : NotFound("Purchase request with such ID doesn't exist");
     }
 
+    [Authorize(Roles = nameof(Post.AssemblyChief))]
     [HttpPost("create")]
     public async Task<IActionResult> Create(PurchaseRequestData data)
     {
@@ -59,6 +60,7 @@ public class PurchaseRequestController : DbContextController<PurchaseRequest>
         return Ok("Purchase request was sent", purchaseRequest);
     }
 
+    [Authorize(Roles = nameof(Post.AssemblyChief))]
     [HttpPatch("{id:int}/reschedule")]
     public async Task<IActionResult> Reschedule(int id, [FromBody] DateOnly supplyDate)
     {
@@ -80,6 +82,7 @@ public class PurchaseRequestController : DbContextController<PurchaseRequest>
         return Ok("Purchase request's expected supply date was rescheduled", found);
     }
 
+    [Authorize(Roles = nameof(Post.AssemblyChief))]
     [HttpDelete("{id:int}/cancel")]
     public IActionResult Cancel(int id)
     {

@@ -1,6 +1,6 @@
 ﻿namespace AutoDealer.API.Controllers;
 
-[Authorize(Roles = nameof(Post.AssemblyChief))]
+[Authorize]
 [ApiController]
 [Route("car_models")]
 public class CarModelController : DbContextController<CarModel>
@@ -28,6 +28,7 @@ public class CarModelController : DbContextController<CarModel>
             : NotFound("Car model with such ID doesn't exist");
     }
 
+    [Authorize(Roles = nameof(Post.AssemblyChief))]
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] CarModelData data)
     {
@@ -45,6 +46,7 @@ public class CarModelController : DbContextController<CarModel>
         return Ok("Car model created", carModel);
     }
 
+    [Authorize(Roles = nameof(Post.AssemblyChief))]
     [HttpPatch("{id:int}/change-model-name")]
     public async Task<IActionResult> ChangeModelName(int id, [FromBody] CarModelData data)
     {
@@ -62,6 +64,7 @@ public class CarModelController : DbContextController<CarModel>
         return Ok("Car model was renamed", found);
     }
 
+    [Authorize(Roles = nameof(Post.AssemblyChief))]
     [HttpPatch("{id:int}/set-details")]
     public async Task<IActionResult> SetDetailsForTrim(int id, [FromBody] IEnumerable<DetailCount> detailCountPairs)
     {
@@ -90,6 +93,7 @@ public class CarModelController : DbContextController<CarModel>
         return Ok("Details for car model were set", found);
     }
 
+    [Authorize(Roles = nameof(Post.AssemblyChief))]
     [HttpDelete("{id:int}/delete")]
     public IActionResult Delete(int id)
     {
