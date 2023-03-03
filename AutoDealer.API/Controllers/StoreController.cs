@@ -2,14 +2,14 @@
 
 [Authorize]
 [ApiController]
-[Route("lading_bills")]
-public class LadingBillController : DbContextController<Contract>
+[Route("store")]
+public class StoreController : DbContextController<Contract>
 {
-    public LadingBillController(AutoDealerContext context) : base(context)
+    public StoreController(AutoDealerContext context) : base(context)
     {
     }
 
-    [HttpGet]
+    [HttpGet("lading-bills")]
     public IActionResult GetLadingBills()
     {
         var ladingBills = Context.Contracts
@@ -27,7 +27,7 @@ public class LadingBillController : DbContextController<Contract>
     }
 
     [Authorize(Roles = nameof(Post.Storekeeper))]
-    [HttpPost("{contractId:int}")]
+    [HttpPost("contract/{contractId:int}/process")]
     public async Task<IActionResult> ProcessSupply(int contractId)
     {
         var found = Find(contractId);
@@ -41,6 +41,31 @@ public class LadingBillController : DbContextController<Contract>
         await LoadReferencesAsync(found);
 
         return Ok("Lading bill was successfully processed", found);
+    }
+
+    [HttpGet("details")]
+    public IActionResult GetDetails()
+    {
+        var details = Context.Details.ToArray();
+        return Ok(message: "All details", data: details);
+    }
+
+    [HttpGet("details/store")]
+    public IActionResult GetDetailsInStore()
+    {
+        var details = Context.Details
+            .Where(detail => detail.IdAuto == null)
+            .ToArray();
+        return Ok(message: "Details in store", data: details);
+    }
+
+    [HttpGet("details/auto")]
+    public IActionResult GetUsedDetails()
+    {
+        var details = Context.Details
+            .Where(detail => detail.IdAuto != null)
+            .ToArray();
+        return Ok(message: "Assembled in auto details", data: details);
     }
 
     private Contract? Find(int id)
