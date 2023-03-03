@@ -46,7 +46,9 @@ public class StoreController : DbContextController<Contract>
     [HttpGet("details")]
     public IActionResult GetDetails()
     {
-        var details = Context.Details.ToArray();
+        var details = Context.Details
+            .Include(detail => detail.DetailSeries)
+            .ToArray();
         return Ok(message: "All details", data: details);
     }
 
@@ -54,6 +56,7 @@ public class StoreController : DbContextController<Contract>
     public IActionResult GetDetailsInStore()
     {
         var details = Context.Details
+            .Include(detail => detail.DetailSeries)
             .Where(detail => detail.IdAuto == null)
             .ToArray();
         return Ok(message: "Details in store", data: details);
@@ -63,6 +66,7 @@ public class StoreController : DbContextController<Contract>
     public IActionResult GetUsedDetails()
     {
         var details = Context.Details
+            .Include(detail => detail.DetailSeries)
             .Where(detail => detail.IdAuto != null)
             .ToArray();
         return Ok(message: "Assembled in auto details", data: details);
