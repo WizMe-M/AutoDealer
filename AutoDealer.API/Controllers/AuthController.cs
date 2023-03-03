@@ -34,6 +34,32 @@ public class AuthController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
+    [HttpGet("me")]
+    public IActionResult MyInfo([FromHeader] string authorization)
+    {
+        var tokenString = authorization;
+        if (authorization.Contains(JwtBearerDefaults.AuthenticationScheme))
+        {
+            var start = JwtBearerDefaults.AuthenticationScheme.Length + 1;
+            tokenString = authorization[start..];
+        }
+
+        var jwtHandler = new JwtSecurityTokenHandler();
+        var token = jwtHandler.ReadJwtToken(tokenString);
+
+        var idClaim = token.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub);
+        if (idClaim is null)
+            return BadRequest("Can't find claim in token");
+
+        var id = int.Parse(idClaim.Value);
+        var user = _authService.GetUser(id);
+        if (user is null)
+            return BadRequest("Can't find user by token");
+
+        return Ok(user);
+    }
+
     private string CreateJwtToken(User user)
     {
         var now = DateTime.UtcNow;

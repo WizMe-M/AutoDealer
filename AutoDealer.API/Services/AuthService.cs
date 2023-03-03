@@ -19,4 +19,12 @@ public class AuthService
                 user.Employee.Post == post &&
                 user.Deleted == false);
     }
+
+    public User? GetUser(int id)
+    {
+        return _context.Users
+            .Include(user => user.Employee)
+            .FirstOrDefault(user => user.IdEmployee == id);
+    }
+
 }
