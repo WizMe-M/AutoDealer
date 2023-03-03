@@ -10,7 +10,7 @@ public enum AutoStatus
 
 public partial class Auto
 {
-    public int IdAuto { get; set; }
+    public int Id { get; set; }
 
     [JsonIgnore] public int IdCarModel { get; set; }
 

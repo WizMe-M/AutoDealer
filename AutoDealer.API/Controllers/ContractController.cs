@@ -14,14 +14,8 @@ public class ContractController : DbContextController<Contract>
     {
         var contracts = Context.Contracts
             .Include(contract => contract.Supplier)
-            .Include(contract => contract.Employee)
+            .Include(contract => contract.Storekeeper)
             .ThenInclude(employee => employee!.User)
-            .Include(contract => contract.PurchaseRequest)
-            .ThenInclude(request => request!.PurchaseRequestDetails)
-            .ThenInclude(detail => detail.DetailSeries)
-            .Include(contract => contract.PurchaseRequest)
-            .ThenInclude(request => request!.User)
-            .ThenInclude(detail => detail!.Employee)
             .Include(contract => contract.ContractDetails)
             .ThenInclude(detail => detail.DetailSeries)
             .Include(contract => contract.Details)
@@ -53,10 +47,6 @@ public class ContractController : DbContextController<Contract>
         if (employee is null)
             return NotFound("Referenced employee doesn't exist");
 
-        var request = Context.PurchaseRequests.FirstOrDefault(request => request.Id == data.PurchaseRequestId);
-        if (request is null && data.PurchaseRequestId is { })
-            return NotFound("Referenced purchase request doesn't exist");
-
         if (!ContainsUniqueDetails(data.Details))
             return BadRequest("Contract contains duplicated details");
 
@@ -67,7 +57,6 @@ public class ContractController : DbContextController<Contract>
         {
             IdEmployee = data.EmployeeId,
             IdSupplier = data.SupplierId,
-            IdPurchaseRequest = data.PurchaseRequestId,
             SupplyDate = data.SupplyDate
         };
 
@@ -135,14 +124,8 @@ public class ContractController : DbContextController<Contract>
     {
         return Context.Contracts
             .Include(contract => contract.Supplier)
-            .Include(contract => contract.Employee)
+            .Include(contract => contract.Storekeeper)
             .ThenInclude(employee => employee!.User)
-            .Include(contract => contract.PurchaseRequest)
-            .ThenInclude(request => request!.PurchaseRequestDetails)
-            .ThenInclude(detail => detail.DetailSeries)
-            .Include(contract => contract.PurchaseRequest)
-            .ThenInclude(request => request!.User)
-            .ThenInclude(detail => detail!.Employee)
             .Include(contract => contract.ContractDetails)
             .ThenInclude(detail => detail.DetailSeries)
             .Include(contract => contract.Details)
@@ -167,14 +150,8 @@ public class ContractController : DbContextController<Contract>
         await Context.Contracts.Entry(entity)
             .Reference(e => e.Supplier).LoadAsync();
         await Context.Contracts.Entry(entity)
-            .Reference(e => e.Employee).Query()
+            .Reference(e => e.Storekeeper).Query()
             .Include(emp => emp.User).LoadAsync();
-        await Context.Contracts.Entry(entity)
-            .Reference(e => e.PurchaseRequest).Query()
-            .Include(req => req.User)
-            .ThenInclude(u => u!.Employee)
-            .Include(req => req.PurchaseRequestDetails)
-            .ThenInclude(detail => detail.DetailSeries).LoadAsync();
         await Context.Contracts.Entry(entity)
             .Collection(e => e.ContractDetails).Query()
             .Include(cd => cd.DetailSeries).LoadAsync();

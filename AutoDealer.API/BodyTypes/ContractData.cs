@@ -1,4 +1,3 @@
 ﻿namespace AutoDealer.API.BodyTypes;
 
-public record ContractData(int SupplierId, int EmployeeId, int? PurchaseRequestId, DateOnly SupplyDate,
-    IEnumerable<DetailCountCost> Details);
+public record ContractData(int SupplierId, int EmployeeId, DateOnly SupplyDate, IEnumerable<DetailCountCost> Details);

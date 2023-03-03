@@ -106,11 +106,11 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Auto>(entity =>
         {
-            entity.HasKey(e => e.IdAuto).HasName("pk_autos");
+            entity.HasKey(e => e.Id).HasName("pk_autos");
 
             entity.ToTable("autos");
 
-            entity.Property(e => e.IdAuto).HasColumnName("id_auto");
+            entity.Property(e => e.Id).HasColumnName("id_auto");
             entity.Property(e => e.AssemblyDate).HasColumnName("assembly_date");
             entity.Property(e => e.Cost).HasColumnName("cost");
             entity.Property(e => e.IdCarModel).HasColumnName("id_trim");
@@ -188,19 +188,14 @@ public partial class AutoDealerContext : DbContext
                 .HasDefaultValueSql("now()")
                 .HasColumnName("conclusion_date");
             entity.Property(e => e.IdEmployee).HasColumnName("id_employee");
-            entity.Property(e => e.IdPurchaseRequest).HasColumnName("id_purchase_request");
             entity.Property(e => e.IdSupplier).HasColumnName("id_supplier");
             entity.Property(e => e.LadingBillIssueDate).HasColumnName("lading_bill_issue_date");
             entity.Property(e => e.SupplyDate).HasColumnName("supply_date");
             entity.Property(e => e.TotalSum).HasColumnName("total_sum");
 
-            entity.HasOne(d => d.Employee).WithMany(p => p.Contracts)
+            entity.HasOne(d => d.Storekeeper).WithMany(p => p.Contracts)
                 .HasForeignKey(d => d.IdEmployee)
                 .HasConstraintName("fk_contracts_employees");
-
-            entity.HasOne(d => d.PurchaseRequest).WithMany(p => p.Contracts)
-                .HasForeignKey(d => d.IdPurchaseRequest)
-                .HasConstraintName("fk_contracts_purchase_requests");
 
             entity.HasOne(d => d.Supplier).WithMany(p => p.Contracts)
                 .HasForeignKey(d => d.IdSupplier)
@@ -233,32 +228,33 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Detail>(entity =>
         {
-            entity.HasKey(e => new { e.IdDetailSeries, e.IdDetail }).HasName("pk_details");
+            entity.HasKey(e => e.Id).HasName("pk_details");
 
             entity.ToTable("details");
 
-            entity.Property(e => e.IdDetailSeries).HasColumnName("id_detail_series");
-            entity.Property(e => e.IdDetail)
+            entity.Property(e => e.Id)
                 .ValueGeneratedOnAdd()
                 .HasColumnName("id_detail");
+
+            entity.Property(e => e.IdDetailSeries).HasColumnName("id_detail_series");
             entity.Property(e => e.Cost).HasColumnName("cost");
             entity.Property(e => e.IdAuto).HasColumnName("id_auto");
             entity.Property(e => e.IdContract).HasColumnName("id_contract");
 
-            entity.HasOne(d => d.Auto).WithMany(p => p.Details)
-                .HasForeignKey(d => d.IdAuto)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_details_autos");
+            entity.HasOne(d => d.DetailSeries).WithMany(p => p.Details)
+                .HasForeignKey(d => d.IdDetailSeries)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("fk_details_detail_series");
 
             entity.HasOne(d => d.Contract).WithMany(p => p.Details)
                 .HasForeignKey(d => d.IdContract)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_details_contracts");
 
-            entity.HasOne(d => d.DetailSeries).WithMany(p => p.Details)
-                .HasForeignKey(d => d.IdDetailSeries)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("fk_details_detail_series");
+            entity.HasOne(d => d.Auto).WithMany(p => p.Details)
+                .HasForeignKey(d => d.IdAuto)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fk_details_autos");
         });
 
         modelBuilder.Entity<DetailSeries>(entity =>

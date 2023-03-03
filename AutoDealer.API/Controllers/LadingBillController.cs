@@ -14,14 +14,8 @@ public class LadingBillController : DbContextController<Contract>
     {
         var ladingBills = Context.Contracts
             .Include(contract => contract.Supplier)
-            .Include(contract => contract.Employee)
+            .Include(contract => contract.Storekeeper)
             .ThenInclude(employee => employee!.User)
-            .Include(contract => contract.PurchaseRequest)
-            .ThenInclude(request => request!.PurchaseRequestDetails)
-            .ThenInclude(detail => detail.DetailSeries)
-            .Include(contract => contract.PurchaseRequest)
-            .ThenInclude(request => request!.User)
-            .ThenInclude(detail => detail!.Employee)
             .Include(contract => contract.ContractDetails)
             .ThenInclude(detail => detail.DetailSeries)
             .Include(contract => contract.Details)
@@ -52,14 +46,8 @@ public class LadingBillController : DbContextController<Contract>
     {
         return Context.Contracts
             .Include(contract => contract.Supplier)
-            .Include(contract => contract.Employee)
+            .Include(contract => contract.Storekeeper)
             .ThenInclude(employee => employee!.User)
-            .Include(contract => contract.PurchaseRequest)
-            .ThenInclude(request => request!.PurchaseRequestDetails)
-            .ThenInclude(detail => detail.DetailSeries)
-            .Include(contract => contract.PurchaseRequest)
-            .ThenInclude(request => request!.User)
-            .ThenInclude(detail => detail!.Employee)
             .Include(contract => contract.ContractDetails)
             .ThenInclude(detail => detail.DetailSeries)
             .Include(contract => contract.Details)
@@ -72,14 +60,8 @@ public class LadingBillController : DbContextController<Contract>
         await Context.Contracts.Entry(entity)
             .Reference(contract => contract.Supplier).LoadAsync();
         await Context.Contracts.Entry(entity)
-            .Reference(contract => contract.Employee).Query()
+            .Reference(contract => contract.Storekeeper).Query()
             .Include(employee => employee.User).LoadAsync();
-        await Context.Contracts.Entry(entity)
-            .Reference(contract => contract.PurchaseRequest).Query()
-            .Include(request => request.PurchaseRequestDetails)
-            .ThenInclude(detail => detail.DetailSeries)
-            .Include(request => request.User)
-            .ThenInclude(detail => detail!.Employee).LoadAsync();
         await Context.Contracts.Entry(entity)
             .Collection(contract => contract.ContractDetails).Query()
             .Include(detail => detail.DetailSeries).LoadAsync();
