@@ -357,19 +357,13 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Test>(entity =>
         {
-            entity.HasKey(e => e.IdTest).HasName("pk_tests");
+            entity.HasKey(e => e.Id).HasName("pk_tests");
 
             entity.ToTable("tests");
 
-            entity.Property(e => e.IdTest).HasColumnName("id_test");
+            entity.Property(e => e.Id).HasColumnName("id_test");
             entity.Property(e => e.EndDate).HasColumnName("end_date");
-            entity.Property(e => e.IdEmployee).HasColumnName("id_employee");
             entity.Property(e => e.StartDate).HasColumnName("start_date");
-
-            entity.HasOne(d => d.IdEmployeeNavigation).WithMany(p => p.Tests)
-                .HasForeignKey(d => d.IdEmployee)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_tests_employees");
         });
 
         modelBuilder.Entity<TestAuto>(entity =>
@@ -383,12 +377,12 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.CertificationDate).HasColumnName("certification_date");
             entity.Property(e => e.Status).HasColumnName("status").HasDefaultValueSql("'not_checked'");
 
-            entity.HasOne(d => d.IdAutoNavigation).WithMany(p => p.TestAutos)
+            entity.HasOne(d => d.Auto).WithMany(p => p.TestAutos)
                 .HasForeignKey(d => d.IdAuto)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_test_autos_autos");
 
-            entity.HasOne(d => d.IdTestNavigation).WithMany(p => p.TestAutos)
+            entity.HasOne(d => d.Test).WithMany(p => p.TestAutos)
                 .HasForeignKey(d => d.IdTest)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_test_autos_tests");
