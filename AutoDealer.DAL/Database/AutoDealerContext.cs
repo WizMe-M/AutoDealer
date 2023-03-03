@@ -152,17 +152,17 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Client>(entity =>
         {
-            entity.HasKey(e => e.IdClient).HasName("pk_clients");
+            entity.HasKey(e => e.Id).HasName("pk_clients");
 
             entity.ToTable("clients");
 
-            entity.Property(e => e.IdClient).HasColumnName("id_client");
+            entity.Property(e => e.Id).HasColumnName("id_client");
             entity.Property(e => e.Birthdate).HasColumnName("birthdate");
             entity.Property(e => e.Birthplace).HasColumnName("birthplace");
-            entity.Property(e => e.DepartmentCode).HasColumnName("department_code");
             entity.Property(e => e.FirstName).HasColumnName("first_name");
             entity.Property(e => e.LastName).HasColumnName("last_name");
             entity.Property(e => e.MiddleName).HasColumnName("middle_name");
+            entity.Property(e => e.PassportDepartmentCode).HasColumnName("department_code");
             entity.Property(e => e.PassportIssuer).HasColumnName("passport_issuer");
             entity.Property(e => e.PassportNumber).HasColumnName("passport_number");
             entity.Property(e => e.PassportSeries).HasColumnName("passport_series");

@@ -2,7 +2,7 @@
 
 public partial class Client
 {
-    public int IdClient { get; set; }
+    public int Id { get; set; }
 
     public string FirstName { get; set; } = null!;
 
@@ -20,7 +20,7 @@ public partial class Client
 
     public string PassportIssuer { get; set; } = null!;
 
-    public string DepartmentCode { get; set; } = null!;
+    public string PassportDepartmentCode { get; set; } = null!;
 
-    public virtual ICollection<Sale> Sales { get; } = new List<Sale>();
+    [JsonIgnore] public virtual IEnumerable<Sale> Sales { get; } = new List<Sale>();
 }
