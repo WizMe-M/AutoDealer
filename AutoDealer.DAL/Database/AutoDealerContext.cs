@@ -100,7 +100,9 @@ public partial class AutoDealerContext : DbContext
             entity.ToTable("autos");
 
             entity.Property(e => e.Id).HasColumnName("id_auto");
-            entity.Property(e => e.AssemblyDate).HasColumnName("assembly_date");
+            entity.Property(e => e.AssemblyDate)
+                .HasColumnName("assembly_date")
+                .HasDefaultValueSql("now()");
             entity.Property(e => e.Cost).HasColumnName("cost");
             entity.Property(e => e.IdCarModel).HasColumnName("id_trim");
             entity.Property(e => e.Status)

@@ -14,13 +14,13 @@ public partial class Auto
 
     [JsonIgnore] public int IdCarModel { get; set; }
 
-    public DateOnly? AssemblyDate { get; set; }
+    public DateOnly AssemblyDate { get; set; }
 
-    public decimal? Cost { get; set; }
+    public decimal Cost { get; set; }
 
     public AutoStatus Status { get; set; }
 
-    public virtual IEnumerable<Detail> Details { get; } = new List<Detail>();
+    public virtual ICollection<Detail> Details { get; } = new List<Detail>();
 
     public virtual CarModel CarModel { get; set; } = null!;
 
