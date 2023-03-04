@@ -114,4 +114,10 @@ app.UseExceptionHandler(applicationBuilder => applicationBuilder.Run(async conte
 
 app.MapControllers().RequireAuthorization();
 
+using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+{
+    var context = serviceScope.ServiceProvider.GetService<AutoDealerContext>()!;
+    await context.Database.MigrateAsync();
+}
+
 app.Run();
