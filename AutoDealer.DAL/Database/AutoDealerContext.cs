@@ -53,13 +53,13 @@ public partial class AutoDealerContext : DbContext
     public async Task ExecuteSetMarginAsync(int carModelId, DateOnly actsFrom, double margin)
     {
         await Database.ExecuteSqlRawAsync(
-            $"select set_margin(trim_id := {carModelId}, begins_act_from := '{actsFrom}', margin_value := {margin});");
+            $"select set_margin(car_model_id := {carModelId}, begins_act_from := '{actsFrom}', margin_value := {margin});");
     }
 
-    public async Task ExecuteSellAutoAsync(int auto, int client, int employee)
+    public async Task ExecuteSellAutoAsync(int auto, int client, int seller)
     {
         await Database.ExecuteSqlRawAsync(
-            $"select sell_auto(auto := {auto}, client := {client}, employee := {employee});");
+            $" select sell_auto(auto := {auto}, client := {client}, seller := {seller});");
     }
 
     public async Task ExecuteReturnAutoAsync(int auto)
@@ -104,7 +104,7 @@ public partial class AutoDealerContext : DbContext
                 .HasColumnName("assembly_date")
                 .HasDefaultValueSql("now()");
             entity.Property(e => e.Cost).HasColumnName("cost");
-            entity.Property(e => e.IdCarModel).HasColumnName("id_trim");
+            entity.Property(e => e.IdCarModel).HasColumnName("id_car_model");
             entity.Property(e => e.Status)
                 .HasColumnName("status")
                 .HasDefaultValueSql("'assembled'");
@@ -303,7 +303,7 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.StartDate).HasColumnName("start_date");
             entity.Property(e => e.Value)
                 .HasDefaultValueSql("10")
-                .HasColumnName("margin");
+                .HasColumnName("value");
 
             entity.HasOne(d => d.CarModel).WithMany(p => p.Margins)
                 .HasForeignKey(d => d.IdCarModel)
@@ -535,8 +535,14 @@ public partial class AutoDealerContext : DbContext
             new DetailSeries
             {
                 Id = 1,
-                Code = "SDH-242-790.1",
-                Description = "Full completed and assembled automobile"
+                Code = "HAVAL Horizon 250",
+                Description = "Fully completed and assembled automobile"
+            },
+            new DetailSeries
+            {
+                Id = 2,
+                Code = "CHR-81l",
+                Description = "Round car headlight (light)"
             });
 
         modelBuilder.Entity<Supplier>().HasData(
@@ -548,6 +554,20 @@ public partial class AutoDealerContext : DbContext
                 CorrespondentAccount = "30101810600000000957",
                 SettlementAccount = "40817810099910004312",
                 Tin = "123456789000"
+            });
+
+        modelBuilder.Entity<Client>().HasData(
+            new Client
+            {
+                Id = 1,
+                LastName = "Chernaya",
+                FirstName = "Olga",
+                PassportNumber = "1321",
+                PassportSeries = "852852",
+                Birthdate = DateOnly.FromDateTime(DateTime.Parse("01.01.1999")),
+                Birthplace = "г. Москва, Московская обл., г.о. Подольск",
+                PassportIssuer = "МП МРО по России Московской области г.о. Подольск",
+                PassportDepartmentCode = "123-123"
             });
 
         #endregion
