@@ -38,6 +38,9 @@ public class AutoController : DbContextController<Auto>
 
         var details = new List<Detail>();
 
+        var isMissing = false;
+        var missingDetails = new Dictionary<CarModelDetail, int>();
+
         foreach (var carModelDetail in model.CarModelDetails)
         {
             var detailsForModel = Context.Details
@@ -46,17 +49,28 @@ public class AutoController : DbContextController<Auto>
                 .ToArray();
             if (detailsForModel.Length < carModelDetail.Count)
             {
-                var missing = carModelDetail.Count - detailsForModel.Length;
-                var error = new
-                {
-                    message = "Not enough details",
-                    missingCount = missing,
-                    missingDetail = carModelDetail
-                };
-                return BadRequest(error);
+                isMissing = true;
+                var missingCount = carModelDetail.Count - detailsForModel.Length;
+                missingDetails.Add(carModelDetail, missingCount);
             }
 
-            details.AddRange(detailsForModel);
+            if (!isMissing) details.AddRange(detailsForModel);
+        }
+
+        if (isMissing)
+        {
+            var missings = new List<dynamic>();
+            foreach (var (key, value) in missingDetails)
+            {
+                missings.Add(new { count = value, detail = key });
+            }
+
+            var error = new
+            {
+                message = "Not enough details",
+                missedDetails = missings
+            };
+            return BadRequest(error);
         }
 
         var detailsTotalCost = details.Select(detail => detail.Cost).Sum();
