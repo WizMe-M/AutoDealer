@@ -294,11 +294,12 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Margin>(entity =>
         {
-            entity.HasKey(e => new { IdTrim = e.IdCarModel, e.StartDate }).HasName("pk_margins");
+            entity.HasKey(e => e.Id).HasName("pk_margins");
 
             entity.ToTable("margins");
 
-            entity.Property(e => e.IdCarModel).HasColumnName("id_trim");
+            entity.Property(e => e.Id).HasColumnName("id_margin");
+            entity.Property(e => e.IdCarModel).HasColumnName("id_car_model");
             entity.Property(e => e.StartDate).HasColumnName("start_date");
             entity.Property(e => e.Value)
                 .HasDefaultValueSql("10")

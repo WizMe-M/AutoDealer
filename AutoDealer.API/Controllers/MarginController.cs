@@ -58,15 +58,18 @@ public class MarginController : DbContextController<Margin>
     }
 
     [Authorize(Roles = nameof(Post.Seller))]
-    [HttpDelete("delete")]
-    public IActionResult Delete([FromBody] MarginIdentifier identifier)
+    [HttpDelete("delete/{id:int}")]
+    public IActionResult Delete(int id)
     {
-        var found = Context.Margins.FirstOrDefault(margin =>
-            margin.IdCarModel == identifier.CarModelId &&
-            margin.StartDate == identifier.StartsFrom);
+        var found = Context.Margins.FirstOrDefault(margin => margin.Id == id);
 
         if (found is null)
             return NotFound("Margin with such identifying data can't be found");
+
+        var saleExistsLaterThanStartDate =
+            Context.Sales.Any(sale => sale.ExecutionDate >= found.StartDate.ToDateTime());
+        if (saleExistsLaterThanStartDate)
+            return BadRequest("Can't delete margin. It was already involved in the sale");
 
         Context.Margins.Remove(found);
         Context.SaveChanges();

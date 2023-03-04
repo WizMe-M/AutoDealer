@@ -2,6 +2,8 @@
 
 public partial class Margin
 {
+    public int Id { get; set; }
+    
     public int IdCarModel { get; set; }
 
     public DateOnly StartDate { get; set; }
