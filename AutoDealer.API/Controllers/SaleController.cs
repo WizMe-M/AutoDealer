@@ -33,8 +33,18 @@ public class SaleController : DbContextController<Sale>
     public async Task<IActionResult> SellAuto(SaleData saleData)
     {
         await Context.ExecuteSellAutoAsync(saleData.AutoId, saleData.ClientId, saleData.SellerId);
-
-        return Ok("Auto was successfully sold");
+        var found = Context.Sales
+            .Include(sale => sale.Employee)
+            .Include(sale => sale.Client)
+            .Include(sale => sale.Auto)
+            .ThenInclude(auto => auto.CarModel)
+            .ThenInclude(auto => auto.CarModelDetails)
+            .ThenInclude(auto => auto.DetailSeries)
+            .Include(sale => sale.Auto)
+            .ThenInclude(auto => auto.Details)
+            .ThenInclude(detail => detail.DetailSeries)
+            .First(sale => sale.IdAuto == saleData.AutoId);
+        return Ok("Auto was successfully sold", found);
     }
 
     [HttpDelete("return/{autoId:int}")]
