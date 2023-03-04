@@ -62,9 +62,9 @@ public partial class AutoDealerContext : DbContext
             $"select sell_auto(auto := {auto}, client := {client}, employee := {employee});");
     }
 
-    public async Task ExecuteReturnAutoAsync(int auto, DateTime saleTime)
+    public async Task ExecuteReturnAutoAsync(int auto)
     {
-        await Database.ExecuteSqlRawAsync($"select return_auto(auto := {auto}, sale_time := '{saleTime}');");
+        await Database.ExecuteSqlRawAsync($"select return_auto(auto := {auto});");
     }
 
     public async Task ExecuteProcessLadingBillAsync(int contractId)
