@@ -1,4 +1,6 @@
-﻿create or replace function tr_log_contracts_ins() returns trigger
+﻿-- triggers
+
+create or replace function tr_log_contracts_ins() returns trigger
     language plpgsql
 as
 $$
@@ -82,3 +84,5 @@ create or replace trigger log_delete_sale
     on sales
     for each row
 execute function tr_log_sales_del();
+
+-- triggers

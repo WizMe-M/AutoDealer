@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EfCoreDialogsState">
+    <option name="keyValueStorage">
+      <map>
+        <entry key="Common:947be0d2-cbb1-478f-98d4-742f7ded636c:dbContext" value="AutoDealer.DAL.Database.AutoDealerContext" />
+        <entry key="Common:buildConfiguration" value="Debug" />
+        <entry key="Common:idempotent" value="true" />
+        <entry key="Common:noBuild" value="true" />
+        <entry key="Common:noTransactions" value="false" />
+        <entry key="Common:outputFilePath" value="AutoDealer.DAL\scripts\script.sql" />
+        <entry key="Common:outputFolder" value="..\AutoDealer.DAL\Migrations" />
+        <entry key="Common:useDefaultConnection" value="true" />
+      </map>
+    </option>
+  </component>
+</project>

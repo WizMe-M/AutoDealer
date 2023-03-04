@@ -1,15 +1,6 @@
 ﻿-- log functions
-create type log_type as enum ('error', 'normal');
 
-create table logs
-(
-    id       serial primary key,
-    log_time timestamp not null default (now()),
-    log_type log_type  not null default ('normal'::log_type),
-    log_text text      not null
-);
-
-create or replace function log(type log_type, value text) returns void
+create or replace function log(type LogType, value text) returns void
     language plpgsql
 as
 $$
@@ -28,6 +19,7 @@ begin
     values (value);
 end;
 $$;
+
 -- log functions
 
 
@@ -43,7 +35,7 @@ as
 $$
 declare
     auto_cost     decimal;
-    real_status   auto_status;
+    real_status   AutoStatus;
     trim_id       int;
     active_margin record;
 begin
@@ -53,7 +45,7 @@ begin
     from autos
     where id_auto = auto;
 
-    if real_status != 'ready_to_sale' then
+    if real_status != 'ReadyToSale' then
         raise exception 'It is available to sale only "ready to sale" autos! Current status is: %', real_status;
     end if;
 
@@ -73,7 +65,7 @@ begin
     auto_cost = auto_cost * (1 + active_margin.margin / 100.0);
 
     update autos
-    set status = 'sold'::auto_status
+    set status = 'Sold'
     where id_auto = auto;
 
     insert into sales(id_auto, id_client, id_employee, total_sum)
@@ -99,7 +91,7 @@ begin
     into returning_sale;
 
     update autos
-    set status = 'ready_to_sale'
+    set status = 'ReadyToSale'
     where id_auto = auto;
 
     delete
@@ -148,7 +140,7 @@ $$
 declare
     auto_cost   decimal := 0;
     trim_id     int;
-    real_status auto_status;
+    real_status AutoStatus;
     detail_row  record;
 begin
 
@@ -157,7 +149,7 @@ begin
     from autos
     where id_auto = auto;
 
-    if real_status != 'in_assembly' then
+    if real_status != 'InAssembly' then
         raise exception 'It is available to finish assembly only "in_assembly" autos! Current status is: %', real_status;
     end if;
 
@@ -175,7 +167,7 @@ begin
     update autos
     set cost          = auto_cost,
         assembly_date = current_date,
-        status        = 'ready_to_test'
+        status        = 'ReadyToTest'
     where id_auto = auto;
 end;
 $$;
@@ -212,30 +204,3 @@ end;
 $$;
 
 -- normal functions
-
-
--- tests
-insert into clients(first_name, last_name, birthdate, birthplace,
-                    passport_series, passport_number, passport_issuer, department_code)
-values ('Maxim', 'Timkin', '24.10.2002'::date, 'Novosibirsk', '1111', '123456', 'MVD', '100-200');
-
-insert into employees(first_name, last_name, passport_series, passport_number, post)
-values ('Ivan', 'Ivanov', '1234', '132465', 'seller'::post);
-
-insert into lines (name)
-values ('Sunlight');
-
-insert into models (id_line, name)
-values (1, 'Shine');
-
-insert into trims (id_model, code)
-values (1, 'GHSL-777');
-
-insert into autos (id_trim)
-values (1);
-
-select sell_auto(auto := 1, client := 1, employee := 1);
-select return_auto(auto := 1, sale_time := '2023-02-14 17:17:47.135872');
-select set_margin(trim_id := 1, begins_act_from := '24.10.2020', margin_value := 12.5);
-select process_lading_bill(contract := 2);
-select assembly_auto(auto := 1);
