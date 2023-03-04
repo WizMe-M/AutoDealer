@@ -8,7 +8,7 @@ public partial class Sale
 
     public int IdClient { get; set; }
 
-    public int IdEmployee { get; set; }
+    public int IdSeller { get; set; }
 
     public decimal TotalSum { get; set; }
 

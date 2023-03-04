@@ -322,7 +322,7 @@ public partial class AutoDealerContext : DbContext
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("execution_date");
             entity.Property(e => e.IdClient).HasColumnName("id_client");
-            entity.Property(e => e.IdEmployee).HasColumnName("id_employee");
+            entity.Property(e => e.IdSeller).HasColumnName("id_employee");
             entity.Property(e => e.TotalSum).HasColumnName("total_sum");
 
             entity.HasOne(d => d.Auto).WithMany(p => p.Sales)
@@ -336,7 +336,7 @@ public partial class AutoDealerContext : DbContext
                 .HasConstraintName("fk_sales_clients");
 
             entity.HasOne(d => d.Employee).WithMany(p => p.Sales)
-                .HasForeignKey(d => d.IdEmployee)
+                .HasForeignKey(d => d.IdSeller)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("fk_sales_employees");
         });
