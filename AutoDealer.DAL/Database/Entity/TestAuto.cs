@@ -14,10 +14,10 @@ public partial class TestAuto
     public int IdAuto { get; set; }
 
     public DateOnly? CertificationDate { get; set; }
-    
+
     public TestStatus Status { get; set; }
 
     public virtual Auto Auto { get; set; } = null!;
-
-    public virtual Test Test { get; set; } = null!;
+    
+    [JsonIgnore] public virtual Test Test { get; set; } = null!;
 }
