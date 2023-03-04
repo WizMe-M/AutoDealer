@@ -278,18 +278,16 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Log>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("logs_pkey");
+            entity.HasKey(e => e.Time).HasName("logs_pkey");
 
             entity.ToTable("logs");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Text).HasColumnName("log_text");
-            entity.Property(e => e.Type).HasColumnName("log_type").HasDefaultValueSql("'normal'");
 
             entity.Property(e => e.Time)
                 .HasDefaultValueSql("now()")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("log_time");
+
+            entity.Property(e => e.Text).HasColumnName("log_text");
         });
 
         modelBuilder.Entity<Margin>(entity =>
