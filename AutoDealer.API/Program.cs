@@ -28,17 +28,17 @@ builder.Services.AddSwaggerGen(options =>
     options.AddSecurityDefinition(
         JwtBearerDefaults.AuthenticationScheme,
         new OpenApiSecurityScheme
-    {
-        Description = """
+        {
+            Description = """
 JWT Authorization header using the Bearer scheme. 
 Enter 'Bearer' [space] and then your token in the text input below.
 Example: 'Bearer 12345abcdef'
 """,
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = JwtBearerDefaults.AuthenticationScheme
-    });
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = JwtBearerDefaults.AuthenticationScheme
+        });
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -80,7 +80,9 @@ builder.Services.AddAuthentication(options =>
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = jwtConfig.SecretKey,
-            ValidateAudience = false
+            ValidateAudience = false,
+            LifetimeValidator = (notBefore, expires, token, parameters) =>
+                notBefore <= DateTime.UtcNow && expires > DateTime.UtcNow
         };
     });
 

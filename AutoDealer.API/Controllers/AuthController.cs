@@ -16,7 +16,7 @@ public class AuthController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpPost("login")]
+    [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult Login([FromBody] LoginUser loginUser)
@@ -35,11 +35,11 @@ public class AuthController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("me")]
+    [HttpGet("info")]
     public IActionResult MyInfo([FromHeader] string authorization)
     {
         var tokenString = authorization;
-        if (authorization.Contains(JwtBearerDefaults.AuthenticationScheme))
+        if (authorization.Contains(JwtBearerDefaults.AuthenticationScheme, StringComparison.CurrentCultureIgnoreCase))
         {
             var start = JwtBearerDefaults.AuthenticationScheme.Length + 1;
             tokenString = authorization[start..];
@@ -57,7 +57,18 @@ public class AuthController : ControllerBase
         if (user is null)
             return BadRequest("Can't find user by token");
 
-        return Ok(user);
+        var result = new
+        {
+            message = "JWT-token was authorized and decoded",
+            token = new
+            {
+                notBefore = DateTime.SpecifyKind(EpochTime.DateTime((long)token.Payload.Nbf!), DateTimeKind.Utc).ToLocalTime(),
+                expires = DateTime.SpecifyKind(EpochTime.DateTime((long)token.Payload.Exp!), DateTimeKind.Utc).ToLocalTime()
+            },
+            user
+        };
+
+        return Ok(result);
     }
 
     private string CreateJwtToken(User user)
@@ -73,7 +84,7 @@ public class AuthController : ControllerBase
                 new Claim(JwtRegisteredClaimNames.Sub, user.IdEmployee.ToString()),
                 new Claim(ClaimTypes.Role, user.Employee.Post.ToString())
             },
-            expires: now.Add(TimeSpan.FromHours(1)),
+            expires: now.Add(TimeSpan.FromHours(6)),
             signingCredentials: new SigningCredentials(_jwtConfig.SecretKey,
                 SecurityAlgorithms.HmacSha256));
 
