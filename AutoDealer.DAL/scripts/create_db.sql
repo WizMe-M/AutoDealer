@@ -1,16 +1,30 @@
+drop schema if exists public cascade;
+create schema if not exists public;
+
+
 -- schema
 
-create type post as enum
-    ('database_admin', 'assembly_chief', 'purchase_specialist', 'storekeeper', 'seller', 'tester');
+create type Post as enum
+    ('DatabaseAdmin', 'AssemblyChief', 'PurchaseSpecialist', 'Storekeeper', 'Seller', 'Tester');
 
-create type request_status as enum
-    ('sent', 'im_handling', 'closed');
+create type RequestStatus as enum
+    ('Sent', 'InHandling', 'Closed');
 
-create type auto_status as enum
-    ('in_assembly', 'ready_to_test', 'in_test', 'ready_to_sale', 'sold');
+create type AutoStatus as enum
+    ('InAssembly', 'ReadyToTest', 'InTest', 'ReadyToSale', 'Sold');
 
-create type test_status as enum
-    ('not_checked', 'certified', 'defective');
+create type TestStatus as enum
+    ('NotChecked', 'Certified', 'Defective');
+
+create type LogType as enum ('Error', 'Normal');
+
+create table logs
+(
+    id       serial primary key,
+    log_time timestamp not null default (now()),
+    log_type LogType   not null default ('Normal'::LogType),
+    log_text text      not null
+);
 
 create table lines
 (
@@ -104,10 +118,10 @@ create table users
 create table purchase_requests
 (
     id_purchase_requests serial,
-    id_user              int            null,
-    sent_date            timestamp      not null,
-    expected_supply_date date           not null,
-    status               request_status not null default ('sent'::request_status),
+    id_user              int           null,
+    sent_date            timestamp     not null,
+    expected_supply_date date          not null,
+    status               RequestStatus not null default ('Sent'::RequestStatus),
 
     constraint pk_purchase_requests primary key (id_purchase_requests),
     constraint fk_purchase_requests_users foreign key (id_user) references users (id_employee) on delete set null
@@ -172,10 +186,10 @@ create table contract_details
 create table autos
 (
     id_auto       serial,
-    id_trim       int         not null,
-    assembly_date date        null,
-    cost          decimal     null,
-    status        auto_status not null default ('in_assembly'::auto_status),
+    id_trim       int        not null,
+    assembly_date date       null,
+    cost          decimal    null,
+    status        AutoStatus not null default ('InAssembly'::AutoStatus),
 
     constraint pk_autos primary key (id_auto),
     constraint fk_autos_trims foreign key (id_trim) references trims (id_trim),
@@ -235,8 +249,8 @@ create table test_autos
 (
     id_test            int,
     id_auto            int,
-    certification_date date        not null,
-    status             test_status not null default ('not_checked'::test_status),
+    certification_date date       not null,
+    status             TestStatus not null default ('NotChecked'::TestStatus),
 
     constraint pk_test_autos primary key (id_test, id_auto),
     constraint fk_test_autos_tests foreign key (id_test) references tests (id_test),
@@ -273,21 +287,12 @@ create table sales
     constraint fk_sales_clients foreign key (id_client) references clients (id_client) on update restrict on delete restrict,
     constraint fk_sales_employees foreign key (id_employee) references employees (id_employee) on delete set null
 );
+
 -- schema
 
-
 -- log functions
-create type log_type as enum ('error', 'normal');
 
-create table logs
-(
-    id       serial primary key,
-    log_time timestamp not null default (now()),
-    log_type log_type  not null default ('normal'::log_type),
-    log_text text      not null
-);
-
-create or replace function log(type log_type, value text) returns void
+create or replace function log(type LogType, value text) returns void
     language plpgsql
 as
 $$
@@ -306,6 +311,7 @@ begin
     values (value);
 end;
 $$;
+
 -- log functions
 
 
@@ -321,7 +327,7 @@ as
 $$
 declare
     auto_cost     decimal;
-    real_status   auto_status;
+    real_status   AutoStatus;
     trim_id       int;
     active_margin record;
 begin
@@ -331,7 +337,7 @@ begin
     from autos
     where id_auto = auto;
 
-    if real_status != 'ready_to_sale' then
+    if real_status != 'ReadyToSale' then
         raise exception 'It is available to sale only "ready to sale" autos! Current status is: %', real_status;
     end if;
 
@@ -351,7 +357,7 @@ begin
     auto_cost = auto_cost * (1 + active_margin.margin / 100.0);
 
     update autos
-    set status = 'sold'::auto_status
+    set status = 'Sold'
     where id_auto = auto;
 
     insert into sales(id_auto, id_client, id_employee, total_sum)
@@ -377,7 +383,7 @@ begin
     into returning_sale;
 
     update autos
-    set status = 'ready_to_sale'
+    set status = 'ReadyToSale'
     where id_auto = auto;
 
     delete
@@ -426,7 +432,7 @@ $$
 declare
     auto_cost   decimal := 0;
     trim_id     int;
-    real_status auto_status;
+    real_status AutoStatus;
     detail_row  record;
 begin
 
@@ -435,7 +441,7 @@ begin
     from autos
     where id_auto = auto;
 
-    if real_status != 'in_assembly' then
+    if real_status != 'InAssembly' then
         raise exception 'It is available to finish assembly only "in_assembly" autos! Current status is: %', real_status;
     end if;
 
@@ -453,7 +459,7 @@ begin
     update autos
     set cost          = auto_cost,
         assembly_date = current_date,
-        status        = 'ready_to_test'
+        status        = 'ReadyToTest'
     where id_auto = auto;
 end;
 $$;
