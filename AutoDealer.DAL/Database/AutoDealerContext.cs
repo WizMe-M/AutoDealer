@@ -312,7 +312,7 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<Sale>(entity =>
         {
-            entity.HasKey(e => new { e.IdAuto, e.ExecutionDate }).HasName("pk_sales");
+            entity.HasKey(e => e.IdAuto).HasName("pk_sales");
 
             entity.ToTable("sales");
 
