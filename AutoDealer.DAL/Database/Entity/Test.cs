@@ -6,7 +6,7 @@ public partial class Test
 
     public DateOnly StartDate { get; set; }
 
-    public DateOnly EndDate { get; set; }
+    public DateOnly? EndDate { get; set; }
 
     public virtual ICollection<TestAuto> TestAutos { get; } = new List<TestAuto>();
 }
