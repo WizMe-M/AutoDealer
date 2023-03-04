@@ -14,7 +14,7 @@ public partial class Auto
 
     [JsonIgnore] public int IdCarModel { get; set; }
 
-    public DateOnly AssemblyDate { get; set; }
+    public DateTime AssemblyDate { get; set; }
 
     public decimal Cost { get; set; }
 

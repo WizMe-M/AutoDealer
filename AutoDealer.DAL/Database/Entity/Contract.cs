@@ -8,7 +8,7 @@ public partial class Contract
 
     [JsonIgnore] public int? IdSupplier { get; set; }
 
-    public DateOnly ConclusionDate { get; set; }
+    public DateTime ConclusionDate { get; set; }
 
     public DateOnly SupplyDate { get; set; }
 

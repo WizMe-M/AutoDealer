@@ -102,7 +102,8 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id_auto");
             entity.Property(e => e.AssemblyDate)
                 .HasColumnName("assembly_date")
-                .HasDefaultValueSql("now()");
+                .HasDefaultValueSql("now() at time zone 'utc'")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.Cost).HasColumnName("cost");
             entity.Property(e => e.IdCarModel).HasColumnName("id_car_model");
             entity.Property(e => e.Status)
@@ -176,8 +177,9 @@ public partial class AutoDealerContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id_contract");
             entity.Property(e => e.ConclusionDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnName("conclusion_date");
+                .HasDefaultValueSql("now() at time zone 'utc'")
+                .HasColumnName("conclusion_date")
+                .HasColumnType("timestamp with time zone");
             entity.Property(e => e.IdStorekeeper).HasColumnName("id_storekeeper");
             entity.Property(e => e.IdSupplier).HasColumnName("id_supplier");
             entity.Property(e => e.LadingBillIssueDate).HasColumnName("lading_bill_issue_date");
@@ -283,8 +285,8 @@ public partial class AutoDealerContext : DbContext
             entity.ToTable("logs");
 
             entity.Property(e => e.Time)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
+                .HasDefaultValueSql("now() at time zone 'utc'")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("log_time");
 
             entity.Property(e => e.Text).HasColumnName("log_text");
@@ -317,8 +319,8 @@ public partial class AutoDealerContext : DbContext
 
             entity.Property(e => e.IdAuto).HasColumnName("id_auto");
             entity.Property(e => e.ExecutionDate)
-                .HasDefaultValueSql("now()")
-                .HasColumnType("timestamp without time zone")
+                .HasDefaultValueSql("now() at time zone 'utc'")
+                .HasColumnType("timestamp with time zone")
                 .HasColumnName("execution_date");
             entity.Property(e => e.IdClient).HasColumnName("id_client");
             entity.Property(e => e.IdSeller).HasColumnName("id_employee");
