@@ -49,7 +49,7 @@ public class StoreController : DbContextController<Contract>
         var details = Context.Details
             .Include(detail => detail.DetailSeries)
             .ToArray();
-        return Ok(message: "All details", data: details);
+        return Ok("All details", details);
     }
 
     [HttpGet("details/store")]
@@ -59,7 +59,7 @@ public class StoreController : DbContextController<Contract>
             .Include(detail => detail.DetailSeries)
             .Where(detail => detail.IdAuto == null)
             .ToArray();
-        return Ok(message: "Details in store", data: details);
+        return Ok("Details in store", details);
     }
 
     [HttpGet("details/auto")]
@@ -69,7 +69,7 @@ public class StoreController : DbContextController<Contract>
             .Include(detail => detail.DetailSeries)
             .Where(detail => detail.IdAuto != null)
             .ToArray();
-        return Ok(message: "Assembled in auto details", data: details);
+        return Ok("Assembled in auto details", details);
     }
 
     private Contract? Find(int id)

@@ -15,14 +15,14 @@ public class AutoController : DbContextController<Auto>
             .Include(auto => auto.CarModel)
             .Include(auto => auto.Details)
             .ThenInclude(detail => detail.DetailSeries);
-        return Ok(autos);
+        return Ok("All autos listed", autos);
     }
 
     [HttpGet("{id:int}")]
     public IActionResult Get(int id)
     {
         var found = Context.Autos.FirstOrDefault(auto => auto.Id == id);
-        return found is { } ? Ok(found) : NotFound("Auto with such ID doesn't exist");
+        return found is { } ? Ok("Found auto", found) : NotFound("Auto with such ID doesn't exist");
     }
 
     [HttpPost("assembly/{carModelId:int}")]
@@ -73,7 +73,7 @@ public class AutoController : DbContextController<Auto>
         await Context.SaveChangesAsync();
         await LoadReferencesAsync(auto);
 
-        return Ok(message: "Auto was assembled", data: auto);
+        return Ok("Auto was assembled", auto);
     }
 
     protected override async Task LoadReferencesAsync(Auto entity)
