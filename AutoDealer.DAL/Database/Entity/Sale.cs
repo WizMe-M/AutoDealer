@@ -12,9 +12,9 @@ public partial class Sale
 
     public decimal TotalSum { get; set; }
 
-    public virtual Auto IdAutoNavigation { get; set; } = null!;
+    public virtual Auto Auto { get; set; } = null!;
 
-    public virtual Client IdClientNavigation { get; set; } = null!;
+    public virtual Client Client { get; set; } = null!;
 
-    public virtual Employee IdEmployeeNavigation { get; set; } = null!;
+    public virtual Employee Employee { get; set; } = null!;
 }

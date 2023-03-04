@@ -325,17 +325,17 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.IdEmployee).HasColumnName("id_employee");
             entity.Property(e => e.TotalSum).HasColumnName("total_sum");
 
-            entity.HasOne(d => d.IdAutoNavigation).WithMany(p => p.Sales)
+            entity.HasOne(d => d.Auto).WithMany(p => p.Sales)
                 .HasForeignKey(d => d.IdAuto)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_sales_autos");
 
-            entity.HasOne(d => d.IdClientNavigation).WithMany(p => p.Sales)
+            entity.HasOne(d => d.Client).WithMany(p => p.Sales)
                 .HasForeignKey(d => d.IdClient)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_sales_clients");
 
-            entity.HasOne(d => d.IdEmployeeNavigation).WithMany(p => p.Sales)
+            entity.HasOne(d => d.Employee).WithMany(p => p.Sales)
                 .HasForeignKey(d => d.IdEmployee)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("fk_sales_employees");
