@@ -8,15 +8,12 @@ public class CarModelValidator : AbstractValidator<CarModelData>
     {
         RuleFor(data => data.Line)
             .NotEmpty()
-            .MinimumLength(3)
-            .MaximumLength(40);
+            .Length(3, 40);
         RuleFor(data => data.Model)
             .NotEmpty()
-            .MinimumLength(3)
-            .MaximumLength(40);
+            .Length(3, 40);
         RuleFor(data => data.Code)
             .NotEmpty()
-            .MinimumLength(3)
-            .MaximumLength(10);
+            .Length(3, 10);
     }
 }
