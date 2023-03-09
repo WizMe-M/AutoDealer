@@ -45,14 +45,14 @@ public class FullNameValidator : AbstractValidator<FullName>
         RuleFor(data => data.FirstName)
             .NotEmpty()
             .Length(0, 30)
-            .Matches(ValidationRegex.NameRegex);
+            .Matches(UserRegex.NameRegex);
         RuleFor(data => data.LastName)
             .NotEmpty()
             .Length(0, 30)
-            .Matches(ValidationRegex.NameRegex);
+            .Matches(UserRegex.NameRegex);
         RuleFor(data => data.MiddleName)
             .Length(0, 30).When(name => name.MiddleName is { })
-            .Matches(ValidationRegex.NameRegex).When(name => name.MiddleName is { });
+            .Matches(UserRegex.NameRegex).When(name => name.MiddleName is { });
     }
 }
 
@@ -74,11 +74,11 @@ public class PassportValidator : AbstractValidator<Passport>
     {
         RuleFor(passport => passport.Series)
             .NotEmpty()
-            .Matches(ValidationRegex.PassportSeriesRegex);
+            .Matches(PassportRegex.SeriesRegex);
 
         RuleFor(passport => passport.Number)
             .NotEmpty()
-            .Matches(ValidationRegex.PassportNumberRegex);
+            .Matches(PassportRegex.NumberRegex);
     }
 }
 
@@ -88,11 +88,11 @@ public class FullPassportValidator : AbstractValidator<FullPassport>
     {
         RuleFor(passport => passport.Series)
             .NotEmpty()
-            .Matches(ValidationRegex.PassportSeriesRegex);
+            .Matches(PassportRegex.SeriesRegex);
 
         RuleFor(passport => passport.Number)
             .NotEmpty()
-            .Matches(ValidationRegex.PassportNumberRegex);
+            .Matches(PassportRegex.NumberRegex);
 
         RuleFor(passport => passport.Issuer)
             .NotEmpty()
@@ -100,7 +100,7 @@ public class FullPassportValidator : AbstractValidator<FullPassport>
 
         RuleFor(passport => passport.DepartmentCode)
             .NotEmpty()
-            .Matches(ValidationRegex.PassportDepartmentCodeRegex);
+            .Matches(PassportRegex.DepartmentCodeRegex);
     }
 }
 

@@ -13,6 +13,6 @@ public class UserDataValidator : AbstractValidator<UserData>
             .EmailAddress();
         RuleFor(data => data.Password)
             .NotEmpty()
-            .Matches(ValidationRegex.PasswordRegex);
+            .Matches(UserRegex.PasswordRegex);
     }
 }
