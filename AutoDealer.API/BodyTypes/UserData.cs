@@ -1,6 +1,4 @@
-﻿using AutoDealer.API.Validation;
-
-namespace AutoDealer.API.BodyTypes;
+﻿namespace AutoDealer.API.BodyTypes;
 
 public record UserData(int EmployeeId, string Email, string Password);
 
@@ -15,6 +13,6 @@ public class UserDataValidator : AbstractValidator<UserData>
             .EmailAddress();
         RuleFor(data => data.Password)
             .NotEmpty()
-            .Matches(ValidationConstants.PasswordPattern);
+            .Matches(ValidationRegex.PasswordRegex);
     }
 }

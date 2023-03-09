@@ -10,6 +10,7 @@ global using AutoDealer.API.BodyTypes;
 global using AutoDealer.API.Configs;
 global using AutoDealer.API.Extensions;
 global using AutoDealer.API.Services;
+global using AutoDealer.API.Validation;
 global using AutoDealer.DAL.Database;
 global using AutoDealer.DAL.Database.Entity;
 global using FluentValidation;
