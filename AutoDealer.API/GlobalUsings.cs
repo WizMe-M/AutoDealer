@@ -12,6 +12,8 @@ global using AutoDealer.API.Extensions;
 global using AutoDealer.API.Services;
 global using AutoDealer.DAL.Database;
 global using AutoDealer.DAL.Database.Entity;
+global using FluentValidation;
+global using FluentValidation.AspNetCore;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Diagnostics;

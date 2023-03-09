@@ -58,6 +58,13 @@ Example: 'Bearer 12345abcdef'
     });
 });
 
+builder.Services.AddFluentValidationAutoValidation(configuration =>
+{
+    configuration.DisableDataAnnotationsValidation = true;
+});
+
+builder.Services.AddValidatorsFromAssemblyContaining<Program>(lifetime: ServiceLifetime.Singleton);
+
 builder.Services.AddRouting(options =>
 {
     options.LowercaseUrls = true;
