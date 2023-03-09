@@ -12,17 +12,22 @@ public static partial class ValidationRegex
 
     public static readonly Regex PassportNumberRegex = CreatePassportNumberRegex();
 
-    [GeneratedRegex(@"^\d{4}$", RegexOptions.Compiled | RegexOptions.Singleline)]
-    private static partial Regex CreatePassportSeriesRegex();
-
-    [GeneratedRegex(@"^\d{6}$", RegexOptions.Compiled | RegexOptions.Singleline)]
-    private static partial Regex CreatePassportNumberRegex();
+    public static readonly Regex PassportDepartmentCodeRegex = CreatePassportDepartmentCodeRegex();
 
     [GeneratedRegex(
         @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~!@#$%^&*+\-=])(?!.*\s).{8,}$",
         RegexOptions.Compiled | RegexOptions.Singleline)]
     private static partial Regex CreatePasswordRegex();
 
-    [GeneratedRegex("^[А-ЯЁ]{1}[а-яё]+$", RegexOptions.Compiled | RegexOptions.Singleline)]
+    [GeneratedRegex("^[А-ЯЁ][а-яё]+$", RegexOptions.Compiled | RegexOptions.Singleline)]
     private static partial Regex CreateNameRegex();
+
+    [GeneratedRegex(@"^\d{4}$", RegexOptions.Compiled | RegexOptions.Singleline)]
+    private static partial Regex CreatePassportSeriesRegex();
+
+    [GeneratedRegex(@"^\d{6}$", RegexOptions.Compiled | RegexOptions.Singleline)]
+    private static partial Regex CreatePassportNumberRegex();
+
+    [GeneratedRegex(@"^\d{3}-\d{3}$", RegexOptions.Compiled | RegexOptions.Singleline)]
+    private static partial Regex CreatePassportDepartmentCodeRegex();
 }
