@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace AutoDealer.API.Validation;
+﻿namespace AutoDealer.API.Validation;
 
 public static partial class ValidationRegex
 {
