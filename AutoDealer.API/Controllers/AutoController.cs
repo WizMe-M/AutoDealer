@@ -1,4 +1,6 @@
-﻿namespace AutoDealer.API.Controllers;
+﻿using AutoDealer.API.Sort;
+
+namespace AutoDealer.API.Controllers;
 
 [ApiController]
 [Route("autos")]
@@ -9,12 +11,25 @@ public class AutoController : DbContextController<Auto>
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public IActionResult GetAll(AutoSort? sort)
     {
         var autos = Context.Autos
             .Include(auto => auto.CarModel)
             .Include(auto => auto.Details)
-            .ThenInclude(detail => detail.DetailSeries);
+            .ThenInclude(detail => detail.DetailSeries)
+            .ToArray();
+
+        autos = (sort switch
+        {
+            null or AutoSort.IdAsc => autos.OrderBy(auto => auto.Id),
+            AutoSort.IdDesc => autos.OrderByDescending(auto => auto.Id),
+            AutoSort.AssemblyDateAsc => autos.OrderBy(auto => auto.AssemblyDate),
+            AutoSort.AssemblyDateDesc => autos.OrderByDescending(auto => auto.AssemblyDate),
+            AutoSort.CostAsc => autos.OrderBy(auto => auto.Cost),
+            AutoSort.CostDesc => autos.OrderByDescending(auto => auto.Cost),
+            _ => throw new ArgumentOutOfRangeException(nameof(sort), sort, null)
+        }).ToArray();
+
         return Ok("All autos listed", autos);
     }
 
