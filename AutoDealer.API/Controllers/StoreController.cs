@@ -18,8 +18,6 @@ public class StoreController : DbContextController<Contract>
             .ThenInclude(employee => employee!.User)
             .Include(contract => contract.ContractDetails)
             .ThenInclude(detail => detail.DetailSeries)
-            .Include(contract => contract.Details)
-            .ThenInclude(detail => detail.DetailSeries)
             .Where(contract => contract.LadingBillIssueDate != null)
             .ToArray();
 
@@ -94,9 +92,6 @@ public class StoreController : DbContextController<Contract>
             .Include(employee => employee.User).LoadAsync();
         await Context.Contracts.Entry(entity)
             .Collection(contract => contract.ContractDetails).Query()
-            .Include(detail => detail.DetailSeries).LoadAsync();
-        await Context.Contracts.Entry(entity)
-            .Collection(contract => contract.Details).Query()
             .Include(detail => detail.DetailSeries).LoadAsync();
     }
 }
