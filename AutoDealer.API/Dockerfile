@@ -5,9 +5,14 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["AutoDealer.API/AutoDealer.API.csproj", "AutoDealer.API/"]
+ADD ["/AutoDealer.DAL/AutoDealer.DAL.csproj", "AutoDealer.DAL/"]
+RUN dotnet restore "AutoDealer.DAL/AutoDealer.DAL.csproj"
+COPY ./AutoDealer.DAL/ ./AutoDealer.DAL/
+RUN dotnet build "AutoDealer.DAL/AutoDealer.DAL.csproj" -c Release -o /app/build
+
+ADD ["/AutoDealer.API/AutoDealer.API.csproj", "AutoDealer.API/"]
 RUN dotnet restore "AutoDealer.API/AutoDealer.API.csproj"
-COPY . .
+COPY ./AutoDealer.API/ ./AutoDealer.API/
 WORKDIR "/src/AutoDealer.API"
 RUN dotnet build "AutoDealer.API.csproj" -c Release -o /app/build
 
