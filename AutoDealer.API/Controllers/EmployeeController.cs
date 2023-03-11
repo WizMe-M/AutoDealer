@@ -11,9 +11,12 @@ public class EmployeeController : DbContextController<Employee>
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Employee>), StatusCodes.Status200OK)]
-    public IActionResult GetAll()
+    public IActionResult GetAll(Post? filter)
     {
-        var employees = Context.Employees.ToArray();
+        var employees = filter is { }
+            ? Context.Employees.Where(employee => employee.Post == filter).ToArray()
+            : Context.Employees.ToArray();
+
         return Ok("All employees listed", employees);
     }
 
