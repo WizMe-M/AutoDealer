@@ -1,4 +1,6 @@
-﻿namespace AutoDealer.API.Controllers;
+﻿using AutoDealer.API.Sort;
+
+namespace AutoDealer.API.Controllers;
 
 [Authorize]
 [ApiController]
@@ -42,31 +44,61 @@ public class StoreController : DbContextController<Contract>
     }
 
     [HttpGet("details")]
-    public IActionResult GetDetails()
+    public IActionResult GetDetails(DetailSort? sort)
     {
         var details = Context.Details
             .Include(detail => detail.DetailSeries)
             .ToArray();
+
+        details = (sort switch
+        {
+            null or DetailSort.IdAsc => details.OrderBy(detail => detail.Id),
+            DetailSort.IdDesc => details.OrderByDescending(detail => detail.Id),
+            DetailSort.CostAsc => details.OrderBy(detail => detail.Cost),
+            DetailSort.CostDesc => details.OrderByDescending(detail => detail.Cost),
+            _ => throw new ArgumentOutOfRangeException(nameof(sort), sort, null)
+        }).ToArray();
+
         return Ok("All details", details);
     }
 
     [HttpGet("details/store")]
-    public IActionResult GetDetailsInStore()
+    public IActionResult GetDetailsInStore(DetailSort? sort)
     {
         var details = Context.Details
             .Include(detail => detail.DetailSeries)
             .Where(detail => detail.IdAuto == null)
             .ToArray();
+
+        details = (sort switch
+        {
+            null or DetailSort.IdAsc => details.OrderBy(detail => detail.Id),
+            DetailSort.IdDesc => details.OrderByDescending(detail => detail.Id),
+            DetailSort.CostAsc => details.OrderBy(detail => detail.Cost),
+            DetailSort.CostDesc => details.OrderByDescending(detail => detail.Cost),
+            _ => throw new ArgumentOutOfRangeException(nameof(sort), sort, null)
+        }).ToArray();
+
         return Ok("Details in store", details);
     }
 
     [HttpGet("details/auto")]
-    public IActionResult GetUsedDetails()
+    public IActionResult GetUsedDetails(DetailSort? sort)
     {
         var details = Context.Details
             .Include(detail => detail.DetailSeries)
             .Where(detail => detail.IdAuto != null)
             .ToArray();
+
+        details = (sort switch
+        {
+            null or DetailSort.IdAsc => details.OrderBy(detail => detail.Id),
+            DetailSort.IdDesc => details.OrderByDescending(detail => detail.Id),
+            DetailSort.CostAsc => details.OrderBy(detail => detail.Cost),
+            DetailSort.CostDesc => details.OrderByDescending(detail => detail.Cost),
+            _ => throw new ArgumentOutOfRangeException(nameof(sort), sort, null)
+        }).ToArray();
+
         return Ok("Assembled in auto details", details);
     }
 
