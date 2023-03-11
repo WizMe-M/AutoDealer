@@ -1,13 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{4AF450B2-C5FC-433F-8362-7707A023660C}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{FD8489E4-3824-4A02-AEA3-485C89B0FF25}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{22FE6304-984B-4C2B-B7AB-529D34536BE7}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{8B63C630-B5BC-4265-8531-46682B451368}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDealer.WebApp", "AutoDealer.WebApp\AutoDealer.WebApp.csproj", "{209FD055-D504-4FDD-8B0A-525D30A3750C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDealer.DAL", "AutoDealer.DAL\AutoDealer.DAL.csproj", "{947BE0D2-CBB1-478F-98D4-742F7DED636C}"
@@ -20,9 +12,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{209FD055-D504-4FDD-8B0A-525D30A3750C} = {22FE6304-984B-4C2B-B7AB-529D34536BE7}
-		{947BE0D2-CBB1-478F-98D4-742F7DED636C} = {4AF450B2-C5FC-433F-8362-7707A023660C}
-		{C7EE6DD7-B7FB-4B0B-99E8-D5B7BFC924D1} = {4AF450B2-C5FC-433F-8362-7707A023660C}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{209FD055-D504-4FDD-8B0A-525D30A3750C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
