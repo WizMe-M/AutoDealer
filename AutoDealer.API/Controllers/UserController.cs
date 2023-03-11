@@ -13,7 +13,6 @@ public class UserController : DbContextController<User>
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<User>), StatusCodes.Status200OK)]
     public IActionResult GetAll()
     {
         var users = Context.Users.Include(user => user.Employee).ToArray();
@@ -21,21 +20,15 @@ public class UserController : DbContextController<User>
     }
 
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult GetById(int id)
     {
         var user = Find(id);
         return user is { }
             ? Ok("User found", user)
-            : NotFound("User with such ID doesn't exist");
+            : Problem(detail: "User with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
     }
 
     [HttpPost("create")]
-    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateUser([FromBody] UserData userData)
     {
         var hashedPassword = _hashService.HashPassword(userData.Password);
@@ -54,13 +47,11 @@ public class UserController : DbContextController<User>
     }
 
     [HttpPatch("{id:int}/change-password")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> ChangePassword(int id, [FromBody] string password)
     {
         var found = Find(id);
-        if (found is null) return NotFound("User with such id doesn't exist");
+        if (found is null)
+            return Problem(detail: "User with such id doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         var hash = _hashService.HashPassword(password);
         found.PasswordHash = hash;
@@ -72,15 +63,14 @@ public class UserController : DbContextController<User>
     }
 
     [HttpDelete("{id:int}/delete")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
         var found = Find(id);
-        if (found is null) return NotFound("User with such id doesn't exist");
+        if (found is null)
+            return Problem(detail: "User with such id doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
-        if (found.Deleted) return BadRequest("User is already deleted");
+        if (found.Deleted)
+            return Problem(detail: "User is already deleted", statusCode: StatusCodes.Status400BadRequest);
         found.Deleted = true;
         Context.Users.Update(found);
         await Context.SaveChangesAsync();
@@ -90,15 +80,17 @@ public class UserController : DbContextController<User>
     }
 
     [HttpPatch("{id:int}/restore")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Restore(int id)
     {
         var found = Find(id);
-        if (found is null) return NotFound("User with such id doesn't exist");
+        switch (found)
+        {
+            case null:
+                return Problem(detail: "User with such id doesn't exist", statusCode: StatusCodes.Status404NotFound);
+            case { Deleted: true }:
+                return Problem(detail: "User is not deleted", statusCode: StatusCodes.Status400BadRequest);
+        }
 
-        if (!found.Deleted) return BadRequest("User is not deleted");
         found.Deleted = false;
         Context.Users.Update(found);
         await Context.SaveChangesAsync();

@@ -50,7 +50,9 @@ public class AutoController : DbContextController<Auto>
     public IActionResult Get(int id)
     {
         var found = Context.Autos.FirstOrDefault(auto => auto.Id == id);
-        return found is { } ? Ok("Found auto", found) : NotFound("Auto with such ID doesn't exist");
+        return found is { }
+            ? Ok("Found auto", found)
+            : Problem(detail: "Auto with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
     }
 
     [HttpPost("assembly/{carModelId:int}")]
@@ -62,7 +64,7 @@ public class AutoController : DbContextController<Auto>
             .FirstOrDefault(carModel => carModel.Id == carModelId);
 
         if (model is null)
-            return NotFound("Car model with such ID doesn't found");
+            return Problem(detail: "Car model with such ID doesn't found", statusCode: StatusCodes.Status404NotFound);
 
         var details = new List<Detail>();
 
@@ -97,8 +99,8 @@ public class AutoController : DbContextController<Auto>
             {
                 message = "Not enough details",
                 missedDetails = missings
-            };
-            return BadRequest(error);
+            }.ToString();
+            return Problem(detail: error, statusCode: StatusCodes.Status400BadRequest);
         }
 
         var detailsTotalCost = details.Select(detail => detail.Cost).Sum();

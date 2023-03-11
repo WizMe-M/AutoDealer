@@ -22,7 +22,7 @@ public class SupplierController : DbContextController<Supplier>
         var found = Find(id);
         return found is { }
             ? Ok("Supplier found", found)
-            : NotFound("Supplier with such ID doesn't exist");
+            : Problem(detail: "Supplier with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
     }
 
     [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
@@ -49,7 +49,8 @@ public class SupplierController : DbContextController<Supplier>
     public IActionResult ChangeAddress(int id, [FromBody] Addresses addresses)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Supplier with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Supplier with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         found.LegalAddress = addresses.Legal;
         found.PostalAddress = addresses.Postal;
@@ -65,7 +66,8 @@ public class SupplierController : DbContextController<Supplier>
     public IActionResult ChangeAccount(int id, [FromBody] Accounts accounts)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Supplier with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Supplier with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         found.CorrespondentAccount = accounts.Correspondent;
         found.SettlementAccount = accounts.Settlement;
@@ -81,7 +83,8 @@ public class SupplierController : DbContextController<Supplier>
     public IActionResult ChangeTin(int id, [FromBody] string tin)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Supplier with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Supplier with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         found.Tin = tin;
 
@@ -96,7 +99,8 @@ public class SupplierController : DbContextController<Supplier>
     public IActionResult UpdateData(int id, [FromBody] SupplierData data)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Supplier with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Supplier with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         found.LegalAddress = data.Addresses.Legal;
         found.PostalAddress = data.Addresses.Postal;
@@ -115,7 +119,8 @@ public class SupplierController : DbContextController<Supplier>
     public IActionResult Delete(int id)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Supplier with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Supplier with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         Context.Suppliers.Remove(found);
         Context.SaveChanges();

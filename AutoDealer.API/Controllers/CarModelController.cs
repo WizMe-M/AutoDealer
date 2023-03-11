@@ -41,7 +41,7 @@ public class CarModelController : DbContextController<CarModel>
         var found = Find(id);
         return found is { }
             ? Ok("Car model found", found)
-            : NotFound("Car model with such ID doesn't exist");
+            : Problem(detail: "Car model with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
     }
 
     [Authorize(Roles = nameof(Post.AssemblyChief))]
@@ -67,7 +67,8 @@ public class CarModelController : DbContextController<CarModel>
     public async Task<IActionResult> ChangeModelName(int id, [FromBody] CarModelData data)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Car model with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Car model with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         found.LineName = data.Line;
         found.ModelName = data.Model;
@@ -85,11 +86,13 @@ public class CarModelController : DbContextController<CarModel>
     public async Task<IActionResult> SetDetailsForTrim(int id, [FromBody] IEnumerable<DetailCount> detailCountPairs)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Car model with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Car model with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         var details = detailCountPairs as DetailCount[] ?? detailCountPairs.ToArray();
         if (!ContainsUniqueDetails(details))
-            return BadRequest("Array of details for trims references on several identical details");
+            return Problem(detail: "Array of details for trims references on several identical details",
+                statusCode: StatusCodes.Status400BadRequest);
 
         found.CarModelDetails.Clear();
 
@@ -114,7 +117,8 @@ public class CarModelController : DbContextController<CarModel>
     public IActionResult Delete(int id)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Car model with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Car model with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         Context.CarModels.Remove(found);
         Context.SaveChanges();

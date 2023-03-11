@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -111,12 +113,14 @@ app.UseAuthorization();
 app.UseExceptionHandler(applicationBuilder => applicationBuilder.Run(async context =>
 {
     var exception = context.Features.Get<IExceptionHandlerPathFeature>()!.Error;
-    var response = new
-    {
-        error = exception.Message,
-        innerException = exception.InnerException?.Message
-    };
-    await context.Response.WriteAsJsonAsync(response);
+    var problemResponse = new ProblemDetails
+        {
+            Title = $"Caught an exception while proceeding request. {exception.Message}",
+            Detail = exception.InnerException?.Message,
+            Status = StatusCodes.Status400BadRequest,
+            Type = "https://www.rfc-editor.org/rfc/rfc7231#section-6.5.1",
+        };
+    await context.Response.WriteAsJsonAsync(problemResponse);
 }));
 
 app.MapControllers().RequireAuthorization();

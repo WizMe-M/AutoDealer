@@ -35,7 +35,7 @@ public class StoreController : DbContextController<Contract>
             return NotFound("Contract with such ID doesn't exist");
 
         if (found.LadingBillIssueDate is { })
-            return BadRequest("Lading bill for such supply was already processed");
+            return Problem("Lading bill for such supply was already processed");
 
         await Context.ExecuteProcessLadingBillAsync(found.Id);
         await LoadReferencesAsync(found);
