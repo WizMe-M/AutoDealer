@@ -11,13 +11,26 @@ public class AutoController : DbContextController<Auto>
     }
 
     [HttpGet]
-    public IActionResult GetAll(AutoSort? sort)
+    public IActionResult GetAll(AutoSort? sort, AutoStatus? filter)
     {
-        var autos = Context.Autos
-            .Include(auto => auto.CarModel)
-            .Include(auto => auto.Details)
-            .ThenInclude(detail => detail.DetailSeries)
-            .ToArray();
+        Auto[] autos;
+        if (filter is { })
+        {
+            autos = Context.Autos
+                .Include(auto => auto.CarModel)
+                .Include(auto => auto.Details)
+                .ThenInclude(detail => detail.DetailSeries)
+                .Where(auto => auto.Status == filter)
+                .ToArray();
+        }
+        else
+        {
+            autos = Context.Autos
+                .Include(auto => auto.CarModel)
+                .Include(auto => auto.Details)
+                .ThenInclude(detail => detail.DetailSeries)
+                .ToArray();
+        }
 
         autos = (sort switch
         {
