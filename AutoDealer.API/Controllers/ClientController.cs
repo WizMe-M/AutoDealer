@@ -22,7 +22,7 @@ public class ClientController : DbContextController<Client>
         var client = Find(id);
         return client is { }
             ? Ok("Client found", client)
-            : NotFound("Client with such ID doesn't exist");
+            : Problem(detail: "Client with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
     }
 
     [Authorize(Roles = nameof(Post.Seller))]
@@ -46,7 +46,9 @@ public class ClientController : DbContextController<Client>
             emp.PassportNumber == client.PassportNumber &&
             emp.PassportSeries == client.PassportSeries) is { };
 
-        if (foundWithPassport) return BadRequest("There is already client with set passport data");
+        if (foundWithPassport)
+            return Problem(detail: "There is already client with set passport data",
+                statusCode: StatusCodes.Status400BadRequest);
 
         Context.Clients.Add(client);
         Context.SaveChanges();
@@ -59,7 +61,8 @@ public class ClientController : DbContextController<Client>
     public IActionResult UpdateFullName(int id, [FromBody] FullName fullName)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Client with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Client with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         found.FirstName = fullName.FirstName;
         found.LastName = fullName.LastName;
@@ -75,7 +78,8 @@ public class ClientController : DbContextController<Client>
     public IActionResult UpdateBirthData(int id, [FromBody] BirthData birthData)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Client with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Client with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         found.Birthplace = birthData.Birthplace;
         found.Birthdate = birthData.Birthdate;
@@ -90,14 +94,16 @@ public class ClientController : DbContextController<Client>
     public IActionResult UpdatePassport(int id, [FromBody] FullPassport passport)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Client with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Client with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         var foundWithPassport = Context.Clients.FirstOrDefault(emp =>
             emp.Id != id
             && emp.PassportSeries == passport.Series
             && emp.PassportNumber == passport.Number) is { };
         if (foundWithPassport)
-            return BadRequest("There is already another client with set passport data");
+            return Problem(detail: "There is already another client with set passport data",
+                statusCode: StatusCodes.Status400BadRequest);
 
         found.PassportSeries = passport.Series;
         found.PassportNumber = passport.Number;
@@ -113,13 +119,14 @@ public class ClientController : DbContextController<Client>
     [HttpDelete("{id:int}/delete")]
     public IActionResult Delete(int id)
     {
-        var client = Find(id);
-        if (client is null) return NotFound("Client with such ID doesn't exist");
+        var found = Find(id);
+        if (found is null)
+            return Problem(detail: "Client with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
-        Context.Clients.Remove(client);
+        Context.Clients.Remove(found);
         Context.SaveChanges();
 
-        return Ok("Client was deleted", client);
+        return Ok("Client was deleted", found);
     }
 
     private Client? Find(int id) => Context.Clients.FirstOrDefault(e => e.Id == id);

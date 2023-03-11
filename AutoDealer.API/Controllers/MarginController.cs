@@ -99,12 +99,12 @@ public class MarginController : DbContextController<Margin>
         var found = Context.Margins.FirstOrDefault(margin => margin.Id == id);
 
         if (found is null)
-            return NotFound("Margin with such identifying data can't be found");
+            return Problem(detail:"Margin with such identifying data can't be found", statusCode:StatusCodes.Status404NotFound);
 
         var saleExistsLaterThanStartDate =
             Context.Sales.Any(sale => sale.ExecutionDate >= found.StartDate.ToDateTime());
         if (saleExistsLaterThanStartDate)
-            return BadRequest("Can't delete margin. It was already involved in the sale");
+            return Problem(detail:"Can't delete margin. It was already involved in the sale", statusCode:StatusCodes.Status400BadRequest);
 
         Context.Margins.Remove(found);
         Context.SaveChanges();

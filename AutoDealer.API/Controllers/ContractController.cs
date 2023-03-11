@@ -31,7 +31,7 @@ public class ContractController : DbContextController<Contract>
         var found = Find(id);
         return found is { }
             ? Ok("Contract found", found)
-            : NotFound("Contract with such ID doesn't exist");
+            : Problem(detail: "Contract with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
     }
 
     [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
@@ -40,17 +40,17 @@ public class ContractController : DbContextController<Contract>
     {
         var supplier = Context.Suppliers.FirstOrDefault(supplier => supplier.Id == data.SupplierId);
         if (supplier is null)
-            return NotFound("Referenced supplier doesn't exist");
+            return Problem(detail: "Referenced supplier doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         var employee = Context.Employees.FirstOrDefault(employee => employee.Id == data.StorekeeperId);
         if (employee is null)
-            return NotFound("Referenced employee doesn't exist");
+            return Problem(detail: "Referenced employee doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         if (!ContainsUniqueDetails(data.Details))
-            return BadRequest("Contract contains duplicated details");
+            return Problem(detail: "Contract contains duplicated details", statusCode: StatusCodes.Status400BadRequest);
 
         if (employee is { Post: not Post.Storekeeper })
-            return BadRequest("Employee should be storekeeper");
+            return Problem(detail: "Employee should be storekeeper", statusCode: StatusCodes.Status400BadRequest);
 
         var contract = new Contract
         {
@@ -86,14 +86,15 @@ public class ContractController : DbContextController<Contract>
     public async Task<IActionResult> Reschedule(int id, [FromBody] DateOnly supplyDate)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Contract with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Contract with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         if (found.LadingBillIssueDate is { })
-            return BadRequest("Can't reschedule finished contract");
+            return Problem(detail: "Can't reschedule finished contract", statusCode: StatusCodes.Status400BadRequest);
 
         var minimalSupplyDate = DateOnly.FromDateTime(DateTime.UtcNow);
         if (supplyDate <= minimalSupplyDate)
-            return BadRequest("Supply date should be later than now");
+            return Problem(detail: "Supply date should be later than now", statusCode: StatusCodes.Status400BadRequest);
 
         found.SupplyDate = supplyDate;
         Context.Contracts.Update(found);
@@ -108,10 +109,10 @@ public class ContractController : DbContextController<Contract>
     public IActionResult Delete(int id)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Contract with such ID doesn't exist");
+        if (found is null) return Problem(detail:"Contract with such ID doesn't exist",statusCode:StatusCodes.Status404NotFound);
 
         if (found.LadingBillIssueDate is { })
-            return BadRequest("Can't delete finished contract");
+            return Problem(detail:"Can't delete finished contract",statusCode:StatusCodes.Status400BadRequest);
 
         Context.Contracts.Remove(found);
         Context.SaveChanges();

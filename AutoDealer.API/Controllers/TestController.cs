@@ -28,7 +28,9 @@ public class TestController : DbContextController<Test>
     public IActionResult Get(int id)
     {
         var found = Find(id);
-        return found is { } ? Ok("Test found", found) : NotFound("Test with such ID doesn't exist");
+        return found is { }
+            ? Ok("Test found", found)
+            : Problem(detail: "Test with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
     }
 
     [Authorize(Roles = nameof(Post.Tester))]
@@ -48,9 +50,11 @@ public class TestController : DbContextController<Test>
     public async Task<IActionResult> SetAutoToTest(int id, ICollection<int> autoIds)
     {
         var found = Find(id);
-        if (found == null) return NotFound("Test with such ID doesn't exist");
+        if (found == null)
+            return Problem(detail: "Test with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
-        if (found.EndDate is { }) return BadRequest("Test is already finished");
+        if (found.EndDate is { })
+            return Problem(detail: "Test is already finished", statusCode: StatusCodes.Status400BadRequest);
 
         var autos = Context.Autos
             .Where(auto => autoIds.Contains(auto.Id))
@@ -63,8 +67,8 @@ public class TestController : DbContextController<Test>
             {
                 message = "Can't found Autos by specified IDs. Remove them",
                 missingIdList = missingIds
-            };
-            return BadRequest(error);
+            }.ToString();
+            return Problem(detail: error, statusCode: StatusCodes.Status400BadRequest);
         }
 
         if (autos.Any(auto => auto.Status is not AutoStatus.Assembled))
@@ -74,8 +78,8 @@ public class TestController : DbContextController<Test>
             {
                 message = "List of IDs references to Autos that are already testing, were testing or were sold",
                 autos = unsuitableAutos
-            };
-            return BadRequest(error);
+            }.ToString();
+            return Problem(detail: error, statusCode: StatusCodes.Status400BadRequest);
         }
 
         foreach (var auto in autos)
@@ -109,14 +113,17 @@ public class TestController : DbContextController<Test>
             .ThenInclude(auto => auto.CarModel)
             .FirstOrDefault(test => test.Id == testId);
         if (found is null)
-            return NotFound($"Test with such ID ({testId}) doesn't exist");
+            return Problem(detail: $"Test with such ID ({testId}) doesn't exist",
+                statusCode: StatusCodes.Status404NotFound);
 
         var testAuto = found.TestAutos.FirstOrDefault(auto => auto.IdAuto == autoId);
         if (testAuto is null)
-            return NotFound($"Test doesn't contain auto with such ID ({autoId})");
+            return Problem(detail: $"Test doesn't contain auto with such ID ({autoId})",
+                statusCode: StatusCodes.Status404NotFound);
 
         if (found.EndDate is { })
-            return BadRequest("Test is already finished");
+            return Problem(detail: "Test is already finished", statusCode: StatusCodes.Status400BadRequest);
+
 
         testAuto.CertificationDate = testStatus is not TestStatus.NotChecked
             ? DateOnly.FromDateTime(DateTime.Today)
@@ -140,9 +147,10 @@ public class TestController : DbContextController<Test>
             .ThenInclude(auto => auto.Auto)
             .ThenInclude(auto => auto.CarModel)
             .FirstOrDefault(test => test.Id == id);
-        if (found is null) return NotFound("Test with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Test with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
-        if (found.EndDate is { }) return BadRequest("Test is already finished");
+        if (found.EndDate is { }) return Problem("Test is already finished");
 
         var autos = Context.Autos
             .Where(auto => testedAutos.Select(testedAuto => testedAuto.AutoId).Contains(auto.Id))
@@ -157,8 +165,8 @@ public class TestController : DbContextController<Test>
             {
                 message = "Can't found Autos by specified IDs. Remove them",
                 missingIdList = missingIds
-            };
-            return BadRequest(error);
+            }.ToString();
+            return Problem(detail: error, statusCode: StatusCodes.Status400BadRequest);
         }
 
         foreach (var testedAuto in testedAutos)
@@ -186,9 +194,10 @@ public class TestController : DbContextController<Test>
             .ThenInclude(testAuto => testAuto.Auto)
             .ThenInclude(auto => auto.CarModel)
             .FirstOrDefault(test => test.Id == id);
-        if (found is null) return NotFound("Test with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Test with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
-        if (found.EndDate is { }) return BadRequest("Test is already finished");
+        if (found.EndDate is { }) return Problem("Test is already finished");
 
         found.EndDate = DateOnly.FromDateTime(DateTime.Today);
 

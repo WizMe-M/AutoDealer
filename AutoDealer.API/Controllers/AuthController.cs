@@ -17,13 +17,12 @@ public class AuthController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public IActionResult Login([FromBody] LoginUser loginUser)
     {
         var hash = _hashService.HashPassword(loginUser.Password);
         var user = _authService.Authorize(loginUser.Email, hash, loginUser.Post);
-        if (user is null) return Unauthorized("User can't be authorized");
+        if (user is null)
+            return Problem(detail: "User can't be authorized", statusCode: StatusCodes.Status401Unauthorized);
 
         var response = new
         {
@@ -50,20 +49,22 @@ public class AuthController : ControllerBase
 
         var idClaim = token.Claims.FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub);
         if (idClaim is null)
-            return BadRequest("Can't find claim in token");
+            return Problem(detail: "Can't find claim in token", statusCode: StatusCodes.Status400BadRequest);
 
         var id = int.Parse(idClaim.Value);
         var user = _authService.GetUser(id);
         if (user is null)
-            return BadRequest("Can't find user by token");
+            return Problem(detail: "Can't find user by token", statusCode: StatusCodes.Status400BadRequest);
 
         var result = new
         {
             message = "JWT-token was authorized and decoded",
             token = new
             {
-                notBefore = DateTime.SpecifyKind(EpochTime.DateTime((long)token.Payload.Nbf!), DateTimeKind.Utc).ToLocalTime(),
-                expires = DateTime.SpecifyKind(EpochTime.DateTime((long)token.Payload.Exp!), DateTimeKind.Utc).ToLocalTime()
+                notBefore = DateTime.SpecifyKind(EpochTime.DateTime((long)token.Payload.Nbf!), DateTimeKind.Utc)
+                    .ToLocalTime(),
+                expires = DateTime.SpecifyKind(EpochTime.DateTime((long)token.Payload.Exp!), DateTimeKind.Utc)
+                    .ToLocalTime()
             },
             user
         };

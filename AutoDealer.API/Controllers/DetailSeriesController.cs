@@ -22,7 +22,7 @@ public class DetailSeriesController : DbContextController<DetailSeries>
         var found = Find(id);
         return found is { }
             ? Ok("Detail series found", found)
-            : NotFound("Detail's series with such ID doesn't exist");
+            : Problem(detail: "Detail's series with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
     }
 
     [Authorize(Roles = $"{nameof(Post.PurchaseSpecialist)},{nameof(Post.AssemblyChief)}")]
@@ -43,7 +43,9 @@ public class DetailSeriesController : DbContextController<DetailSeries>
     public async Task<IActionResult> Rename(int id, [FromBody] string seriesCode)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Detail's series with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Detail's series with such ID doesn't exist",
+                statusCode: StatusCodes.Status404NotFound);
 
         found.Code = seriesCode;
         Context.DetailSeries.Update(found);
@@ -58,7 +60,9 @@ public class DetailSeriesController : DbContextController<DetailSeries>
     public async Task<IActionResult> ChangeDescription(int id, [FromBody] string description)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Detail's series with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Detail's series with such ID doesn't exist",
+                statusCode: StatusCodes.Status404NotFound);
 
         found.Description = description;
         Context.DetailSeries.Update(found);
@@ -73,7 +77,9 @@ public class DetailSeriesController : DbContextController<DetailSeries>
     public async Task<IActionResult> Delete(int id)
     {
         var found = Find(id);
-        if (found is null) return NotFound("Detail's series with such ID doesn't exist");
+        if (found is null)
+            return Problem(detail: "Detail's series with such ID doesn't exist",
+                statusCode: StatusCodes.Status404NotFound);
 
         Context.DetailSeries.Remove(found);
         await Context.SaveChangesAsync();
