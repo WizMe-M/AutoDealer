@@ -1,6 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("Default");
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
 AutoDealerContext.ConfigureBuilder(dataSourceBuilder);
 var dataSource = dataSourceBuilder.Build();
