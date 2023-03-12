@@ -6,9 +6,6 @@ services:
     build:
       context: .
       dockerfile: ./AutoDealer.API/Dockerfile
-    ports:
-      - 44444:44316
-      - 8000:80
     environment:
       CONNECTIONSTRINGS__DEFAULT: User ID=postgres;Password=password;Host=db;Port=5432;Database=autodealer
     links:
