@@ -1,0 +1,22 @@
+﻿version: "1"
+
+services:
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: ./AutoDealer.API/Dockerfile
+    ports:
+      - 44316:44316
+    links:
+      - pgsql
+  
+  pgsql:
+    container_name: db
+    restart: always
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: autodealer
