@@ -8,6 +8,13 @@ services:
       dockerfile: ./AutoDealer.API/Dockerfile
     environment:
       CONNECTIONSTRINGS__DEFAULT: User ID=postgres;Password=password;Host=db;Port=5432;Database=autodealer
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: https://*:443
+    ports:
+      - 4444:443
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
     links:
       - pgsql
   
@@ -15,8 +22,8 @@ services:
     container_name: db
     restart: always
     image: postgres
-    ports:
-      - 5432:5432
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: autodealer
+    ports:
+      - 5454:5432
