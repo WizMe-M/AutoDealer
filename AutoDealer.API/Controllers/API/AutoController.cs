@@ -1,6 +1,6 @@
 ﻿using AutoDealer.API.Sort;
 
-namespace AutoDealer.API.Controllers;
+namespace AutoDealer.API.Controllers.API;
 
 [ApiController]
 [Route("autos")]

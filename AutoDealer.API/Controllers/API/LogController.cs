@@ -1,4 +1,4 @@
-﻿namespace AutoDealer.API.Controllers;
+﻿namespace AutoDealer.API.Controllers.API;
 
 [Authorize(Roles = nameof(Post.DatabaseAdmin))]
 [ApiController]
