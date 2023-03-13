@@ -10,7 +10,7 @@ builder.Services.AddDbContext<AutoDealerContext>(options => options.UseNpgsql(da
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<HashService>();
 
-builder.Services.AddControllers(options => options.UseGeneralRoutePrefix("api"));
+builder.Services.AddControllersWithViews();
 
 var jwtConfigurationSection = builder.Configuration.GetSection(JwtConfig.SectionName);
 builder.Services.Configure<JwtConfig>(jwtConfigurationSection);
@@ -97,10 +97,21 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+
 app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -118,7 +129,10 @@ app.UseExceptionHandler(applicationBuilder => applicationBuilder.Run(async conte
     await context.Response.WriteAsJsonAsync(problemResponse);
 }));
 
-app.MapControllers().RequireAuthorization();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+).RequireAuthorization();
 
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {

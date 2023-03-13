@@ -1,6 +1,7 @@
 ﻿namespace AutoDealer.Web.Controllers.MVC;
 
 [ApiExplorerSettings(IgnoreApi = true)]
+[AllowAnonymous]
 public class HomeController : Controller
 {
     public IActionResult Index()
