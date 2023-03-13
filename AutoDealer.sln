@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDealer.WebApp", "AutoDe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDealer.DAL", "AutoDealer.DAL\AutoDealer.DAL.csproj", "{947BE0D2-CBB1-478F-98D4-742F7DED636C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDealer.API", "AutoDealer.API\AutoDealer.API.csproj", "{C7EE6DD7-B7FB-4B0B-99E8-D5B7BFC924D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDealer.Web", "AutoDealer.Web\AutoDealer.Web.csproj", "{C7EE6DD7-B7FB-4B0B-99E8-D5B7BFC924D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

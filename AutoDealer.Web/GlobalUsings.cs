@@ -1,0 +1,29 @@
+﻿// Global using directives
+
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
+global using System.Security.Cryptography;
+global using System.Text;
+global using System.Text.Json.Serialization;
+global using System.Text.RegularExpressions;
+global using AutoDealer.Web.Abstractions;
+global using AutoDealer.Web.BodyTypes;
+global using AutoDealer.Web.Configs;
+global using AutoDealer.Web.Extensions;
+global using AutoDealer.Web.Services;
+global using AutoDealer.Web.Validation;
+global using AutoDealer.DAL.Database;
+global using AutoDealer.DAL.Database.Entity;
+global using FluentValidation;
+global using FluentValidation.AspNetCore;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Diagnostics;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Mvc.ApplicationModels;
+global using Microsoft.AspNetCore.Mvc.Routing;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Options;
+global using Microsoft.IdentityModel.Tokens;
+global using Microsoft.OpenApi.Models;
+global using Npgsql;
