@@ -10,9 +10,9 @@ RUN dotnet restore "AutoDealer.DAL/AutoDealer.DAL.csproj"
 COPY ./AutoDealer.DAL/ ./AutoDealer.DAL/
 RUN dotnet build "AutoDealer.DAL/AutoDealer.DAL.csproj" -c Release -o /app/build
 
-ADD ["/AutoDealer.Web/AutoDealer.Web.csproj", "AutoDealer.Web/"]
+ADD ["/AutoDealer.API/AutoDealer.API.csproj", "AutoDealer.API/"]
 RUN dotnet restore "AutoDealer.API/AutoDealer.API.csproj"
-COPY ./AutoDealer.Web/ ./AutoDealer.Web/
+COPY ./AutoDealer.API/ ./AutoDealer.API/
 WORKDIR "/src/AutoDealer.API"
 RUN dotnet build "AutoDealer.API.csproj" -c Release -o /app/build
 
