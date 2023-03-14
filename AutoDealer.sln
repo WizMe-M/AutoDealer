@@ -1,7 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDealer.WebApp", "AutoDealer.WebApp\AutoDealer.WebApp.csproj", "{209FD055-D504-4FDD-8B0A-525D30A3750C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDealer.DAL", "AutoDealer.DAL\AutoDealer.DAL.csproj", "{947BE0D2-CBB1-478F-98D4-742F7DED636C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoDealer.Web", "AutoDealer.Web\AutoDealer.Web.csproj", "{C7EE6DD7-B7FB-4B0B-99E8-D5B7BFC924D1}"
@@ -20,10 +18,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{209FD055-D504-4FDD-8B0A-525D30A3750C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{209FD055-D504-4FDD-8B0A-525D30A3750C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{209FD055-D504-4FDD-8B0A-525D30A3750C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{209FD055-D504-4FDD-8B0A-525D30A3750C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{947BE0D2-CBB1-478F-98D4-742F7DED636C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{947BE0D2-CBB1-478F-98D4-742F7DED636C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{947BE0D2-CBB1-478F-98D4-742F7DED636C}.Release|Any CPU.ActiveCfg = Release|Any CPU
