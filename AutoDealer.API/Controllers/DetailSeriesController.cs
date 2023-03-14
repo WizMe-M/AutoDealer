@@ -1,6 +1,4 @@
-﻿using AutoDealer.API.Abstractions;
-
-namespace AutoDealer.API.Controllers.API;
+﻿namespace AutoDealer.API.Controllers;
 
 [Authorize]
 [ApiController]

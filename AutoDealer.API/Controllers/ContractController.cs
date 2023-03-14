@@ -1,7 +1,4 @@
-﻿using AutoDealer.API.Abstractions;
-using AutoDealer.API.BodyTypes;
-
-namespace AutoDealer.API.Controllers.API;
+﻿namespace AutoDealer.API.Controllers;
 
 [Authorize]
 [ApiController]

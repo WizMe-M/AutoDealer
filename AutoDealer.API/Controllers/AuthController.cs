@@ -1,8 +1,4 @@
-﻿using AutoDealer.API.BodyTypes;
-using AutoDealer.API.Configs;
-using AutoDealer.API.Services;
-
-namespace AutoDealer.API.Controllers.API;
+﻿namespace AutoDealer.API.Controllers;
 
 [ApiController]
 [Route("auth")]

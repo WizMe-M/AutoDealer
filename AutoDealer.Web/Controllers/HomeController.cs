@@ -1,11 +1,18 @@
-﻿using AutoDealer.API.Models;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using AutoDealer.Web.Models;
 
-namespace AutoDealer.API.Controllers.MVC;
+namespace AutoDealer.Web.Controllers;
 
-[ApiExplorerSettings(IgnoreApi = true)]
-[AllowAnonymous]
 public class HomeController : Controller
 {
+    private readonly ILogger<HomeController> _logger;
+
+    public HomeController(ILogger<HomeController> logger)
+    {
+        _logger = logger;
+    }
+
     public IActionResult Index()
     {
         return View();

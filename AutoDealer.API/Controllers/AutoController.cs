@@ -1,7 +1,6 @@
-﻿using AutoDealer.API.Abstractions;
-using AutoDealer.API.Sort;
+﻿using AutoDealer.API.Sort;
 
-namespace AutoDealer.API.Controllers.API;
+namespace AutoDealer.API.Controllers;
 
 [ApiController]
 [Route("autos")]
