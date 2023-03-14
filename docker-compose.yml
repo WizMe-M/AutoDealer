@@ -1,11 +1,11 @@
 ﻿version: "1"
 
 services:
-  web:
-    container_name: web
+  api:
+    container_name: api
     build:
       context: .
-      dockerfile: ./AutoDealer.Web/Dockerfile
+      dockerfile: ./AutoDealer.API/Dockerfile
     environment:
       CONNECTIONSTRINGS__DEFAULT: User ID=postgres;Password=password;Host=db;Port=5432;Database=autodealer
       ASPNETCORE_ENVIRONMENT: Production
