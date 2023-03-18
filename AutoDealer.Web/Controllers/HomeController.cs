@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
+using AutoDealer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using AutoDealer.Web.Models;
 
 namespace AutoDealer.Web.Controllers;
 

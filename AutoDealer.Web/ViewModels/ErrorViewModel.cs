@@ -1,4 +1,4 @@
-namespace AutoDealer.Web.Models;
+namespace AutoDealer.Web.ViewModels;
 
 public class ErrorViewModel
 {

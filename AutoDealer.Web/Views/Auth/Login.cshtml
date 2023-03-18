@@ -1,0 +1,30 @@
+﻿@model LoginViewModel
+
+@{
+    Layout = null;
+}
+
+<html lang="en">
+<head>
+    <title>Login</title>
+</head>
+
+<body>
+<form asp-controller="Auth" asp-action="Login">
+    <fieldset>
+        <legend>
+            <h2 class="text-center">Sign In</h2>
+        </legend>
+    </fieldset>
+    <div asp-validation-summary="All"></div>
+    <div class="form-floating mb-3">
+        <input asp-for="Email" type="email" class="form-control" id="floatingInput" placeholder="Email address">
+        <label asp-for="Email" for="floatingInput">Email address</label>
+    </div>
+    <div class="form-floating">
+        <input asp-for="Password" type="password" class="form-control" id="floatingPassword" placeholder="Password">
+        <label asp-for="Password" for="floatingPassword">Password</label>
+    </div>
+</form>
+</body>
+</html>

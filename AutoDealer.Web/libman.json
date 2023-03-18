@@ -5,6 +5,10 @@
     {
       "library": "bootstrap@5.2.3",
       "destination": "wwwroot\\lib\\bootstrap"
+    },
+    {
+      "library": "jquery@3.6.4",
+      "destination": "wwwroot\\lib\\jquery"
     }
   ]
 }
