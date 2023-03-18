@@ -2,6 +2,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<HttpClient>();
 
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddMvc();
+
 builder.Services
     .AddControllersWithViews()
     .AddRazorRuntimeCompilation();
