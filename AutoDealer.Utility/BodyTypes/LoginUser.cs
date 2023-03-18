@@ -1,4 +1,4 @@
-﻿namespace AutoDealer.API.BodyTypes;
+﻿namespace AutoDealer.Utility.BodyTypes;
 
 public record LoginUser(string Email, string Password, Post Post);
 

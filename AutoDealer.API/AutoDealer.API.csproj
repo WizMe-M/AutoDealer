@@ -35,6 +35,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AutoDealer.DAL\AutoDealer.DAL.csproj" />
+      <ProjectReference Include="..\AutoDealer.Utility\AutoDealer.Utility.csproj" />
     </ItemGroup>
 
 </Project>

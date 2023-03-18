@@ -1,4 +1,4 @@
-﻿namespace AutoDealer.API.Validation;
+﻿namespace AutoDealer.Utility.Validation;
 
 public static partial class AccountRegex
 {

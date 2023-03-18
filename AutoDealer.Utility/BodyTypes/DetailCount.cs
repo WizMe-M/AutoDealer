@@ -1,4 +1,4 @@
-﻿namespace AutoDealer.API.BodyTypes;
+﻿namespace AutoDealer.Utility.BodyTypes;
 
 public record DetailCount(int DetailSeriesId, int Count);
 

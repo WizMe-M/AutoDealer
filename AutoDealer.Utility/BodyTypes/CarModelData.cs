@@ -1,4 +1,4 @@
-﻿namespace AutoDealer.API.BodyTypes;
+﻿namespace AutoDealer.Utility.BodyTypes;
 
 public record CarModelData(string Line, string Model, string Code);
 

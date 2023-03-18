@@ -1,4 +1,4 @@
-﻿namespace AutoDealer.API.BodyTypes;
+﻿namespace AutoDealer.Utility.BodyTypes;
 
 public record MarginData(int CarModelId, DateOnly StartsFrom, double MarginValue);
 

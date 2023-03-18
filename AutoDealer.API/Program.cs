@@ -1,3 +1,7 @@
+var culture = new CultureInfo("en");
+Thread.CurrentThread.CurrentCulture = culture;
+Thread.CurrentThread.CurrentUICulture = culture;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
@@ -60,10 +64,10 @@ Example: 'Bearer 12345'
 
 builder.Services.AddFluentValidationAutoValidation(configuration =>
 {
+    ValidatorOptions.Global.LanguageManager.Culture = culture;
     configuration.DisableDataAnnotationsValidation = true;
 });
-
-builder.Services.AddValidatorsFromAssemblyContaining<Program>(lifetime: ServiceLifetime.Singleton);
+builder.Services.AddValidatorsFromAssemblyContaining<LoginUser>(lifetime: ServiceLifetime.Singleton);
 
 builder.Services.AddRouting(options =>
 {

@@ -1,4 +1,4 @@
-﻿namespace AutoDealer.API.BodyTypes;
+﻿namespace AutoDealer.Utility.BodyTypes;
 
 public record ContractData(int SupplierId, int StorekeeperId, DateOnly SupplyDate,
     IEnumerable<DetailCountCost> Details);

@@ -1,6 +1,4 @@
-﻿using AutoDealer.API.Validation;
-
-namespace AutoDealer.API.BodyTypes;
+﻿namespace AutoDealer.Utility.BodyTypes;
 
 public record EmployeeData(FullName FullName, Passport Passport, Post Post);
 

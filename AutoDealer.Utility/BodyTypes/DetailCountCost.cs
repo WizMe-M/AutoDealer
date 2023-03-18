@@ -1,4 +1,4 @@
-﻿namespace AutoDealer.API.BodyTypes;
+﻿namespace AutoDealer.Utility.BodyTypes;
 
 public record DetailCountCost(int IdDetailSeries, int Count, decimal CostPerOne);
 
