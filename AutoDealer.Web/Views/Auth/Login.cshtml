@@ -19,6 +19,8 @@
             </legend>
         </fieldset>
 
+        <div class="text-danger text-center my-2 fs-2">@Html.ValidationMessage("auth-result")</div>
+
         <div class="form-floating mb-3">
             <input asp-for="Email" class="form-control has-validation" autofocus=""
                    placeholder="@Html.DisplayNameFor(vm => vm.Email)">
