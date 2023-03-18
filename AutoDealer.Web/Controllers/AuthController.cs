@@ -14,7 +14,7 @@ public class AuthController : MvcController
     public IActionResult Login() => View();
 
     [HttpPost("login")]
-    public IActionResult Login(LoginViewModel vm)
+    public async Task<IActionResult> Login(LoginViewModel vm)
     {
         return RedirectToAction("Index", "Home");
     }

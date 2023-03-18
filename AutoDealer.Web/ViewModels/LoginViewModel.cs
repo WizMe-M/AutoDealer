@@ -4,7 +4,7 @@ namespace AutoDealer.Web.ViewModels;
 
 public class LoginViewModel
 {
-    [Required(ErrorMessage = "Please, insert your email ")]
+    [Required(ErrorMessage = "Please, insert your email address")]
     [DataType(DataType.EmailAddress)]
     [Display(Name = "Email")]
     public string Email { get; set; } = string.Empty;
