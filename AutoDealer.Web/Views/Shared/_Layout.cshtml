@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - AutoDealer.Web</title>
+    <title>@ViewBag.Title - AutoDealer</title>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/AutoDealer.Web.styles.css" asp-append-version="true"/>
@@ -26,7 +26,14 @@
                         <a class="nav-link text-dark" asp-controller="Store" asp-action="Details">Details</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login</a>
+                        @if (User.Identity is null or {IsAuthenticated:false})
+                        {
+                            <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login</a>
+                        }
+                        else
+                        {
+                            <a class="nav-link text-dark" asp-controller="Auth" asp-action="Logout">Logout</a>
+                        }
                     </li>
                 </ul>
             </div>
@@ -41,7 +48,7 @@
 
 <footer class="border-top footer text-muted">
     <div class="container">
-        &copy; 2023 - AutoDealer.Web - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+        &copy; 2023 - AutoDealer - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
     </div>
 </footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>

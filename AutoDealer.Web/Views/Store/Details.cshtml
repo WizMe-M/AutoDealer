@@ -11,7 +11,7 @@
 
 @if (!Model.Any())
 {
-    <h2 class="text-center">Empty list</h2>
+    <h2 class="text-center">There is no details</h2>
 }
 else
 {
@@ -25,7 +25,9 @@ else
             <th scope="col">
                 <a asp-action="Details" asp-controller="Store" asp-route-sort="@ViewBag.CostSort">Cost</a>
             </th>
-            <th scope="col"></th>
+            <th scope="col">Expected supply date</th>
+            <th scope="col">Supplied on</th>
+            <th scope="col">Used in Auto</th>
         </tr>
         </thead>
 
@@ -36,8 +38,15 @@ else
                 <th scope="row">@detail.Id</th>
                 <td>@detail.DetailSeries.Code</td>
                 <td>@detail.Cost</td>
+                <td>@detail.Contract.SupplyDate</td>
+                <td>@detail.Contract.LadingBillIssueDate</td>
                 <td>
-                    <a class="btn btn-warning" asp-action="Details" asp-controller="Store" asp-route-id="@detail.Id">View</a>
+                    @if (detail.Auto is {})
+                    {
+                        var model = detail.Auto!.CarModel;
+                        var modelName = $"{model.LineName} {model.ModelName} {model.TrimCode}";
+                        <div>@modelName</div>
+                    }
                 </td>
             </tr>
         }

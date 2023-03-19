@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AutoDealer.Web.Controllers;
 
-// [Authorize(Roles = nameof(Post.Seller))]
+[Authorize(Roles = nameof(Post.DatabaseAdmin))]
 [Route("store")]
 public class StoreController : MvcController
 {
@@ -27,8 +27,8 @@ public class StoreController : MvcController
         if (responseMessage.IsSuccessStatusCode)
         {
             var result = await responseMessage.Content.ReadFromJsonAsync<dynamic>();
-            var node = JsonSerializer.Deserialize<JsonNode>(result!.ToString())!;
-            var details = node["data"] as Detail[] ?? ArraySegment<Detail>.Empty;
+            var node = JsonSerializer.Deserialize<JsonNode>((string)result!.ToString())!;
+            var details = node["data"].Deserialize<Detail[]>() ?? ArraySegment<Detail>.Empty;
             return View(details);
         }
 
