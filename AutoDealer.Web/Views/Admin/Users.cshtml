@@ -1,0 +1,53 @@
+﻿@model IEnumerable<AutoDealer.DAL.Database.Entity.User>
+
+@{
+    ViewBag.Title = "Users";
+    Layout = "_Layout";
+}
+
+<h2>Users</h2>
+
+<div asp-validation-summary="All"></div>
+
+@if (!Model.Any())
+{
+    <h2 class="text-center">There is no </h2>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Email</th>
+            <th scope="col">Post</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <th scope="row">@user.IdEmployee</th>
+                <td>@user.Email</td>
+                <td>@user.Employee.Post</td>
+                <td>
+                    <a class="btn btn-outline-primary" asp-action="" asp-controller="" asp-route-id="@user.IdEmployee">Send auth</a>
+                </td>
+                <td>
+                    <a class="btn btn-warning" asp-action="" asp-controller="" asp-route-id="@user.IdEmployee">Update</a>
+                </td>
+                <td>
+                    @{
+                        var canDelete = user.IdEmployee != 1;
+                        <a class="btn btn-danger" asp-action="" asp-controller="" asp-route-id="@user.IdEmployee">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

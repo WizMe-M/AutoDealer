@@ -1,4 +1,7 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +16,12 @@ builder.Services.AddSingleton<HttpClient>(provider =>
 #endif
     client.DefaultRequestHeaders.Add(HeaderNames.Accept, "*/*");
     return client;
+});
+
+builder.Services.Configure<JsonSerializerOptions>(options =>
+{
+    options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    options.Converters.Add(new JsonStringEnumConverter());
 });
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();

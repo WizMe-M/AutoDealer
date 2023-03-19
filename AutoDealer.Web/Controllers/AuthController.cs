@@ -12,12 +12,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace AutoDealer.Web.Controllers;
 
 public class AuthController : MvcController
 {
-    public AuthController(HttpClient client) : base(client)
+    public AuthController(HttpClient client, IOptions<JsonSerializerOptions> options) : base(client, options)
     {
     }
 

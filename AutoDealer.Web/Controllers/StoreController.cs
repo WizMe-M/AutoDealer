@@ -6,6 +6,7 @@ using AutoDealer.Utility.Sort;
 using AutoDealer.Web.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace AutoDealer.Web.Controllers;
 
@@ -13,7 +14,7 @@ namespace AutoDealer.Web.Controllers;
 [Route("store")]
 public class StoreController : MvcController
 {
-    public StoreController(HttpClient client) : base(client)
+    public StoreController(HttpClient client, IOptions<JsonSerializerOptions> options) : base(client, options)
     {
     }
 
@@ -28,8 +29,8 @@ public class StoreController : MvcController
         {
             var result = await responseMessage.Content.ReadFromJsonAsync<dynamic>();
             var node = JsonSerializer.Deserialize<JsonNode>((string)result!.ToString())!;
-            var details = node["data"].Deserialize<Detail[]>() ?? ArraySegment<Detail>.Empty;
-            return View(details);
+            var details = node["data"].Deserialize<Detail[]>(JsonSerializerOptions);
+            return View(details ?? ArraySegment<Detail>.Empty);
         }
 
         if (responseMessage.StatusCode is HttpStatusCode.Unauthorized)
