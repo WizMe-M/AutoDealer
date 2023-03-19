@@ -1,6 +1,19 @@
+using Microsoft.Net.Http.Headers;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<HttpClient>();
+builder.Services.AddSingleton<HttpClient>(provider =>
+{
+    var client = new HttpClient();
+#if DEBUG
+    client.BaseAddress = new Uri("https://localhost:7138/");
+#else
+        ApiClient.BaseAddress = new Uri("https://api:44357/");
+#endif
+    client.DefaultRequestHeaders.Add(HeaderNames.Accept, "*/*");
+    return client;
+});
+
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

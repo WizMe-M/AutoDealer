@@ -1,0 +1,46 @@
+﻿@model IEnumerable<AutoDealer.DAL.Database.Entity.Detail>
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "_Layout";
+}
+
+<h2>Details</h2>
+
+<div asp-validation-summary="All"></div>
+
+@if (!Model.Any())
+{
+    <h2 class="text-center">Empty list</h2>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">
+                <a asp-action="Details" asp-controller="Store" asp-route-sort="@ViewBag.IdSort">ID</a>
+            </th>
+            <th scope="col">Series</th>
+            <th scope="col">
+                <a asp-action="Details" asp-controller="Store" asp-route-sort="@ViewBag.CostSort">Cost</a>
+            </th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var detail in Model)
+        {
+            <tr>
+                <th scope="row">@detail.Id</th>
+                <td>@detail.DetailSeries.Code</td>
+                <td>@detail.Cost</td>
+                <td>
+                    <a class="btn btn-warning" asp-action="Details" asp-controller="Store" asp-route-id="@detail.Id">View</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
