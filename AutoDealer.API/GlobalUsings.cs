@@ -13,6 +13,7 @@ global using AutoDealer.API.Services;
 global using AutoDealer.DAL.Database;
 global using AutoDealer.DAL.Database.Entity;
 global using AutoDealer.Utility.BodyTypes;
+global using AutoDealer.Utility.Sort;
 global using FluentValidation;
 global using FluentValidation.AspNetCore;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;

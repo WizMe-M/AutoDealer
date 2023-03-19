@@ -1,4 +1,4 @@
-﻿namespace AutoDealer.API.Sort;
+﻿namespace AutoDealer.Utility.Sort;
 
 public enum MarginSort
 {

@@ -1,6 +1,4 @@
-﻿using AutoDealer.API.Sort;
-
-namespace AutoDealer.API.Controllers;
+﻿namespace AutoDealer.API.Controllers;
 
 [Authorize]
 [ApiController]
