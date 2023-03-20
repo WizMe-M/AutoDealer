@@ -34,7 +34,7 @@ public class AuthController : MvcController
             var token = node["accessToken"]!.ToString();
             var id = node["id"]!.ToString();
             AssignAuthHeader(token);
-            await Authorize(id, vm.Email, Post.DatabaseAdmin.ToString(), token);
+            await Authorize(id, vm.Email, vm.Role.ToString(), token);
 
             return RedirectToAction("Index", "Home");
         }

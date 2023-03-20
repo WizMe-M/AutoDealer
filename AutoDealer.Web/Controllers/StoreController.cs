@@ -1,6 +1,6 @@
 ﻿namespace AutoDealer.Web.Controllers;
 
-[Authorize(Roles = nameof(Post.DatabaseAdmin))]
+[Authorize(Roles = nameof(Post.Storekeeper))]
 [Route("store")]
 public class StoreController : MvcController
 {
