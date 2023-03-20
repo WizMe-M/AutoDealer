@@ -7,12 +7,11 @@ public class AuthController : MvcController
     }
 
     [HttpGet("login")]
-    public IActionResult Login()
+    public IActionResult Login(string? prevAction, string? prevController)
     {
-        if (TryAuthApiFromCookie())
-            return Redirect(Request.Headers["referer"].ToString());
-
-        return View();
+        if (!TryAuthApiFromCookie()) return View();
+        
+        return RedirectToAction(prevAction, prevController);
     }
 
     [HttpPost("login")]

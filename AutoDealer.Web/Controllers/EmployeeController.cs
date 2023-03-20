@@ -12,8 +12,6 @@ public class EmployeeController : MvcController
     public async Task<IActionResult> Table(Post? filter)
     {
         var data = await GetFromApiAsync<Employee[]>($"employees?filter={filter}");
-        if (data.StatusCode is HttpStatusCode.Unauthorized)
-            return RedirectToAction("Login", "Auth");
         return View(data.Value ?? ArraySegment<Employee>.Empty);
     }
 }

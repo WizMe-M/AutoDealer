@@ -31,7 +31,7 @@ public abstract class MvcController : Controller
         }
 
         if (response.StatusCode is HttpStatusCode.Unauthorized)
-            return new ApiResult<TData>(HttpStatusCode.Unauthorized);
+            throw new ApiNotAuthorizedException();
 
         var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
         ModelState.AddModelError("resp-error", problemDetails!.Detail!);

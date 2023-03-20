@@ -12,8 +12,6 @@ public class AdminController : MvcController
     public async Task<IActionResult> Users()
     {
         var result = await GetFromApiAsync<User[]>("users");
-        if (result.StatusCode is HttpStatusCode.Unauthorized)
-            return RedirectToAction("Login", "Auth");
         return View(result.Value ?? ArraySegment<User>.Empty);
     }
 }

@@ -20,7 +20,7 @@ builder.Services.Configure<JsonSerializerOptions>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddMvc();
+builder.Services.AddMvc(options => options.Filters.Add(new ApiAuthExceptionFilterAttribute()));
 
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

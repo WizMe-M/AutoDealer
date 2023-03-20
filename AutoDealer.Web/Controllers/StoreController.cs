@@ -15,9 +15,6 @@ public class StoreController : MvcController
         ViewBag.CostSort = sort is DetailSort.CostAsc ? DetailSort.CostDesc : DetailSort.CostAsc;
 
         var result = await GetFromApiAsync<Detail[]>($"store/details?sort={sort}");
-        if (result.StatusCode is HttpStatusCode.Unauthorized)
-            return RedirectToAction("Login", "Auth");
         return View(result.Value ?? ArraySegment<Detail>.Empty);
-
     }
 }
