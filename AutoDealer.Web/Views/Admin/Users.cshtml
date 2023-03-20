@@ -15,6 +15,7 @@
 }
 else
 {
+    var authorizedEmail = User.FindFirst(ClaimTypes.Name)!.Value;
     <table class="table">
         <thead>
         <tr>
@@ -42,8 +43,11 @@ else
                 </td>
                 <td>
                     @{
-                        var canDelete = user.IdEmployee != 1;
-                        <a class="btn btn-danger" asp-action="" asp-controller="" asp-route-id="@user.IdEmployee">Delete</a>
+                        var canDelete = user.Email != authorizedEmail;
+                        if (canDelete)
+                        {
+                            <a class="btn btn-danger" asp-action="" asp-controller="" asp-route-id="@user.IdEmployee">Delete</a>
+                        }
                     }
                 </td>
             </tr>
