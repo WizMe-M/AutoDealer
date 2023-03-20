@@ -4,7 +4,7 @@ namespace AutoDealer.Web.Controllers;
 
 public class AuthController : MvcController
 {
-    public AuthController(HttpClient client, IOptions<JsonSerializerOptions> options) : base(client, options)
+    public AuthController(ApiClient client) : base(client)
     {
     }
 
@@ -22,7 +22,7 @@ public class AuthController : MvcController
         if (!ModelState.IsValid) return View();
 
         var data = new LoginUser(vm.Email, vm.Password, vm.Role);
-        var apiResult = await PostApiAsync<LoginUser, AuthResult>("auth", data);
+        var apiResult = await Client.PostAsync<LoginUser, AuthResult>("auth", data);
         var authResult = apiResult.Value!;
         
         AssignAuthHeader(authResult.Jwt);
@@ -34,7 +34,7 @@ public class AuthController : MvcController
     [HttpGet("logout")]
     public async Task<IActionResult> Logout()
     {
-        ApiClient.DefaultRequestHeaders.Authorization = null;
+        Client.ResetAuthorization();
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         return RedirectToAction("Login", "Auth");
     }
@@ -52,8 +52,7 @@ public class AuthController : MvcController
 
     private void AssignAuthHeader(string token)
     {
-        ApiClient.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
+        Client.SetAuthorization(token);
     }
 
     private async Task Authorize(string id, string email, string role, string token)

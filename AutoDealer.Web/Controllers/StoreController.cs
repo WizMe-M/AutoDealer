@@ -4,7 +4,7 @@
 [Route("store")]
 public class StoreController : MvcController
 {
-    public StoreController(HttpClient client, IOptions<JsonSerializerOptions> options) : base(client, options)
+    public StoreController(ApiClient client) : base(client)
     {
     }
 
@@ -14,7 +14,7 @@ public class StoreController : MvcController
         ViewBag.IdSort = sort is DetailSort.IdAsc ? DetailSort.IdDesc : DetailSort.IdAsc;
         ViewBag.CostSort = sort is DetailSort.CostAsc ? DetailSort.CostDesc : DetailSort.CostAsc;
 
-        var result = await GetApiAsync<Detail[]>($"store/details?sort={sort}");
+        var result = await Client.GetAsync<Detail[]>($"store/details?sort={sort}");
         return View(result.Value ?? ArraySegment<Detail>.Empty);
     }
 }

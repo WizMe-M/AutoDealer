@@ -8,6 +8,8 @@
 <div class="p-5 g-3 shadow">
     <form asp-controller="Employee" asp-action="Create" class="has-validation">
         <h2 class="text-center">Create employee</h2>
+        
+        <div asp-validation-summary="All"></div>
 
         <h4 class="row mx-2">Full name</h4>
 
@@ -69,7 +71,7 @@
 
         <div class="my-3 g-3 d-flex justify-content-evenly">
             <button class="btn btn-success" type="submit">Create</button>
-            <button class="btn btn-danger" type="reset">Clear</button>
+            <button class="btn btn-outline-primary" type="reset">Clear</button>
             <a class="btn btn-danger" asp-action="Table">Cancel</a>
         </div>
 

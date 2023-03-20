@@ -44,15 +44,12 @@ public class FullNameValidator : AbstractValidator<FullName>
     {
         RuleFor(data => data.FirstName)
             .NotEmpty()
-            .Length(0, 30)
-            .Matches(UserRegex.NameRegex);
+            .Length(0, 30);
         RuleFor(data => data.LastName)
             .NotEmpty()
-            .Length(0, 30)
-            .Matches(UserRegex.NameRegex);
+            .Length(0, 30);
         RuleFor(data => data.MiddleName)
-            .Length(0, 30).When(name => name.MiddleName is { })
-            .Matches(UserRegex.NameRegex).When(name => name.MiddleName is { });
+            .Length(0, 30).When(name => name.MiddleName is { });
     }
 }
 

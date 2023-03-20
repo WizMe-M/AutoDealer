@@ -22,6 +22,7 @@ global using AutoDealer.Utility;
 global using AutoDealer.Utility.BodyTypes;
 global using AutoDealer.Utility.Sort;
 global using AutoDealer.Web.Utils;
+global using AutoDealer.Web.Utils.API;
 global using AutoDealer.Web.Utils.Extensions;
 global using AutoDealer.Web.ViewModels;
 global using Microsoft.AspNetCore.Authentication;

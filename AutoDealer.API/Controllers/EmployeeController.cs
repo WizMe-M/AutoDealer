@@ -25,7 +25,7 @@ public class EmployeeController : DbContextController<Employee>
         var employee = Find(id);
         return employee is { }
             ? Ok("Employee found", employee)
-            : Problem(detail:"Employee with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
+            : Problem(detail: "Employee with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
     }
 
     [HttpPost("create")]
@@ -45,7 +45,9 @@ public class EmployeeController : DbContextController<Employee>
             emp.PassportNumber == employee.PassportNumber &&
             emp.PassportSeries == employee.PassportSeries) is { };
 
-        if (foundWithPassport) return Problem("There is already employee with set passport data");
+        if (foundWithPassport)
+            return Problem("There is already employee with set passport data",
+                statusCode: StatusCodes.Status400BadRequest);
 
         Context.Employees.Add(employee);
         Context.SaveChanges();
@@ -57,7 +59,8 @@ public class EmployeeController : DbContextController<Employee>
     public IActionResult UpdatePassport(int id, [FromBody] Passport passport)
     {
         var found = Find(id);
-        if (found is null) return Problem(detail:"Employee with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
+        if (found is null)
+            return Problem(detail: "Employee with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         var foundWithPassport = Context.Employees.FirstOrDefault(emp =>
             emp.Id != id
@@ -93,7 +96,8 @@ public class EmployeeController : DbContextController<Employee>
     public IActionResult PromoteToPost(int id, [FromBody] Post post)
     {
         var found = Find(id);
-        if (found is null) return Problem(detail:"Employee with such ID doesn't exist", statusCode:StatusCodes.Status404NotFound);
+        if (found is null)
+            return Problem(detail: "Employee with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         found.Post = post;
         Context.Employees.Update(found);
@@ -106,7 +110,8 @@ public class EmployeeController : DbContextController<Employee>
     public IActionResult Delete(int id)
     {
         var employee = Find(id);
-        if (employee is null) return Problem(detail:"Employee with such ID doesn't exist", statusCode:StatusCodes.Status404NotFound);
+        if (employee is null)
+            return Problem(detail: "Employee with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);
 
         Context.Employees.Remove(employee);
         Context.SaveChanges();

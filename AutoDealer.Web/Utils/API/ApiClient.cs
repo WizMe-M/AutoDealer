@@ -1,15 +1,27 @@
-﻿namespace AutoDealer.Web.Utils;
+﻿namespace AutoDealer.Web.Utils.API;
 
-public abstract class MvcController : Controller
+public class ApiClient
 {
-    protected readonly HttpClient ApiClient;
-    private readonly JsonSerializerOptions _jsonSerializerOptions;
+    private readonly HttpClient _httpClient;
+    private readonly JsonSerializerOptions _options;
 
-    protected MvcController(HttpClient client, IOptions<JsonSerializerOptions> options)
+    public ApiClient(HttpClient httpClient, IOptions<JsonSerializerOptions> options)
     {
-        ApiClient = client;
-        _jsonSerializerOptions = options.Value;
+        _httpClient = httpClient;
+        _options = options.Value;
+
+#if DEBUG
+        _httpClient.BaseAddress = new Uri("https://localhost:7138/");
+#else
+        ApiClient.BaseAddress = new Uri("https://api:44357/");
+#endif
+        _httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "*/*");
     }
+
+    public void SetAuthorization(string token) => _httpClient.DefaultRequestHeaders.Authorization =
+        new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
+
+    public void ResetAuthorization() => _httpClient.DefaultRequestHeaders.Authorization = null;
 
     /// <summary>
     /// Get some data from API by uri
@@ -18,7 +30,7 @@ public abstract class MvcController : Controller
     /// <typeparam name="TOut">Type that can be received from API</typeparam>
     /// <returns>An API result with data and <see cref="HttpStatusCode"/></returns>
     /// <remarks>Also assigns ModelError 'resp-error' with details of failed request</remarks>
-    protected async Task<ApiResult<TOut>> GetApiAsync<TOut>([StringSyntax(StringSyntaxAttribute.Uri)] string uri)
+    public async Task<ApiResult<TOut>> GetAsync<TOut>([StringSyntax(StringSyntaxAttribute.Uri)] string uri)
         where TOut : class => await ExecuteApiRequest<object, TOut>(uri, HttpMethod.Get);
 
     /// <summary>
@@ -30,7 +42,7 @@ public abstract class MvcController : Controller
     /// <typeparam name="TOut">Type that can be received from API</typeparam>
     /// <returns>An API result with data and <see cref="HttpStatusCode"/></returns>
     /// <remarks>Also assigns ModelError 'resp-error' with details of failed request</remarks>
-    protected async Task<ApiResult<TOut>> PostApiAsync<TIn, TOut>([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
+    public async Task<ApiResult<TOut>> PostAsync<TIn, TOut>([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
         TIn content) where TOut : class => await ExecuteApiRequest<TIn, TOut>(uri, HttpMethod.Post, content);
 
     /// <summary>
@@ -42,7 +54,7 @@ public abstract class MvcController : Controller
     /// <typeparam name="TOut">Type that can be received from API</typeparam>
     /// <returns>An API result with data and <see cref="HttpStatusCode"/></returns>
     /// <remarks>Also assigns ModelError 'resp-error' with details of failed request</remarks>
-    protected async Task<ApiResult<TOut>> PutApiAsync<TIn, TOut>([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
+    public async Task<ApiResult<TOut>> PutAsync<TIn, TOut>([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
         TIn content) where TOut : class => await ExecuteApiRequest<TIn, TOut>(uri, HttpMethod.Put, content);
 
     /// <summary>
@@ -54,7 +66,7 @@ public abstract class MvcController : Controller
     /// <typeparam name="TOut">Type that can be received from API</typeparam>
     /// <returns>An API result with data and <see cref="HttpStatusCode"/></returns>
     /// <remarks>Also assigns ModelError 'resp-error' with details of failed request</remarks>
-    protected async Task<ApiResult<TOut>> PatchApiAsync<TIn, TOut>([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
+    public async Task<ApiResult<TOut>> PatchAsync<TIn, TOut>([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
         TIn content) where TOut : class => await ExecuteApiRequest<TIn, TOut>(uri, HttpMethod.Patch, content);
 
 
@@ -65,7 +77,7 @@ public abstract class MvcController : Controller
     /// <typeparam name="TOut">Type that can be received from API</typeparam>
     /// <returns>An API result with data and <see cref="HttpStatusCode"/></returns>
     /// <remarks>Also assigns ModelError 'resp-error' with details of failed request</remarks>
-    protected async Task<ApiResult<TOut>> DeleteApiAsync<TOut>([StringSyntax(StringSyntaxAttribute.Uri)] string uri)
+    public async Task<ApiResult<TOut>> DeleteAsync<TOut>([StringSyntax(StringSyntaxAttribute.Uri)] string uri)
         where TOut : class => await ExecuteApiRequest<object, TOut>(uri, HttpMethod.Delete);
 
     private async Task<ApiResult<TOut>> ExecuteApiRequest<TIn, TOut>(string uri, HttpMethod method, TIn? data = default)
@@ -78,11 +90,11 @@ public abstract class MvcController : Controller
 
         var apiRequestTask = method switch
         {
-            HttpMethod.Get => ApiClient.GetAsync(uri),
-            HttpMethod.Post => ApiClient.PostAsync(uri, body),
-            HttpMethod.Patch => ApiClient.PatchAsync(uri, body),
-            HttpMethod.Put => ApiClient.PutAsync(uri, body),
-            HttpMethod.Delete => ApiClient.DeleteAsync(uri),
+            HttpMethod.Get => _httpClient.GetAsync(uri),
+            HttpMethod.Post => _httpClient.PostAsync(uri, body),
+            HttpMethod.Patch => _httpClient.PatchAsync(uri, body),
+            HttpMethod.Put => _httpClient.PutAsync(uri, body),
+            HttpMethod.Delete => _httpClient.DeleteAsync(uri),
             _ => throw new ArgumentOutOfRangeException(nameof(method), method, null)
         };
         var response = await apiRequestTask;
@@ -107,17 +119,13 @@ public abstract class MvcController : Controller
         }
 
         var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
-        AssignProblemDetails(problemDetails!);
-        return new ApiResult<TResult>((HttpStatusCode)problemDetails!.Status!);
+        return new ApiResult<TResult>((HttpStatusCode)problemDetails!.Status!, problemDetails.Detail!);
     }
 
     private async Task<TOut?> Deserialize<TOut>(HttpResponseMessage response) where TOut : class
     {
-        var result = await response.Content.ReadFromJsonAsync<MessageResult>(_jsonSerializerOptions);
+        var result = await response.Content.ReadFromJsonAsync<MessageResult>(_options);
         var element = (JsonElement)result!.Data!;
-        return element.Deserialize<TOut>(_jsonSerializerOptions);
+        return element.Deserialize<TOut>(_options);
     }
-
-    private void AssignProblemDetails(ProblemDetails problemDetails) =>
-        ModelState.AddModelError("resp-error", problemDetails.Detail!);
 }

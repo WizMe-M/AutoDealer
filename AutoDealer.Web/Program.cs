@@ -1,22 +1,13 @@
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<HttpClient>(_ =>
-{
-    var client = new HttpClient();
-#if DEBUG
-    client.BaseAddress = new Uri("https://localhost:7138/");
-#else
-        ApiClient.BaseAddress = new Uri("https://api:44357/");
-#endif
-    client.DefaultRequestHeaders.Add(HeaderNames.Accept, "*/*");
-    return client;
-});
-
+builder.Services.AddSingleton<HttpClient>();
 builder.Services.Configure<JsonSerializerOptions>(options =>
 {
     options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     options.Converters.Add(new JsonStringEnumConverter());
 });
+
+builder.Services.AddSingleton<ApiClient>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

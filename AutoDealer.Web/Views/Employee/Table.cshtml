@@ -51,7 +51,7 @@ else
                 <td>
                     @if (user.Id != authorizedId)
                     {
-                        <a class="btn btn-danger" asp-action="" asp-controller="" asp-route-id="@user.Id">Delete</a>
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@user.Id">Delete</a>
                     }
                 </td>
             </tr>

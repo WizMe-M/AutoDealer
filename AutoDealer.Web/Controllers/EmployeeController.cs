@@ -6,14 +6,14 @@ namespace AutoDealer.Web.Controllers;
 [Route("employee")]
 public class EmployeeController : MvcController
 {
-    public EmployeeController(HttpClient client, IOptions<JsonSerializerOptions> options) : base(client, options)
+    public EmployeeController(ApiClient client) : base(client)
     {
     }
 
     [HttpGet("table")]
     public async Task<IActionResult> Table(Post? filter)
     {
-        var data = await GetApiAsync<Employee[]>($"employees?filter={filter}");
+        var data = await Client.GetAsync<Employee[]>($"employees?filter={filter}");
         return View(data.Value ?? ArraySegment<Employee>.Empty);
     }
 
@@ -28,7 +28,17 @@ public class EmployeeController : MvcController
             new FullName(vm.FirstName, vm.LastName, vm.MiddleName),
             new Passport(vm.PassportSeries, vm.PassportNumber),
             vm.Post);
-        await PostApiAsync<EmployeeData, Employee>("employees/create", data);
+        var result = await Client.PostAsync<EmployeeData, Employee>("employees/create", data);
+        if (result.Details is null) return RedirectToAction("Table");
+        
+        ModelState.AddModelError("", result.Details!);
+        return View();
+    }
+
+    [HttpGet("delete/{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await Client.DeleteAsync<Employee>($"employees/{id}/delete");
         return RedirectToAction("Table");
     }
 }
