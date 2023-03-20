@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace AutoDealer.Web.Utils.Extensions;
+﻿namespace AutoDealer.Web.Utils.Extensions;
 
 public static class EnumExtension
 {

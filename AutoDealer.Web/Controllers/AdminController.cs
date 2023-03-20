@@ -11,18 +11,9 @@ public class AdminController : MvcController
     [HttpGet("users")]
     public async Task<IActionResult> Users()
     {
-        var responseMessage = await ApiClient.GetAsync("users");
-        if (responseMessage.IsSuccessStatusCode)
-        {
-            var result = await responseMessage.Content.ReadFromJsonAsync<dynamic>();
-            var node = JsonSerializer.Deserialize<JsonNode>((string)result!.ToString())!;
-            var users = node["data"].Deserialize<User[]>(JsonSerializerOptions);
-            return View(users ?? Array.Empty<User>());
-        }
-
-        if (responseMessage.StatusCode is HttpStatusCode.Unauthorized)
+        var result = await GetFromApiAsync<User[]>("users");
+        if (result.StatusCode is HttpStatusCode.Unauthorized)
             return RedirectToAction("Login", "Auth");
-
-        return View(ArraySegment<User>.Empty);
+        return View(result.Value ?? ArraySegment<User>.Empty);
     }
 }

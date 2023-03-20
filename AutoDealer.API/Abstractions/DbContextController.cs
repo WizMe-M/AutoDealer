@@ -11,7 +11,7 @@ public abstract class DbContextController<T> : ControllerBase
 
     protected OkObjectResult Ok(string message, object? data = null)
     {
-        var result = new { message, data };
+        var result = new MessageResult(message, data);
         return base.Ok(result);
     }
 

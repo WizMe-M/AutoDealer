@@ -27,7 +27,7 @@ public class AuthController : ControllerBase
         var response = new
         {
             AccessToken = CreateJwtToken(user),
-            User = user.Email
+            Id = user.IdEmployee
         };
 
         return Ok(response);

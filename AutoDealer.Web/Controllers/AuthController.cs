@@ -32,8 +32,9 @@ public class AuthController : MvcController
             var result = await responseMessage.Content.ReadFromJsonAsync<dynamic>();
             var node = JsonSerializer.Deserialize<JsonNode>((string)result!.ToString())!;
             var token = node["accessToken"]!.ToString();
+            var id = node["id"]!.ToString();
             AssignAuthHeader(token);
-            await Authorize(vm.Email, Post.DatabaseAdmin.ToString(), token);
+            await Authorize(id, vm.Email, Post.DatabaseAdmin.ToString(), token);
 
             return RedirectToAction("Index", "Home");
         }
@@ -68,14 +69,14 @@ public class AuthController : MvcController
             new AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
     }
 
-    private async Task Authorize(string email, string role, string token)
+    private async Task Authorize(string id, string email, string role, string token)
     {
         var claims = new[]
         {
+            new Claim(ClaimTypesExt.Id, id),
             new Claim(ClaimTypes.Name, email),
-            new Claim(ClaimTypes.Email, email),
             new Claim(ClaimTypes.Role, role),
-            new Claim(nameof(token), token)
+            new Claim(ClaimTypesExt.Token, token)
         };
         var identity = new ClaimsIdentity(claims, "ApplicationCookie");
         var principal = new ClaimsPrincipal(identity);

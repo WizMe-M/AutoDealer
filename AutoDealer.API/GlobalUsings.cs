@@ -12,6 +12,7 @@ global using AutoDealer.API.Extensions;
 global using AutoDealer.API.Services;
 global using AutoDealer.DAL.Database;
 global using AutoDealer.DAL.Database.Entity;
+global using AutoDealer.Utility;
 global using AutoDealer.Utility.BodyTypes;
 global using AutoDealer.Utility.Sort;
 global using FluentValidation;

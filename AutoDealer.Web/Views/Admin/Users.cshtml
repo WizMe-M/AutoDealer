@@ -11,11 +11,12 @@
 
 @if (!Model.Any())
 {
-    <h2 class="text-center">There is no </h2>
+    <h2 class="text-center">There is no users yet</h2>
 }
 else
 {
-    var authorizedEmail = User.FindFirst(ClaimTypes.Name)!.Value;
+    var authorizedId = int.Parse(User.FindFirst(ClaimTypesExt.Id)!.Value);
+
     <table class="table">
         <thead>
         <tr>
@@ -34,7 +35,7 @@ else
             <tr>
                 <th scope="row">@user.IdEmployee</th>
                 <td>@user.Email</td>
-                <td>@user.Employee.Post</td>
+                <td>@user.Employee.Post.DisplayName()</td>
                 <td>
                     <a class="btn btn-outline-primary" asp-action="" asp-controller="" asp-route-id="@user.IdEmployee">Send auth</a>
                 </td>
@@ -42,12 +43,9 @@ else
                     <a class="btn btn-warning" asp-action="" asp-controller="" asp-route-id="@user.IdEmployee">Update</a>
                 </td>
                 <td>
-                    @{
-                        var canDelete = user.Email != authorizedEmail;
-                        if (canDelete)
-                        {
-                            <a class="btn btn-danger" asp-action="" asp-controller="" asp-route-id="@user.IdEmployee">Delete</a>
-                        }
+                    @if (user.IdEmployee != authorizedId)
+                    {
+                        <a class="btn btn-danger" asp-action="" asp-controller="" asp-route-id="@user.IdEmployee">Delete</a>
                     }
                 </td>
             </tr>
