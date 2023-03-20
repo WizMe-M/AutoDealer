@@ -1,8 +1,4 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-
-namespace AutoDealer.Web.Utils;
+﻿namespace AutoDealer.Web.Utils;
 
 public abstract class MvcController : Controller
 {

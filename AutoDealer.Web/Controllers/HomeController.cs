@@ -1,8 +1,4 @@
-﻿using System.Diagnostics;
-using AutoDealer.Web.ViewModels;
-using Microsoft.AspNetCore.Mvc;
-
-namespace AutoDealer.Web.Controllers;
+﻿namespace AutoDealer.Web.Controllers;
 
 public class HomeController : Controller
 {

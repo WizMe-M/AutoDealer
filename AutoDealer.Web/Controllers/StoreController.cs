@@ -1,14 +1,4 @@
-﻿using System.Net;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using AutoDealer.DAL.Database.Entity;
-using AutoDealer.Utility.Sort;
-using AutoDealer.Web.Utils;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-
-namespace AutoDealer.Web.Controllers;
+﻿namespace AutoDealer.Web.Controllers;
 
 [Authorize(Roles = nameof(Post.DatabaseAdmin))]
 [Route("store")]

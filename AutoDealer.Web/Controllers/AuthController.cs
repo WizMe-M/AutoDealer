@@ -1,20 +1,4 @@
-﻿using System.Net.Http.Headers;
-using System.Net.Mime;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using AutoDealer.DAL.Database.Entity;
-using AutoDealer.Utility.BodyTypes;
-using AutoDealer.Web.Utils;
-using AutoDealer.Web.ViewModels;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-
-namespace AutoDealer.Web.Controllers;
+﻿namespace AutoDealer.Web.Controllers;
 
 public class AuthController : MvcController
 {

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace AutoDealer.Web.ViewModels;
+﻿namespace AutoDealer.Web.ViewModels;
 
 public class LoginViewModel
 {

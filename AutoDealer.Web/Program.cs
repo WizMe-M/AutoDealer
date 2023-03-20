@@ -1,12 +1,6 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
-
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<HttpClient>(provider =>
+builder.Services.AddSingleton<HttpClient>(_ =>
 {
     var client = new HttpClient();
 #if DEBUG
@@ -28,9 +22,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddMvc();
 
-builder.Services
-    .AddControllersWithViews()
-    .AddRazorRuntimeCompilation();
+builder.Services.AddControllersWithViews();
 
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
