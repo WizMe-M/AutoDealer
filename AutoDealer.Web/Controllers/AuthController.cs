@@ -20,7 +20,7 @@ public class AuthController : MvcController
     {
         if (!ModelState.IsValid) return View();
 
-        var data = new LoginUser(vm.Email, vm.Password, Post.DatabaseAdmin);
+        var data = new LoginUser(vm.Email, vm.Password, vm.Role);
         var content = new StringContent(
             JsonSerializer.Serialize(data),
             Encoding.UTF8,

@@ -1,12 +1,20 @@
-﻿namespace AutoDealer.DAL.Database.Entity;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AutoDealer.DAL.Database.Entity;
 
 public enum Post
 {
+    [Display(Name = "Database administrator")]
     DatabaseAdmin,
+    [Display(Name = "Head of assembly workshop")]
     AssemblyChief,
+    [Display(Name = "Purchasing specialist")]
     PurchaseSpecialist,
+    [Display(Name = "Warehouse employee")]
     Storekeeper,
+    [Display(Name = "Sales specialist")]
     Seller,
+    [Display(Name = "Certification specialist")]
     Tester
 }
 

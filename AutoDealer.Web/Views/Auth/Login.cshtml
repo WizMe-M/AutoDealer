@@ -1,4 +1,5 @@
-﻿@model LoginViewModel
+﻿@using AutoDealer.Web.Utils.Extensions
+@model LoginViewModel
 
 @{ Layout = null; }
 
@@ -11,34 +12,49 @@
 </head>
 
 <body>
-<div class="container my-3">
-    <form asp-controller="Auth" asp-action="Login">
-        <fieldset>
-            <legend>
-                <h2 class="text-center">Login</h2>
-            </legend>
-        </fieldset>
+<div class="d-flex justify-content-center m-5">
+    <div class="card w-50 shadow">
+        <form asp-controller="Auth" asp-action="Login">
+            <fieldset>
+                <legend>
+                    <h2 class="card-header text-center p-3">Login</h2>
+                </legend>
+            </fieldset>
 
-        <div class="text-danger text-center my-2 fs-2">@Html.ValidationMessage("auth-result")</div>
+            <div class="card-body mx-2">
+                <div class="text-danger text-center my-2 fs-2">@Html.ValidationMessage("auth-result")</div>
 
-        <div class="form-floating mb-3">
-            <input asp-for="Email" class="form-control has-validation" autofocus=""
-                   placeholder="@Html.DisplayNameFor(vm => vm.Email)">
-            <label asp-for="Email"></label>
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
+                <div class="form-floating my-2">
+                    <input asp-for="Email" class="form-control has-validation" autofocus=""
+                           placeholder="@Html.DisplayNameFor(vm => vm.Email)">
+                    <label asp-for="Email"></label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
 
-        <div class="form-floating">
-            <input asp-for="Password" class="form-control has-validation"
-                   placeholder="@Html.DisplayNameFor(vm => vm.Password)">
-            <label asp-for="Password"></label>
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
+                <div class="form-floating my-2">
+                    <input asp-for="Password" class="form-control has-validation"
+                           placeholder="@Html.DisplayNameFor(vm => vm.Password)">
+                    <label asp-for="Password"></label>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
 
-        <div class="text-center my-3">
-            <button class="btn btn-success" type="submit">Login</button>
-        </div>
-    </form>
+                <div class="form-floating my-2">
+                    @{
+                        var roles = Enum.GetValues<Post>().Select(post =>
+                            new SelectListItem(post.DisplayName(), post.ToString()));
+                        <select asp-for="Role" asp-items="roles" class="form-select" aria-label="Select role"></select>
+                    }
+                    <label asp-for="Role">Select role</label>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+
+                <div class="text-center my-3">
+                    <button class="btn btn-success" type="submit">Login</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
 </div>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
