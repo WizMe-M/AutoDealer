@@ -2,13 +2,14 @@
 
 [ApiController]
 [Route("auth")]
-public class AuthController : ControllerBase
+public class AuthController : DbContextController<User>
 {
     private readonly AuthService _authService;
     private readonly HashService _hashService;
     private readonly JwtConfig _jwtConfig;
 
-    public AuthController(AuthService authService, HashService hashService, IOptions<JwtConfig> jwtConfig)
+    public AuthController(AuthService authService, HashService hashService, IOptions<JwtConfig> jwtConfig,
+        AutoDealerContext context) : base(context)
     {
         _authService = authService;
         _hashService = hashService;
@@ -24,13 +25,9 @@ public class AuthController : ControllerBase
         if (user is null)
             return Problem(detail: "User can't be authorized", statusCode: StatusCodes.Status401Unauthorized);
 
-        var response = new
-        {
-            AccessToken = CreateJwtToken(user),
-            Id = user.IdEmployee
-        };
+        var response = new AuthResult(user.IdEmployee, CreateJwtToken(user));
 
-        return Ok(response);
+        return Ok(message: "User authorized", response);
     }
 
     [Authorize]
@@ -69,7 +66,7 @@ public class AuthController : ControllerBase
             user
         };
 
-        return Ok(result);
+        return Ok("Authorized user info was received", result);
     }
 
     private string CreateJwtToken(User user)
@@ -92,4 +89,6 @@ public class AuthController : ControllerBase
         var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
         return encodedJwt;
     }
+
+    protected override Task LoadReferencesAsync(User entity) => throw new NotSupportedException();
 }

@@ -14,7 +14,7 @@ public class StoreController : MvcController
         ViewBag.IdSort = sort is DetailSort.IdAsc ? DetailSort.IdDesc : DetailSort.IdAsc;
         ViewBag.CostSort = sort is DetailSort.CostAsc ? DetailSort.CostDesc : DetailSort.CostAsc;
 
-        var result = await GetFromApiAsync<Detail[]>($"store/details?sort={sort}");
+        var result = await GetApiAsync<Detail[]>($"store/details?sort={sort}");
         return View(result.Value ?? ArraySegment<Detail>.Empty);
     }
 }

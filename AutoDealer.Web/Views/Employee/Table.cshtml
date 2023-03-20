@@ -17,6 +17,8 @@ else
 {
     var authorizedId = int.Parse(User.FindFirst(ClaimTypesExt.Id)!.Value);
     
+    <a asp-controller="Employee" asp-action="Create" class="btn btn-success">Add employee</a>
+    
     <table class="table">
         <thead>
         <tr>

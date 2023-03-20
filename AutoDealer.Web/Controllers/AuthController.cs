@@ -1,4 +1,6 @@
-﻿namespace AutoDealer.Web.Controllers;
+﻿using AutoDealer.Utility.ResultType;
+
+namespace AutoDealer.Web.Controllers;
 
 public class AuthController : MvcController
 {
@@ -10,7 +12,7 @@ public class AuthController : MvcController
     public IActionResult Login(string? prevAction, string? prevController)
     {
         if (!TryAuthApiFromCookie()) return View();
-        
+
         return RedirectToAction(prevAction, prevController);
     }
 
@@ -20,27 +22,13 @@ public class AuthController : MvcController
         if (!ModelState.IsValid) return View();
 
         var data = new LoginUser(vm.Email, vm.Password, vm.Role);
-        var content = new StringContent(
-            JsonSerializer.Serialize(data),
-            Encoding.UTF8,
-            MediaTypeNames.Application.Json);
-        var responseMessage = await ApiClient.PostAsync("auth", content);
+        var apiResult = await PostApiAsync<LoginUser, AuthResult>("auth", data);
+        var authResult = apiResult.Value!;
+        
+        AssignAuthHeader(authResult.Jwt);
+        await Authorize(authResult.Id.ToString(), vm.Email, vm.Role.ToString(), authResult.Jwt);
 
-        if (responseMessage.IsSuccessStatusCode)
-        {
-            var result = await responseMessage.Content.ReadFromJsonAsync<dynamic>();
-            var node = JsonSerializer.Deserialize<JsonNode>((string)result!.ToString())!;
-            var token = node["accessToken"]!.ToString();
-            var id = node["id"]!.ToString();
-            AssignAuthHeader(token);
-            await Authorize(id, vm.Email, vm.Role.ToString(), token);
-
-            return RedirectToAction("Index", "Home");
-        }
-
-        var response = await responseMessage.Content.ReadFromJsonAsync<ProblemDetails>();
-        ModelState.AddModelError("auth-result", response!.Detail!);
-        return View();
+        return RedirectToAction("Index", "Home");
     }
 
     [HttpGet("logout")]

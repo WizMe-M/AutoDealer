@@ -14,6 +14,7 @@ global using AutoDealer.DAL.Database;
 global using AutoDealer.DAL.Database.Entity;
 global using AutoDealer.Utility;
 global using AutoDealer.Utility.BodyTypes;
+global using AutoDealer.Utility.ResultType;
 global using AutoDealer.Utility.Sort;
 global using FluentValidation;
 global using FluentValidation.AspNetCore;

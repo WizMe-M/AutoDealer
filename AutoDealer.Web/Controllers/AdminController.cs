@@ -11,7 +11,7 @@ public class AdminController : MvcController
     [HttpGet("users")]
     public async Task<IActionResult> Users()
     {
-        var result = await GetFromApiAsync<User[]>("users");
+        var result = await GetApiAsync<User[]>("users");
         return View(result.Value ?? ArraySegment<User>.Empty);
     }
 }

@@ -1,0 +1,77 @@
+﻿@model CreateEmployeeViewModel 
+@{
+    ViewBag.Title = "Create employee";
+    Layout = "_Layout";
+}
+
+
+<div class="p-5 g-3 shadow">
+    <form asp-controller="Employee" asp-action="Create" class="has-validation">
+        <h2 class="text-center">Create employee</h2>
+
+        <h4 class="row mx-2">Full name</h4>
+
+        <div class="row g-2">
+            <div class="col form-floating">
+                <input asp-for="LastName" class="form-control" autofocus=""
+                       placeholder="@Html.DisplayNameFor(vm => vm.LastName)">
+                <label asp-for="LastName"></label>
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="col form-floating">
+                <input asp-for="FirstName" class="form-control"
+                       placeholder="@Html.DisplayNameFor(vm => vm.FirstName)">
+                <label asp-for="FirstName"></label>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="col form-floating">
+                <input asp-for="MiddleName" class="form-control"
+                       placeholder="@Html.DisplayNameFor(vm => vm.MiddleName)">
+                <label asp-for="MiddleName"></label>
+                <span asp-validation-for="MiddleName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <hr class="my-4"/>
+
+        <h4 class="row mx-2">Passport data</h4>
+
+        <div class="row g-2">
+            <div class="col-4 form-floating">
+                <input asp-for="PassportSeries" class="form-control"
+                       placeholder="@Html.DisplayNameFor(vm => vm.PassportSeries)">
+                <label asp-for="PassportSeries"></label>
+                <span asp-validation-for="PassportSeries" class="text-danger"></span>
+            </div>
+
+            <div class="col-6 form-floating">
+                <input asp-for="PassportNumber" class="form-control"
+                       placeholder="@Html.DisplayNameFor(vm => vm.PassportNumber)">
+                <label asp-for="PassportNumber"></label>
+                <span asp-validation-for="PassportNumber" class="text-danger"></span>
+            </div>
+        </div>
+
+        <hr class="my-4"/>
+
+        <div class="form-floating my-2">
+            @{
+                var roles = Enum.GetValues<Post>().Select(post =>
+                    new SelectListItem(post.DisplayName(), post.ToString()));
+                <select asp-for="Post" asp-items="roles" class="form-select" aria-label="Select role"></select>
+            }
+            <label asp-for="Post">Select role</label>
+            <span asp-validation-for="Post" class="text-danger"></span>
+        </div>
+
+
+        <div class="my-3 g-3 d-flex justify-content-evenly">
+            <button class="btn btn-success" type="submit">Create</button>
+            <button class="btn btn-danger" type="reset">Clear</button>
+            <a class="btn btn-danger" asp-action="Table">Cancel</a>
+        </div>
+
+    </form>
+</div>
