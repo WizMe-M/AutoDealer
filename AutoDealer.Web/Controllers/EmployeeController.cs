@@ -9,11 +9,11 @@ public class EmployeeController : MvcController
     }
 
     [HttpGet("table")]
-    public async Task<IActionResult> Table()
+    public async Task<IActionResult> Table(Post? filter)
     {
-        var data = await GetFromApiAsync<Employee[]>("employees");
+        var data = await GetFromApiAsync<Employee[]>($"employees?filter={filter}");
         if (data.StatusCode is HttpStatusCode.Unauthorized)
-            return RedirectToAction("Logout", "Auth");
+            return RedirectToAction("Login", "Auth");
         return View(data.Value ?? ArraySegment<Employee>.Empty);
     }
 }

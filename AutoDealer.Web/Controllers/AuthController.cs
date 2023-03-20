@@ -10,7 +10,7 @@ public class AuthController : MvcController
     public IActionResult Login()
     {
         if (TryAuthApiFromCookie())
-            return RedirectToAction("Index", "Home");
+            return Redirect(Request.Headers["referer"].ToString());
 
         return View();
     }
