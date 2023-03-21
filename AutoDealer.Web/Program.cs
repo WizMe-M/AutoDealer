@@ -1,3 +1,8 @@
+var culture = new CultureInfo("en");
+Thread.CurrentThread.CurrentCulture = culture;
+Thread.CurrentThread.CurrentUICulture = culture;
+ValidatorOptions.Global.LanguageManager.Culture = culture;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<HttpClient>();
@@ -12,6 +17,9 @@ builder.Services.AddSingleton<ApiClient>();
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddMvc(options => options.Filters.Add(new ApiAuthExceptionFilterAttribute()));
+
+builder.Services.AddFluentValidationAutoValidation(configuration => configuration.DisableDataAnnotationsValidation = true);
+builder.Services.AddValidatorsFromAssemblyContaining<LoginUser>(ServiceLifetime.Singleton);
 
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

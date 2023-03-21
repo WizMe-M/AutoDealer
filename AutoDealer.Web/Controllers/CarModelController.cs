@@ -19,10 +19,9 @@ public class CarModelController : MvcController
     public IActionResult Create() => View();
 
     [HttpPost("create")]
-    public async Task<IActionResult> Create(CreateCarModelViewModel vm)
+    public async Task<IActionResult> Create(CarModelData data)
     {
-        if (!ModelState.IsValid) return View(vm);
-        var data = new CarModelData(vm.LineName, vm.ModelName, vm.TrimCode);
+        if (!ModelState.IsValid) return View(data);
         var apiResult = await Client.PostAsync<CarModelData, CarModel>("car_models/create", data);
         if (apiResult.Details is null) return RedirectToAction("Table", "CarModel");
         ModelState.AddModelError("", apiResult.Details);

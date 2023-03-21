@@ -44,12 +44,15 @@ public class FullNameValidator : AbstractValidator<FullName>
     {
         RuleFor(data => data.FirstName)
             .NotEmpty()
-            .Length(0, 30);
+            .Length(0, 30)
+            .WithName("First name");
         RuleFor(data => data.LastName)
             .NotEmpty()
-            .Length(0, 30);
+            .Length(0, 30)
+            .WithName("Last name");
         RuleFor(data => data.MiddleName)
-            .Length(0, 30).When(name => name.MiddleName is { });
+            .Length(0, 30).When(name => name.MiddleName is { })
+            .WithName("Middle name");
     }
 }
 
@@ -58,10 +61,12 @@ public class BirthDataValidator : AbstractValidator<BirthData>
     public BirthDataValidator()
     {
         RuleFor(data => data.Birthdate)
-            .LessThan(DateOnly.FromDateTime(DateTime.Today));
+            .LessThan(DateOnly.FromDateTime(DateTime.Today))
+            .WithName("Date of birth");
         RuleFor(data => data.Birthplace)
             .NotEmpty()
-            .Length(3, 200);
+            .Length(3, 200)
+            .WithName("Place of birth");
     }
 }
 
@@ -71,11 +76,13 @@ public class PassportValidator : AbstractValidator<Passport>
     {
         RuleFor(passport => passport.Series)
             .NotEmpty()
-            .Matches(PassportRegex.SeriesRegex);
+            .Matches(PassportRegex.SeriesRegex).WithMessage("{PropertyName} must be in format '1234'")
+            .WithName("Passport series");
 
         RuleFor(passport => passport.Number)
             .NotEmpty()
-            .Matches(PassportRegex.NumberRegex);
+            .Matches(PassportRegex.NumberRegex).WithMessage("{PropertyName} must be in format '123456'")
+            .WithName("Passport number");
     }
 }
 
@@ -85,11 +92,13 @@ public class FullPassportValidator : AbstractValidator<FullPassport>
     {
         RuleFor(passport => passport.Series)
             .NotEmpty()
-            .Matches(PassportRegex.SeriesRegex);
+            .Matches(PassportRegex.SeriesRegex).WithMessage("{PropertyName} must be in format '1234'")
+            .WithName("Passport series");
 
         RuleFor(passport => passport.Number)
             .NotEmpty()
-            .Matches(PassportRegex.NumberRegex);
+            .Matches(PassportRegex.NumberRegex).WithMessage("{PropertyName} must be in format '123456'")
+            .WithName("Passport number");
 
         RuleFor(passport => passport.Issuer)
             .NotEmpty()
@@ -97,7 +106,8 @@ public class FullPassportValidator : AbstractValidator<FullPassport>
 
         RuleFor(passport => passport.DepartmentCode)
             .NotEmpty()
-            .Matches(PassportRegex.DepartmentCodeRegex);
+            .Matches(PassportRegex.DepartmentCodeRegex).WithMessage("{PropertyName} must be in format '123-123'")
+            .WithName("Department code");
     }
 }
 

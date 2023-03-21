@@ -1,0 +1,47 @@
+﻿@model ArraySegment<Supplier>
+
+@{
+    ViewBag.Title = "Suppliers";
+}
+
+<h2 class="my-2">Suppliers</h2>
+
+<a asp-action="Create" class="btn btn-success">Add supplier</a>
+
+@if (!Model.Any())
+{
+    <h2 class="text-center">There is no suppliers yet</h2>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">TIN</th>
+            <th scope="col">Correspondent account</th>
+            <th scope="col">Settlement account</th>
+            <th scope="col">Legal address</th>
+            <th scope="col">Postal address</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var supplier in Model)
+        {
+            <tr>
+                <th scope="row">@supplier.Id</th>
+                <td>@supplier.Tin</td>
+                <td>@supplier.CorrespondentAccount</td>
+                <td>@supplier.SettlementAccount</td>
+                <td>@supplier.LegalAddress</td>
+                <td>@supplier.PostalAddress</td>
+                <td>
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@supplier.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

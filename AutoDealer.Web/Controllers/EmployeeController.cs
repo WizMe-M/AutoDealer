@@ -1,6 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-
-namespace AutoDealer.Web.Controllers;
+﻿namespace AutoDealer.Web.Controllers;
 
 [Authorize(Roles = nameof(Post.DatabaseAdmin))]
 [Route("employee")]
@@ -21,16 +19,13 @@ public class EmployeeController : MvcController
     public IActionResult Create() => View();
 
     [HttpPost("create")]
-    public async Task<IActionResult> Create(CreateEmployeeViewModel vm)
+    public async Task<IActionResult> Create(EmployeeData data)
     {
-        if (!ModelState.IsValid) return View(vm);
-        var data = new EmployeeData(
-            new FullName(vm.FirstName, vm.LastName, vm.MiddleName),
-            new Passport(vm.PassportSeries, vm.PassportNumber),
-            vm.Post);
+        if (!ModelState.IsValid) return View(data);
+
         var result = await Client.PostAsync<EmployeeData, Employee>("employees/create", data);
         if (result.Details is null) return RedirectToAction("Table");
-        
+
         ModelState.AddModelError("", result.Details!);
         return View();
     }

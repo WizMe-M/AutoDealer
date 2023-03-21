@@ -1,0 +1,64 @@
+﻿@model SupplierData
+
+@{
+    ViewBag.Title = "Create Supplier";
+}
+
+<div class="p-5 g-3 shadow">
+    <form asp-action="Create" class="has-validation">
+        <h2 class="text-center">Create Supplier</h2>
+
+        <div class="row col-5 form-floating">
+            <input asp-for="Tin" class="form-control" placeholder="TIN" autofocus="">
+            <label>TIN</label>
+            <span asp-validation-for="Tin" class="text-danger"></span>
+        </div>
+
+        <hr class="my-4"/>
+        
+        <h4 class="row mx-2">Accounts</h4>
+
+        <div class="row g-2">
+            <div class="col form-floating">
+                <input asp-for="Accounts.Correspondent" class="form-control" placeholder="Correspondent account">
+                <label>Correspondent account</label>
+                <span asp-validation-for="Accounts.Correspondent" class="text-danger"></span>
+            </div>
+
+            <div class="col form-floating">
+                <input asp-for="Accounts.Settlement" class="form-control" placeholder="Settlement account">
+                <label>Settlement account</label>
+                <span asp-validation-for="Accounts.Settlement" class="text-danger"></span>
+            </div>
+        </div>
+
+        <hr class="my-4"/>
+
+        <h4 class="row mx-2">Addresses</h4>
+
+        <div class="row g-2">
+            <div class="col-4 form-floating">
+                <input asp-for="Addresses.Legal" class="form-control"
+                       placeholder="@Html.DisplayNameFor(vm => vm.Addresses.Legal)">
+                <label asp-for="Addresses.Legal"></label>
+                <span asp-validation-for="Addresses.Legal" class="text-danger"></span>
+            </div>
+
+            <div class="col-6 form-floating">
+                <input asp-for="Addresses.Postal" class="form-control"
+                       placeholder="@Html.DisplayNameFor(vm => vm.Addresses.Postal)">
+                <label asp-for="Addresses.Postal"></label>
+                <span asp-validation-for="Addresses.Postal" class="text-danger"></span>
+            </div>
+        </div>
+
+        <hr class="my-4"/>
+
+        <div class="my-3 g-3 d-flex justify-content-evenly">
+            <button class="btn btn-success" type="submit">Create</button>
+            <button class="btn btn-outline-primary" type="reset">Clear</button>
+            <a class="btn btn-danger" asp-action="Table">Cancel</a>
+        </div>
+
+    </form>
+</div>

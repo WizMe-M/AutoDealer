@@ -115,7 +115,7 @@ public class SupplierController : DbContextController<Supplier>
     }
 
     [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
-    [HttpDelete("delete")]
+    [HttpDelete("{id:int}/delete")]
     public IActionResult Delete(int id)
     {
         var found = Find(id);

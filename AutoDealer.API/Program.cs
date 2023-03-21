@@ -67,7 +67,7 @@ builder.Services.AddFluentValidationAutoValidation(configuration =>
     ValidatorOptions.Global.LanguageManager.Culture = culture;
     configuration.DisableDataAnnotationsValidation = true;
 });
-builder.Services.AddValidatorsFromAssemblyContaining<LoginUser>(lifetime: ServiceLifetime.Singleton);
+builder.Services.AddValidatorsFromAssemblyContaining<LoginUser>(ServiceLifetime.Singleton);
 
 builder.Services.AddRouting(options =>
 {

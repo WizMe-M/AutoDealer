@@ -17,16 +17,15 @@ public class AuthController : MvcController
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginViewModel vm)
+    public async Task<IActionResult> Login(LoginUser data)
     {
         if (!ModelState.IsValid) return View();
 
-        var data = new LoginUser(vm.Email, vm.Password, vm.Role);
         var apiResult = await Client.PostAsync<LoginUser, AuthResult>("auth", data);
         var authResult = apiResult.Value!;
         
         AssignAuthHeader(authResult.Jwt);
-        await Authorize(authResult.Id.ToString(), vm.Email, vm.Role.ToString(), authResult.Jwt);
+        await Authorize(authResult.Id.ToString(), data.Email, data.Post.ToString(), authResult.Jwt);
 
         return RedirectToAction("Index", "Home");
     }

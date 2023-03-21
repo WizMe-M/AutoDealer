@@ -1,0 +1,61 @@
+﻿@model string
+
+@{
+    ViewBag.Title = "Detail Series";
+}
+
+<h2>Detail Series</h2>
+
+<form asp-action="Create">
+    <div class="row align-items-center">
+        <div class="col-2">
+            <div class="form-floating">
+                <input name="code" class="form-control form-control-sm" placeholder="Code"/>
+                <label>Code</label>
+            </div>
+            <div asp-validation-summary="All" class="text-danger"></div>
+        </div>
+        <div class="col-3">
+            <button class="btn btn-success" type="submit">Add model</button>
+        </div>
+    </div>
+</form>
+
+@{
+    var series = (ArraySegment<DetailSeries>)ViewBag.Details;
+
+    @if (series.Count == 0)
+    {
+        <h2 class="text-center">There is no detail series yet</h2>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Code</th>
+                <th scope="col">Description</th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            @foreach (var ds in series)
+            {
+                <tr>
+                    <th scope="row">@ds.Id</th>
+                    <td>@ds.Code</td>
+                    <td>@ds.Description</td>
+                    <td>
+                        <a class="btn btn-danger" asp-controller="DetailSeries" asp-action="Delete"
+                           asp-route-id="@ds.Id">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+}
