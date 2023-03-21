@@ -1,13 +1,9 @@
 ﻿@model CarModelData 
-@{
-    ViewBag.Title = "Create model";
-}
+@{ ViewBag.Title = "Create model"; }
 
 <div class="p-5 g-3 shadow">
-    <form asp-controller="CarModel" asp-action="Create" class="has-validation">
+    <form asp-action="Create" class="has-validation">
         <h2 class="text-center">Create car model</h2>
-        
-        <div asp-validation-summary="All"></div>
 
         <div class="row g-2">
             <div class="col form-floating">

@@ -8,5 +8,5 @@ public partial class Test
 
     public DateOnly? EndDate { get; set; }
 
-    public virtual ICollection<TestAuto> TestAutos { get; } = new List<TestAuto>();
+    public virtual ICollection<TestAuto> TestAutos { get; set; } = new List<TestAuto>();
 }

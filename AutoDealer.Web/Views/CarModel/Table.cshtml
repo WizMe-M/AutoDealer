@@ -1,12 +1,12 @@
 ﻿@model IEnumerable<CarModel>
 
-@{
-    ViewBag.Title = "Car Models";
-}
+@{ ViewBag.Title = "Car Models"; }
 
 <h2>Car Models</h2>
 
 <div asp-validation-summary="All"></div>
+
+<a asp-controller="CarModel" asp-action="Create" class="btn btn-success">Add model</a>
 
 @if (!Model.Any())
 {
@@ -14,7 +14,6 @@
 }
 else
 {
-    <a asp-controller="CarModel" asp-action="Create" class="btn btn-success">Add model</a>
     
     <table class="table">
         <thead>

@@ -1,6 +1,5 @@
 ﻿namespace AutoDealer.Web.Controllers;
 
-[Route("supplier")]
 [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
 public class SupplierController : MvcController
 {

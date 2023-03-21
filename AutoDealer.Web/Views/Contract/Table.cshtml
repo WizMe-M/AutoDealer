@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Contract>
+
+@{ ViewBag.Title = "Contracts"; }
+
+<h2>Contracts</h2>
+
+
+<a asp-controller="Contract" asp-action="Create" class="btn btn-success">Add contract</a>
+
+@if (!Model.Any())
+{
+    <h2 class="text-center">There are no contracts yet</h2>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Conclused on</th>
+            <th scope="col">Expected supply date</th>
+            <th scope="col">Lading Bill issued on</th>
+            <th scope="col">Supplier TIN</th>
+            <th scope="col">Storekeeper</th>
+            <th scope="col">Total sum</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var contract in Model)
+        {
+            <tr>
+                <th scope="row">@contract.Id</th>
+                <td>@contract.ConclusionDate</td>
+                <td>@contract.SupplyDate</td>
+                <td>@(contract.LadingBillIssueDate?.ToShortDateString() ?? "-")</td>
+                <td>@(contract.Supplier?.Tin ?? "-")</td>
+                @{
+                    var sk = contract.Storekeeper;
+                    var name = sk is {} ? $"{sk.LastName} {sk.FirstName}" : "-";
+                    <td>@name</td>
+                }
+                <td>@contract.TotalSum</td>
+                <td>
+                    <a class="btn btn-primary" asp-controller="Contract" asp-action="Info" asp-route-id="@contract.Id">Info</a>
+                </td>
+                <td>
+                    <a class="btn btn-danger" asp-controller="Contract" asp-action="Delete" asp-route-id="@contract.Id">Terminate</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

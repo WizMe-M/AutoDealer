@@ -16,9 +16,9 @@ public partial class Contract
 
     public DateOnly? LadingBillIssueDate { get; set; }
 
-    public virtual ICollection<ContractDetail> ContractDetails { get; } = new List<ContractDetail>();
+    public virtual ICollection<ContractDetail> ContractDetails { get; set; } = new List<ContractDetail>();
 
-    public virtual IEnumerable<Detail> Details { get; } = new List<Detail>();
+    public virtual IEnumerable<Detail> Details { get; set; } = new List<Detail>();
 
     public virtual Employee? Storekeeper { get; set; }
 

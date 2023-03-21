@@ -1,6 +1,6 @@
 ﻿namespace AutoDealer.API.Controllers;
 
-[Authorize(Roles = nameof(Post.DatabaseAdmin))]
+[Authorize]
 [ApiController]
 [Route("employees")]
 public class EmployeeController : DbContextController<Employee>

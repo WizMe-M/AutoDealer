@@ -2,6 +2,9 @@
 
 @{
     ViewBag.Title = "Assign details";
+    var detailSeries = ViewBag.DetailSeries as DetailSeries[];
+    var items = detailSeries!.Select(series =>
+        new SelectListItem(series.Code, series.Id.ToString()));
 }
 
 <form asp-action="AssignDetailsToModel">
@@ -13,10 +16,13 @@
         <div>@ViewBag.CarModel.LineName</div>
         <div>@ViewBag.CarModel.ModelName</div>
         <div>@ViewBag.CarModel.TrimCode</div>
-        
+
     </div>
 
     <h4 class="mt-5">Current assigned details series:</h4>
+    
+    <div asp-validation-summary="All"></div>
+    
     <div id="added-rows">
         @foreach (var dc in Model)
         {
@@ -36,21 +42,15 @@
         <div class="row my-2 align-items-center">
             <div class="col-4">
                 <div class="form-floating">
-                    @{
-                        var detailSeries = ViewBag.DetailSeries as DetailSeries[];
-                        var items = detailSeries!.Select(series =>
-                            new SelectListItem(series.Code, series.Id.ToString()));
-                        <select id="id-selection" class="form-select" asp-items="items"></select>
-                    }
+                    <select id="id-selection" class="form-select" asp-items="items"></select>
                     <label>Select details</label>
                 </div>
             </div>
 
             <div class="col-3">
                 <div class="form-floating">
-                    <input id="count-input" class="form-control" placeholder="Count">
+                    <input id="count-input" class="form-control" placeholder="Count" type="number">
                     <label for="count-input">Count</label>
-                    <span class="text-danger"></span>
                 </div>
             </div>
 

@@ -1,0 +1,213 @@
+﻿@model ContractData
+
+@{
+    ViewBag.Title = "Add contract";
+
+    var suppliers = ViewBag.Suppliers as IEnumerable<Supplier>;
+    var storekeepers = ViewBag.Storekeepers as IEnumerable<Employee>;
+    var detailSeries = ViewBag.DetailSeries as IEnumerable<DetailSeries>;
+}
+
+@if (suppliers is null)
+{
+    <div class="row row-cols-auto">
+        <div class="col">Suppliers are missing</div>
+        <div class="col">
+            <a asp-controller="Supplier" asp-action="Create" class="btn btn-success">Create</a>
+        </div>
+    </div>
+}
+
+@if (storekeepers is null)
+{
+    <div class="row row-cols-auto">
+        <div class="col">Storekeepers are missing</div>
+        <div class="col">Wait until Administrator will add Storekeeper</div>
+    </div>
+}
+
+@if (detailSeries is null)
+{
+    <div class="row row-cols-auto">
+        <div class="col">Detail series are missing</div>
+        <div class="col">
+            <a asp-controller="DetailSeries" asp-action="Table" class="btn btn-success">Create</a>
+        </div>
+    </div>
+}
+
+@if (suppliers is { } && storekeepers is { } && detailSeries is { })
+{
+    var sups = suppliers.Select(supplier =>
+        new SelectListItem(supplier.Tin.ToString(), supplier.Id.ToString()));
+
+    var sk = storekeepers.Select(employee =>
+        new SelectListItem($"{employee.LastName} {employee.FirstName}", employee.Id.ToString()));
+
+    var ds = detailSeries.Select(series =>
+        new SelectListItem(series.Code, series.Id.ToString()));
+
+    <div class="p-5 g-3 shadow">
+        <form asp-action="Create" class="has-validation">
+            <h2 class="text-center">Add contract</h2>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating">
+                            <input asp-for="SupplyDate" class="form-control" placeholder="Date of supply" type="date" autofocus="">
+                            <label>Date of supply</label>
+                            <span asp-validation-for="SupplyDate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-floating">
+                            <select asp-for="SupplierId" asp-items="sups" class="form-select"></select>
+                            <label asp-for="SupplierId">Select supplier</label>
+                            <span asp-validation-for="SupplierId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-floating">
+                            <select asp-for="StorekeeperId" asp-items="sk" class="form-select"></select>
+                            <label asp-for="StorekeeperId">Select storekeeper</label>
+                            <span asp-validation-for="StorekeeperId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4"/>
+
+            <div class="row my-2 align-items-center">
+                <div class="col-3">
+                    <div class="form-floating">
+                        <select id="id-selection" class="form-select" asp-items="ds"></select>
+                        <label>Select details</label>
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-floating">
+                        <input id="count-input" class="form-control" placeholder="Count" type="number">
+                        <label for="count-input">Count</label>
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="form-floating">
+                        <input id="cost-input" class="form-control" placeholder="Cost" type="number">
+                        <label for="cost-input">Cost</label>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <button id="add-btn" class="btn btn-primary">Add</button>
+                </div>
+            </div>
+
+            <hr class="my-4"/>
+
+            <div id="added-rows"></div>
+            
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <hr class="my-4"/>
+
+            <div class="my-3 g-3 d-flex justify-content-evenly">
+                <button class="btn btn-success" type="submit">Create</button>
+                <button class="btn btn-outline-primary" type="reset">Clear</button>
+                <a class="btn btn-danger" asp-action="Table">Cancel</a>
+            </div>
+        </form>
+    </div>
+}
+
+
+<script>
+const rows = document.getElementById('added-rows');
+const addBtn = document.getElementById('add-btn');
+const idSelect = document.getElementById('id-selection');
+const countInput = document.getElementById('count-input');
+const costInput = document.getElementById('cost-input');
+
+addBtn.addEventListener("click", addItem);
+rows.addEventListener("click", deleteItem);
+
+function addItem(event) {
+    event.preventDefault();
+    
+    //item DIV
+    const rowDiv = document.createElement('div');
+    rowDiv.classList.add('row', 'mb-2');
+    
+    //item Id
+    const idDiv = document.createElement('div');
+    idDiv.classList.add('col');
+    const id = document.createElement('input');
+    id.value = idSelect.value;
+    id.name = `Details[${rows.childElementCount}].IdDetailSeries`;
+    id.readOnly = true;
+    id.classList.add('form-control');
+    idDiv.appendChild(id);
+    rowDiv.appendChild(idDiv);
+    
+    //item Count
+    const countDiv = document.createElement('div');
+    countDiv.classList.add('col');
+    const count = document.createElement('input');
+    count.value = countInput.value;
+    count.name = `Details[${rows.childElementCount}].Count`;
+    count.readOnly = true;
+    count.classList.add('form-control');
+    countDiv.appendChild(count);
+    rowDiv.appendChild(countDiv);
+    
+    //item Cost
+    const costDiv = document.createElement('div');
+    costDiv.classList.add('col');
+    const cost = document.createElement('input');
+    cost.value = costInput.value;
+    cost.name = `Details[${rows.childElementCount}].CostPerOne`;
+    cost.readOnly = true;
+    cost.classList.add('form-control');
+    costDiv.appendChild(cost);
+    rowDiv.appendChild(costDiv);
+    
+    //delete BUTTON
+    const deleteDiv = document.createElement('div');
+    deleteDiv.classList.add('col-2');
+    const deleteBtn = document.createElement('button');
+    deleteBtn.innerText = 'Remove';
+    deleteBtn.classList.add('delete_btn', 'btn', 'btn-danger');
+    deleteDiv.appendChild(deleteBtn);    
+    rowDiv.appendChild(deleteDiv);
+    
+    //Append to Actual LIST
+    rows.appendChild(rowDiv);
+    countInput.value = "0";
+    costInput.value = "0";
+}
+
+function deleteItem(event) {
+    event.preventDefault();
+    const item = event.target;
+    //DELETE ITEM
+    if (item.classList.contains("delete_btn")) {
+        const pair = item.parentElement.parentElement;
+        pair.remove();
+        
+        for(let i = 0; i < rows.childElementCount; i++) {
+            let row = rows.children[i];
+            let id = row.getElementsByTagName('input')[0];
+            id.name = `Details[${i}].IdDetailSeries`;
+            let count = row.getElementsByTagName('input')[1];
+            count.name = `Details[${i}].Count`;    
+            let cost = row.getElementsByTagName('input')[2];
+            cost.name = `Details[${i}].CostPerOne`;            
+        }
+    }
+}
+</script>

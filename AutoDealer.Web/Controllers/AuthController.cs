@@ -1,6 +1,4 @@
-﻿using AutoDealer.Utility.ResultType;
-
-namespace AutoDealer.Web.Controllers;
+﻿namespace AutoDealer.Web.Controllers;
 
 public class AuthController : MvcController
 {
@@ -17,6 +15,7 @@ public class AuthController : MvcController
     }
 
     [HttpPost]
+    [AnonymousOnly]
     public async Task<IActionResult> Login(LoginUser data)
     {
         if (!ModelState.IsValid) return View();
@@ -31,6 +30,7 @@ public class AuthController : MvcController
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Logout()
     {
         Client.ResetAuthorization();
@@ -42,12 +42,12 @@ public class AuthController : MvcController
     {
         if (!HasToken(HttpContext.User)) return false;
 
-        var token = HttpContext.User.FindFirst("token")!.Value;
+        var token = HttpContext.User.FindFirst(ClaimTypesExt.Token)!.Value;
         AssignAuthHeader(token);
         return true;
     }
 
-    private static bool HasToken(ClaimsPrincipal? principal) => principal?.FindFirst("token") is { };
+    private static bool HasToken(ClaimsPrincipal? principal) => principal?.FindFirst(ClaimTypesExt.Token) is { };
 
     private void AssignAuthHeader(string token)
     {
