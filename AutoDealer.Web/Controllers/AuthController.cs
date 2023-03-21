@@ -8,15 +8,15 @@ public class AuthController : MvcController
     {
     }
 
-    [HttpGet("login")]
-    public IActionResult Login(string? prevAction, string? prevController)
+    [HttpGet]
+    public IActionResult Login(string? prevAction, string? prevController, string? prevId)
     {
         if (!TryAuthApiFromCookie()) return View();
 
-        return RedirectToAction(prevAction, prevController);
+        return RedirectToAction(prevAction, prevController, new { id = prevId});
     }
 
-    [HttpPost("login")]
+    [HttpPost]
     public async Task<IActionResult> Login(LoginUser data)
     {
         if (!ModelState.IsValid) return View();
@@ -30,7 +30,7 @@ public class AuthController : MvcController
         return RedirectToAction("Index", "Home");
     }
 
-    [HttpGet("logout")]
+    [HttpGet]
     public async Task<IActionResult> Logout()
     {
         Client.ResetAuthorization();

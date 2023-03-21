@@ -6,7 +6,7 @@ public class DetailSeriesController : MvcController
     {
     }
     
-    [HttpGet("table")]
+    [HttpGet]
     public async Task<IActionResult> Table()
     {
         var apiResult = await Client.GetAsync<DetailSeries[]>("detail_series");
@@ -14,7 +14,7 @@ public class DetailSeriesController : MvcController
         return View();
     }
     
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<IActionResult> Create(string code)
     {
         if (!ModelState.IsValid) return View("Table", code);
@@ -27,7 +27,7 @@ public class DetailSeriesController : MvcController
         return View(code);
     }
     
-    [HttpGet("delete/{id:int}")]
+    [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
         await Client.DeleteAsync<DetailSeries>($"detail_series/{id}/delete");

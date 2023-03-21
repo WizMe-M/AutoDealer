@@ -1,24 +1,23 @@
 ﻿namespace AutoDealer.Web.Controllers;
 
 [Authorize(Roles = nameof(Post.DatabaseAdmin))]
-[Route("employee")]
 public class EmployeeController : MvcController
 {
     public EmployeeController(ApiClient client) : base(client)
     {
     }
 
-    [HttpGet("table")]
+    [HttpGet]
     public async Task<IActionResult> Table(Post? filter)
     {
         var data = await Client.GetAsync<Employee[]>($"employees?filter={filter}");
         return View(data.Value ?? ArraySegment<Employee>.Empty);
     }
 
-    [HttpGet("create")]
+    [HttpGet]
     public IActionResult Create() => View();
 
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<IActionResult> Create(EmployeeData data)
     {
         if (!ModelState.IsValid) return View(data);
@@ -30,7 +29,7 @@ public class EmployeeController : MvcController
         return View();
     }
 
-    [HttpGet("delete/{id:int}")]
+    [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
         await Client.DeleteAsync<Employee>($"employees/{id}/delete");

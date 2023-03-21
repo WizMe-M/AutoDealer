@@ -23,7 +23,12 @@ builder.Services.AddValidatorsFromAssemblyContaining<LoginUser>(ServiceLifetime.
 
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie();
+    .AddCookie(options =>
+    {
+        options.LoginPath = new PathString("/Auth/Login");
+        options.LogoutPath = new PathString("/Auth/Logout");
+        options.ExpireTimeSpan = TimeSpan.FromHours(6);
+    });
 
 builder.Services.AddAuthorization();
 
@@ -43,8 +48,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapDefaultControllerRoute();
 
 app.Run();

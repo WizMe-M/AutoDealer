@@ -1,14 +1,13 @@
 ﻿namespace AutoDealer.Web.Controllers;
 
 [Authorize(Roles = nameof(Post.Storekeeper))]
-[Route("store")]
 public class StoreController : MvcController
 {
     public StoreController(ApiClient client) : base(client)
     {
     }
 
-    [HttpGet("details")]
+    [HttpGet]
     public async Task<IActionResult> Details(DetailSort sort = DetailSort.IdAsc)
     {
         ViewBag.IdSort = sort is DetailSort.IdAsc ? DetailSort.IdDesc : DetailSort.IdAsc;

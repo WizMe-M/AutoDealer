@@ -8,17 +8,17 @@ public class SupplierController : MvcController
     {
     }
 
-    [HttpGet("table")]
+    [HttpGet]
     public async Task<IActionResult> Table()
     {
         var clients = await Client.GetAsync<Supplier[]>("suppliers");
         return View(clients.Value ?? ArraySegment<Supplier>.Empty);
     }
 
-    [HttpGet("create")]
+    [HttpGet]
     public IActionResult Create() => View();
 
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<IActionResult> Create(SupplierData data)
     {
         if (!ModelState.IsValid) return View(data);
@@ -28,7 +28,7 @@ public class SupplierController : MvcController
         return RedirectToAction("Table", "Supplier");
     }
 
-    [HttpGet("delete/{id:int}")]
+    [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
         await Client.DeleteAsync<Supplier>($"suppliers/{id}/delete");

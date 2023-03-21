@@ -1,24 +1,23 @@
 ﻿namespace AutoDealer.Web.Controllers;
 
 [Authorize(Roles = nameof(Post.AssemblyChief))]
-[Route("car-model")]
 public class CarModelController : MvcController
 {
     public CarModelController(ApiClient client) : base(client)
     {
     }
 
-    [HttpGet("table")]
+    [HttpGet]
     public async Task<IActionResult> Table()
     {
         var apiResult = await Client.GetAsync<CarModel[]>("car_models");
         return View(apiResult.Value ?? ArraySegment<CarModel>.Empty);
     }
 
-    [HttpGet("create")]
+    [HttpGet]
     public IActionResult Create() => View();
 
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<IActionResult> Create(CarModelData data)
     {
         if (!ModelState.IsValid) return View(data);
@@ -28,21 +27,21 @@ public class CarModelController : MvcController
         return View();
     }
 
-    [HttpGet("delete/{id:int}")]
+    [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
         await Client.DeleteAsync<CarModel>($"car_models/{id}/delete");
         return RedirectToAction("Table", "CarModel");
     }
 
-    [HttpGet("info/{id:int}")]
+    [HttpGet]
     public async Task<IActionResult> Info(int id)
     {
         var model = await Client.GetAsync<CarModel>($"car_models/{id}");
         return View(model.Value);
     }
 
-    [HttpGet("{id:int}/assign")]
+    [HttpGet]
     public async Task<IActionResult> AssignDetailsToModel(int id)
     {
         var carModel = await Client.GetAsync<CarModel>($"car_models/{id}");
@@ -54,7 +53,7 @@ public class CarModelController : MvcController
         return View(new List<DetailCount>());
     }
 
-    [HttpPost("{id:int}/assign")]
+    [HttpPost]
     public async Task<IActionResult> AssignDetailsToModel(int id, List<DetailCount> model)
     {
         if (!model.Any())
@@ -65,7 +64,7 @@ public class CarModelController : MvcController
 
         if (model.Any(dc => dc.Count < 1))
         {
-            ModelState.AddModelError("", "List must contain at items with count more than 0");
+            ModelState.AddModelError("", "List must contain items with count more than 0");
             return View(model);
         }
 
