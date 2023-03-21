@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Auto>
+
+@{ ViewBag.Title = "Autos"; }
+
+<h2>Autos</h2>
+
+<div asp-validation-summary="All"></div>
+
+<a asp-controller="CarModel" asp-action="Table" class="btn btn-success">Asembly auto</a>
+
+@if (!Model.Any())
+{
+    <h2 class="text-center">There are no autos yet</h2>
+}
+else
+{
+    
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Line</th>
+            <th scope="col">Model</th>
+            <th scope="col">Trim</th>
+            <th scope="col">Cost</th>
+            <th scope="col">Current status</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var auto in Model)
+        {
+            <tr>
+                <th scope="row">@auto.Id</th>
+                <td>@auto.CarModel.LineName</td>
+                <td>@auto.CarModel.ModelName</td>
+                <td>@auto.CarModel.TrimCode</td>
+                <td>@auto.Cost</td>
+                <td>@auto.Status.DisplayName()</td>
+                <td>@auto.AssemblyDate.ToShortDateString()</td>
+                <td>
+                    <a class="btn btn-primary" asp-controller="Auto" asp-action="Info" asp-route-id="@auto.Id">Info</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

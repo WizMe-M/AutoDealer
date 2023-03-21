@@ -72,4 +72,14 @@ public class CarModelController : MvcController
             await Client.PatchAsync<IEnumerable<DetailCount>, CarModel>($"car_models/{id}/set-details", model);
         return RedirectToAction("Info", "CarModel", new { id });
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Assembly(int id)
+    {
+        var assembled = await Client.PostAsync<string, Auto>($"autos/assembly/{id}", string.Empty);
+        if (assembled.Details is { }) 
+            return RedirectToAction("Table", "CarModel");
+        
+        return RedirectToAction("Info", "Auto", assembled.Value!);
+    }
 }

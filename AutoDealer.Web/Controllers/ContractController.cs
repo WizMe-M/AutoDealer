@@ -1,6 +1,6 @@
 ﻿namespace AutoDealer.Web.Controllers;
 
-[Authorize(Roles = nameof(Post.PurchaseSpecialist))]
+[Authorize(Roles = $"{nameof(Post.PurchaseSpecialist)},{nameof(Post.Storekeeper)}")]
 public class ContractController : MvcController
 {
     public ContractController(ApiClient client) : base(client)
@@ -15,6 +15,7 @@ public class ContractController : MvcController
     }
 
     [HttpGet]
+    [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     public async Task<IActionResult> Create()
     {
         var suppliers = await Client.GetAsync<Supplier[]>("suppliers");
@@ -28,6 +29,7 @@ public class ContractController : MvcController
     }
 
     [HttpPost]
+    [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     public async Task<IActionResult> Create(ContractData data)
     {
         if (!ModelState.IsValid) return View(data);
@@ -65,6 +67,7 @@ public class ContractController : MvcController
     }
 
     [HttpGet]
+    [Authorize(Roles = nameof(Post.PurchaseSpecialist))]
     public async Task<IActionResult> Delete(int id)
     {
         var deleted = await Client.DeleteAsync<Contract>($"contracts/{id}/break");

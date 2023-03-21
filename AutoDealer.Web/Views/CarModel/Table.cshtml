@@ -10,11 +10,10 @@
 
 @if (!Model.Any())
 {
-    <h2 class="text-center">There is no car models yet</h2>
+    <h2 class="text-center">There are no car models yet</h2>
 }
 else
 {
-    
     <table class="table">
         <thead>
         <tr>
@@ -22,6 +21,7 @@ else
             <th scope="col">Line</th>
             <th scope="col">Model</th>
             <th scope="col">Trim</th>
+            <th scope="col"></th>
             <th scope="col"></th>
             <th scope="col"></th>
             <th scope="col"></th>
@@ -37,10 +37,16 @@ else
                 <td>@carModel.ModelName</td>
                 <td>@carModel.TrimCode</td>
                 <td>
+                    @if (User.IsInRole(nameof(Post.AssemblyChief)))
+                    {
+                        <a class="btn btn-success" asp-controller="CarModel" asp-action="Assembly" asp-route-id="@carModel.Id">Assembly</a>
+                    }
+                </td>
+                <td>
                     <a class="btn btn-primary" asp-controller="CarModel" asp-action="Info" asp-route-id="@carModel.Id">Info</a>
                 </td>
                 <td>
-                    <a class="btn btn-primary" asp-controller="CarModel" asp-action="AssignDetailsToModel" asp-route-id="@carModel.Id">Set details</a>
+                    <a class="btn btn-warning" asp-controller="CarModel" asp-action="AssignDetailsToModel" asp-route-id="@carModel.Id">Set details</a>
                 </td>
                 <td>
                     <a class="btn btn-danger" asp-controller="CarModel" asp-action="Delete" asp-route-id="@carModel.Id">Delete</a>

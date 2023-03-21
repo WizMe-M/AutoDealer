@@ -1,6 +1,6 @@
-﻿@model IEnumerable<AutoDealer.DAL.Database.Entity.Detail>
+﻿@model IEnumerable<Detail>
 
-@{ ViewBag.Title = "Details";}
+@{ ViewBag.Title = "Details"; }
 
 <h2>Details</h2>
 
@@ -8,7 +8,7 @@
 
 @if (!Model.Any())
 {
-    <h2 class="text-center">There is no details</h2>
+    <h2 class="text-center">There are no details</h2>
 }
 else
 {

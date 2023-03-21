@@ -123,5 +123,8 @@ public class StoreController : DbContextController<Contract>
         await Context.Contracts.Entry(entity)
             .Collection(contract => contract.ContractDetails).Query()
             .Include(detail => detail.DetailSeries).LoadAsync();
+        await Context.Contracts.Entry(entity)
+            .Collection(contract => contract.Details).Query()
+            .Include(detail => detail.DetailSeries).LoadAsync();
     }
 }

@@ -47,7 +47,11 @@ public class AutoController : DbContextController<Auto>
     [HttpGet("{id:int}")]
     public IActionResult Get(int id)
     {
-        var found = Context.Autos.FirstOrDefault(auto => auto.Id == id);
+        var found = Context.Autos
+            .Include(auto => auto.CarModel)
+            .Include(auto => auto.Details)
+            .ThenInclude(detail => detail.DetailSeries)
+            .FirstOrDefault(auto => auto.Id == id);
         return found is { }
             ? Ok("Found auto", found)
             : Problem(detail: "Auto with such ID doesn't exist", statusCode: StatusCodes.Status404NotFound);

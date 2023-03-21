@@ -16,4 +16,24 @@ public class StoreController : MvcController
         var result = await Client.GetAsync<Detail[]>($"store/details?sort={sort}");
         return View(result.Value ?? ArraySegment<Detail>.Empty);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Process(int id)
+    {
+        var ladingBill = await Client.PostAsync<string, Contract>(
+            $"store/contract/{id}/process", string.Empty);
+
+        if (ladingBill.Value is null)
+            return RedirectToAction("Table", "Contract");
+
+        return RedirectToAction("LadingBill", new { id });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> LadingBill(int id)
+    {
+        var bill = await Client.GetAsync<Contract>($"contracts/{id}");
+        if (bill.Value is null) return RedirectToAction("Table", "Contract");
+        return View(bill.Value);
+    }
 }

@@ -4,9 +4,10 @@
 
 <h2>Contracts</h2>
 
-
-<a asp-controller="Contract" asp-action="Create" class="btn btn-success">Add contract</a>
-
+@if (User.IsInRole(nameof(Post.PurchaseSpecialist)))
+{
+    <a asp-controller="Contract" asp-action="Create" class="btn btn-success">Add contract</a>
+}
 @if (!Model.Any())
 {
     <h2 class="text-center">There are no contracts yet</h2>
@@ -25,6 +26,8 @@ else
             <th scope="col">Total sum</th>
             <th scope="col"></th>
             <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
         </tr>
         </thead>
 
@@ -39,7 +42,7 @@ else
                 <td>@(contract.Supplier?.Tin ?? "-")</td>
                 @{
                     var sk = contract.Storekeeper;
-                    var name = sk is {} ? $"{sk.LastName} {sk.FirstName}" : "-";
+                    var name = sk is { } ? $"{sk.LastName} {sk.FirstName}" : "-";
                     <td>@name</td>
                 }
                 <td>@contract.TotalSum</td>
@@ -47,7 +50,22 @@ else
                     <a class="btn btn-primary" asp-controller="Contract" asp-action="Info" asp-route-id="@contract.Id">Info</a>
                 </td>
                 <td>
-                    <a class="btn btn-danger" asp-controller="Contract" asp-action="Delete" asp-route-id="@contract.Id">Terminate</a>
+                    @if (User.IsInRole(nameof(Post.PurchaseSpecialist)) && contract.LadingBillIssueDate is null)
+                    {
+                        <a class="btn btn-danger" asp-controller="Contract" asp-action="Delete" asp-route-id="@contract.Id">Terminate</a>
+                    }
+                </td>
+                <td>
+                    @if (User.IsInRole(nameof(Post.Storekeeper)))
+                    {
+                        <a class="btn btn-warning" asp-controller="Store" asp-action="Process" asp-route-id="@contract.Id">Process</a>
+                    }
+                </td>
+                <td>
+                    @if (User.IsInRole(nameof(Post.Storekeeper)) && contract.LadingBillIssueDate is { })
+                    {
+                        <a class="btn btn-primary" asp-controller="Store" asp-action="LadingBill" asp-route-id="@contract.Id">Lading Bill</a>
+                    }
                 </td>
             </tr>
         }

@@ -1,8 +1,8 @@
 ﻿@model Contract
 
-@{ ViewBag.Title = "Contract"; }
+@{ ViewBag.Title = "Lading Bill"; }
 
-<h2>Contract Info</h2>
+<h2>Lading bill Info</h2>
 
 <div class="row">Date of conclusion: @Model.ConclusionDate.ToShortDateString()</div>
 <div class="row">Expected date of supply: @Model.SupplyDate.ToShortDateString()</div>
@@ -30,19 +30,28 @@
     <tr>
         <th scope="col">ID</th>
         <th scope="col">Detail Series</th>
-        <th scope="col">Count</th>
-        <th scope="col">Cost (per one)</th>
+        <th scope="col">Cost</th>
+        <th scope="col">Auto</th>
     </tr>
     </thead>
 
     <tbody>
-    @foreach (var detailInContract in Model.ContractDetails)
+    @foreach (var detail in Model.Details)
     {
         <tr>
-            <th scope="row">@detailInContract.DetailSeries.Id</th>
-            <td>@detailInContract.DetailSeries.Code</td>
-            <td>@detailInContract.Count</td>
-            <td>@detailInContract.CostPerOne</td>
+            <th scope="row">@detail.Id</th>
+            <td>@detail.DetailSeries.Code</td>
+            <td>@detail.Cost</td>
+            <td>
+                @if (detail.Auto is { })
+                {
+                    <a class="btn btn-primary" asp-controller="Auto" asp-action="Info" asp-route-id="@detail.IdAuto"></a>
+                }
+                else
+                {
+                    <div class="text-center">-</div>
+                }
+            </td>
         </tr>
     }
     </tbody>
