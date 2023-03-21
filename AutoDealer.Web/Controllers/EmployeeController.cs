@@ -23,7 +23,7 @@ public class EmployeeController : MvcController
     [HttpPost("create")]
     public async Task<IActionResult> Create(CreateEmployeeViewModel vm)
     {
-        if (!ModelState.IsValid) return View();
+        if (!ModelState.IsValid) return View(vm);
         var data = new EmployeeData(
             new FullName(vm.FirstName, vm.LastName, vm.MiddleName),
             new Passport(vm.PassportSeries, vm.PassportNumber),

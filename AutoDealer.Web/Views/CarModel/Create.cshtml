@@ -1,0 +1,42 @@
+﻿@model CreateCarModelViewModel 
+@{
+    ViewBag.Title = "Create model";
+}
+
+<div class="p-5 g-3 shadow">
+    <form asp-controller="CarModel" asp-action="Create" class="has-validation">
+        <h2 class="text-center">Create car model</h2>
+        
+        <div asp-validation-summary="All"></div>
+
+        <div class="row g-2">
+            <div class="col form-floating">
+                <input asp-for="LineName" class="form-control" autofocus=""
+                       placeholder="@Html.DisplayNameFor(vm => vm.LineName)">
+                <label asp-for="LineName"></label>
+                <span asp-validation-for="LineName" class="text-danger"></span>
+            </div>
+
+            <div class="col form-floating">
+                <input asp-for="ModelName" class="form-control"
+                       placeholder="@Html.DisplayNameFor(vm => vm.ModelName)">
+                <label asp-for="ModelName"></label>
+                <span asp-validation-for="ModelName" class="text-danger"></span>
+            </div>
+
+            <div class="col form-floating">
+                <input asp-for="TrimCode" class="form-control"
+                       placeholder="@Html.DisplayNameFor(vm => vm.TrimCode)">
+                <label asp-for="TrimCode"></label>
+                <span asp-validation-for="TrimCode" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="my-3 g-3 d-flex justify-content-evenly">
+            <button class="btn btn-success" type="submit">Create</button>
+            <button class="btn btn-outline-primary" type="reset">Clear</button>
+            <a class="btn btn-danger" asp-action="Table">Cancel</a>
+        </div>
+
+    </form>
+</div>

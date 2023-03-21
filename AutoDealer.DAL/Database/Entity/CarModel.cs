@@ -14,5 +14,5 @@ public partial class CarModel
 
     [JsonIgnore] public virtual IEnumerable<Margin> Margins { get; } = new List<Margin>();
 
-    public virtual ICollection<CarModelDetail> CarModelDetails { get; } = new List<CarModelDetail>();
+    public virtual ICollection<CarModelDetail> CarModelDetails { get; set; } = new List<CarModelDetail>();
 }

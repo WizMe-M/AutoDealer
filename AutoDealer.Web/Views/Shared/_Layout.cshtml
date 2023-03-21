@@ -33,6 +33,11 @@
                     {
                         await Html.RenderPartialAsync("Store/_StorekeeperNavBar");
                     }
+
+                    @if (User.IsInRole(nameof(Post.AssemblyChief)))
+                    {
+                        await Html.RenderPartialAsync("Chief/_NavBar");
+                    }
                 </ul>
             </div>
 

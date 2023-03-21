@@ -1,0 +1,23 @@
+﻿@model CarModel
+
+@{
+    ViewBag.Title = "Info";
+}
+
+<h2>Info</h2>
+
+<div>@Model.LineName</div>
+<div>@Model.ModelName</div>
+<div>@Model.TrimCode</div>
+
+<div class="row">
+    <div class="col-2">Count</div>
+    <div class="col-8">Detail</div>
+</div>
+@foreach (var detail in @Model.CarModelDetails)
+{
+    <div class="row">
+        <div class="col-2">@detail.Count</div>
+        <div class="col-8">@detail.DetailSeries.Code</div>
+    </div>
+}

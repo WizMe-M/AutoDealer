@@ -1,0 +1,53 @@
+﻿@model IEnumerable<CarModel>
+
+@{
+    ViewBag.Title = "Car Models";
+}
+
+<h2>Car Models</h2>
+
+<div asp-validation-summary="All"></div>
+
+@if (!Model.Any())
+{
+    <h2 class="text-center">There is no car models yet</h2>
+}
+else
+{
+    <a asp-controller="CarModel" asp-action="Create" class="btn btn-success">Add model</a>
+    
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Line</th>
+            <th scope="col">Model</th>
+            <th scope="col">Trim</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var carModel in Model)
+        {
+            <tr>
+                <th scope="row">@carModel.Id</th>
+                <td>@carModel.LineName</td>
+                <td>@carModel.ModelName</td>
+                <td>@carModel.TrimCode</td>
+                <td>
+                    <a class="btn btn-primary" asp-controller="CarModel" asp-action="Info" asp-route-id="@carModel.Id">Info</a>
+                </td>
+                <td>
+                    <a class="btn btn-primary" asp-controller="CarModel" asp-action="AssignDetailsToModel" asp-route-id="@carModel.Id">Set details</a>
+                </td>
+                <td>
+                    <a class="btn btn-danger" asp-controller="CarModel" asp-action="Delete" asp-route-id="@carModel.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

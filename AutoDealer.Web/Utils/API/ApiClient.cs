@@ -125,7 +125,8 @@ public class ApiClient
     private async Task<TOut?> Deserialize<TOut>(HttpResponseMessage response) where TOut : class
     {
         var result = await response.Content.ReadFromJsonAsync<MessageResult>(_options);
-        var element = (JsonElement)result!.Data!;
-        return element.Deserialize<TOut>(_options);
+        var json = result!.Data!.ToString()!;
+        var data = JsonSerializer.Deserialize<TOut>(json, _options);
+        return data;
     }
 }
