@@ -1,0 +1,49 @@
+﻿@model Test[]
+
+@{
+    ViewBag.Title = "Tests";
+}
+
+<h2 class="text-center my-4">Tests</h2>
+
+<a asp-controller="Test" asp-action="Create" class="btn btn-success">Start test</a>
+
+@if (Model.Length == 0)
+{
+    <h2 class="text-center">There are no tests yet</h2>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Started on</th>
+            <th scope="col">Finished on</th>>
+            <th scope="col">Total count of autos</th>>
+            <th scope="col">Count of checked autos</th>>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var test in Model)
+        {
+            <tr>
+                <th scope="row">@test.Id</th>
+                <td>@test.StartDate</td>
+                <td>@(test.EndDate?.ToShortDateString() ?? "-")</td>
+                <td>@test.TestAutos.Count</td>
+                <td>@test.TestAutos.Count(auto => auto.Status is not TestStatus.NotChecked)</td>
+                <td>
+                    <a class="btn btn-primary" asp-action="Info" asp-route-id="@test.Id">Info</a>
+                </td>
+                <td>
+                    <a class="btn btn-success" asp-action="Finish" asp-route-id="@test.Id">Finish</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

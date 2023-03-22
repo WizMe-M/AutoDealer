@@ -23,6 +23,8 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
+                    
+                    <li class="mx-2"></li>
 
                     @if (User.IsInRole(nameof(Post.DatabaseAdmin)))
                     {
@@ -47,6 +49,11 @@
                     @if (User.IsInRole(nameof(Post.Seller)))
                     {
                         await Html.RenderPartialAsync("NavBars/SellerNavBar");
+                    }
+
+                    @if (User.IsInRole(nameof(Post.Tester)))
+                    {
+                        await Html.RenderPartialAsync("NavBars/TestNavBar");
                     }
                 </ul>
             </div>

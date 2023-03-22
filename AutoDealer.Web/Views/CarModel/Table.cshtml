@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CarModel>
+﻿@model CarModel[]
 
 @{ ViewBag.Title = "Car Models"; }
 
@@ -8,7 +8,7 @@
 
 <a asp-controller="CarModel" asp-action="Create" class="btn btn-success">Add model</a>
 
-@if (!Model.Any())
+@if (Model.Length == 0)
 {
     <h2 class="text-center">There are no car models yet</h2>
 }

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace AutoDealer.DAL.Database.Entity;
+﻿namespace AutoDealer.DAL.Database.Entity;
 
 public enum AutoStatus
 {

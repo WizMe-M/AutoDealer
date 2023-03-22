@@ -1,0 +1,165 @@
+﻿@model Test
+
+@{
+    ViewBag.Title = "Test Info";
+    var assembled = (Auto[])ViewBag.AssembledAutos;
+}
+
+<h2>Test Info</h2>
+
+<div class="row">Started on @Model.StartDate.ToShortDateString()</div>
+@if (Model.EndDate is { })
+{
+    <div class="row">Finished on @Model.EndDate?.ToShortDateString()</div>
+}
+
+<hr class="my-4"/>
+
+@if (Model.TestAutos.Count == 0)
+{
+    @if (assembled is null or { Length: 0 })
+    {
+        <div class="text-center text-danger">There is nothing to test...</div>
+    }
+    else
+    {
+        var items = assembled.Select(auto =>
+            new SelectListItem(
+                $"{auto.CarModel.LineName} {auto.CarModel.ModelName} {auto.CarModel.TrimCode} #{auto.Id}",
+                auto.Id.ToString()));
+
+        <div class="row row-cols-auto g-2 gap-2 align-items-center">
+            <div class="col">
+                <div class="form-floating">
+                    <select id="list" class="form-select" asp-items="items"></select>
+                    <label>Select autos to test</label>
+                </div>
+            </div>
+
+            <div class="col">
+                <button id="add-btn" class="btn btn-primary">Add to test list</button>
+            </div>
+
+            <div class="col">
+                <button id="clear-btn" class="btn btn-danger">Clear test list</button>
+            </div>
+        </div>
+
+        <form asp-action="SetAutos" asp-route-id="@Model.Id">
+            <div class="row">Autos to test:</div>
+            <div id="added-rows" class="row"></div>
+            <button class="btn btn-success" type="submit">Finish</button>
+        </form>
+    }
+}
+else
+{
+    @if (Model.EndDate is null)
+    {
+        <a asp-action="Finish" asp-route-id="@Model.Id" class="btn btn-success">Finish testing</a>
+    }
+
+    <h4 class="my-4">Autos on test</h4>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Auto</th>
+            <th scope="col">Certification status</th>>
+            <th scope="col">Certification date</th>>
+            <th scope="col">Current status</th>>
+            @if (Model.EndDate is null)
+            {
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            }
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var testAuto in Model.TestAutos)
+        {
+            <tr>
+                <th scope="row">@testAuto.IdAuto</th>
+                <td>@testAuto.Status.DisplayName()</td>
+                <td>@testAuto.Auto.CarModel.LineName @testAuto.Auto.CarModel.ModelName @testAuto.Auto.CarModel.TrimCode</td>
+                <td>@testAuto.CertificationDate</td>
+                <td>@testAuto.Auto.Status</td>
+                @if (Model.EndDate is null)
+                {
+                    <td>
+                        <a class="btn btn-warning" asp-action="Certify" asp-route-status="NotChecked"
+                           asp-route-testId="@testAuto.IdTest" asp-route-autoId="@testAuto.IdAuto">
+                            Clear status
+                        </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-danger" asp-action="Certify" asp-route-status="Defective"
+                           asp-route-testId="@testAuto.IdTest" asp-route-autoId="@testAuto.IdAuto">
+                            Set 'Defective'
+                        </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-success" asp-action="Certify" asp-route-status="Certified"
+                           asp-route-testId="@testAuto.IdTest" asp-route-autoId="@testAuto.IdAuto">
+                            Set 'Certified'
+                        </a>
+                    </td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@if (Model.TestAutos.Count == 0)
+{
+    <script>
+    const rows = document.getElementById('added-rows');
+    const addBtn = document.getElementById('add-btn');
+    const clearBtn = document.getElementById('clear-btn');
+    const list = document.getElementById('list');
+
+    addBtn.addEventListener("click", addItem);
+    clearBtn.addEventListener("click", clearItems);
+
+    function addItem(event) {
+        event.preventDefault();
+        if (list.selectedIndex === -1) 
+            return;
+        
+        //item DIV
+        const rowDiv = document.createElement('div');
+        rowDiv.classList.add('row', 'mb-2');
+        
+        //item Id
+        const idDiv = document.createElement('div');
+        idDiv.classList.add('col-1');
+        const id = document.createElement('input');
+        id.value = list.value;
+        id.name = `onTest[${rows.childElementCount}]`;
+        id.readOnly = true;
+        id.classList.add('form-control');
+        idDiv.appendChild(id);
+        rowDiv.appendChild(idDiv);
+        
+        //Append to Actual LIST
+        rows.appendChild(rowDiv);
+        
+        //remove selected option
+        list.querySelector(`option[value='${id.value}']`).hidden = true;
+        list.selectedIndex = -1;
+    }
+
+    function clearItems(event) {
+        event.preventDefault();
+        rows.textContent = '';
+        list.querySelectorAll('option').forEach(opt => {
+            opt.hidden = false;
+        });
+        
+    }
+    </script>
+}

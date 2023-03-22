@@ -2,8 +2,13 @@
 
 public enum TestStatus
 {
+    [Display(Name = "Not checked yet")]
     NotChecked,
+    
+    [Display(Name = "Checked and certified")]
     Certified,
+
+    [Display(Name = "Detected defect")]
     Defective
 }
 

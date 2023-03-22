@@ -35,11 +35,15 @@
                         </div>
 
                         <div class="col-12">
-                            <div class="form-floating">
-                                <input asp-for="MarginValue" class="form-control" placeholder="Value of margin" type="number"/>
-                                <label>Value of margin</label>
-                                <span asp-validation-for="MarginValue" class="text-danger"></span>
+                            <div class="input-group">
+                                <span class="input-group-text">%</span>
+                                <div class="form-floating">
+                                    <input asp-for="MarginValue" class="form-control" type="number" 
+                                           placeholder="Percentage value"/>
+                                    <label>Percentage value</label>
+                                </div>
                             </div>
+                            <span asp-validation-for="MarginValue" class="text-danger"></span>
                         </div>
 
                         <div class="col-12">
