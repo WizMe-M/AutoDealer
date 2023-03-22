@@ -11,7 +11,7 @@ public class ContractController : MvcController
     public async Task<IActionResult> Table()
     {
         var contracts = await Client.GetAsync<Contract[]>("contracts");
-        return View(contracts.Value ?? ArraySegment<Contract>.Empty);
+        return View(contracts.Value ?? Array.Empty<Contract>());
     }
 
     [HttpGet]

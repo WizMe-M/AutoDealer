@@ -11,7 +11,7 @@ public class EmployeeController : MvcController
     public async Task<IActionResult> Table(Post? filter)
     {
         var data = await Client.GetAsync<Employee[]>($"employees?filter={filter}");
-        return View(data.Value ?? ArraySegment<Employee>.Empty);
+        return View(data.Value ?? Array.Empty<Employee>());
     }
 
     [HttpGet]

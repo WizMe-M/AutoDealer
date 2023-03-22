@@ -14,7 +14,7 @@ public class StoreController : MvcController
         ViewBag.CostSort = sort is DetailSort.CostAsc ? DetailSort.CostDesc : DetailSort.CostAsc;
 
         var result = await Client.GetAsync<Detail[]>($"store/details?sort={sort}");
-        return View(result.Value ?? ArraySegment<Detail>.Empty);
+        return View(result.Value ?? Array.Empty<Detail>());
     }
 
     [HttpGet]

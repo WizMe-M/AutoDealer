@@ -10,7 +10,7 @@ public class DetailSeriesController : MvcController
     public async Task<IActionResult> Table()
     {
         var apiResult = await Client.GetAsync<DetailSeries[]>("detail_series");
-        ViewBag.Details = apiResult.Value ?? ArraySegment<DetailSeries>.Empty;
+        ViewBag.Details = apiResult.Value ?? Array.Empty<DetailSeries>();
         return View();
     }
     

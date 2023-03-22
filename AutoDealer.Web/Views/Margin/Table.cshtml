@@ -1,0 +1,103 @@
+﻿@model MarginData
+
+@{
+    ViewBag.Title = "Margins";
+    var margins = (Margin[])ViewBag.Margins;
+    var carModels = (CarModel[])ViewBag.CarModels;
+}
+
+<div class="row my-4">
+    <h2 class="text-center">Margins</h2>
+</div>
+
+<div class="row my-4 text-center text-danger" asp-validation-summary="ModelOnly"></div>
+
+<div class="row">
+    <div class="col-4">
+        @if (!carModels.Any())
+        {
+            <div class="text-center text-danger">There is no car models yet. Unable to set margin</div>
+        }
+        else
+        {
+            var options = carModels.Select(model =>
+                new SelectListItem($"{model.LineName} {model.ModelName} {model.TrimCode}", model.Id.ToString()));
+
+            <div class="shadow m-3">
+                <form asp-action="Create" class="p-3 has-validation">
+                    <div class="row gap-2">
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <select asp-for="CarModelId" asp-items="options" class="form-select"></select>
+                                <label>Select car model</label>
+                                <span asp-validation-for="CarModelId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input asp-for="MarginValue" class="form-control" placeholder="Value of margin" type="number"/>
+                                <label>Value of margin</label>
+                                <span asp-validation-for="MarginValue" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input asp-for="StartsFrom" class="form-control" placeholder="Margin acting from" type="date"/>
+                                <label>Margin acting from</label>
+                                <span asp-validation-for="StartsFrom" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <button class="btn btn-success text-center" type="submit">Set margin</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        }
+    </div>
+
+    <div class="col-8">
+        @if (margins.Length == 0)
+        {
+            <h2 class="text-center">There are no margins yet</h2>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">
+                        <a asp-action="Table" asp-controller="Margin" asp-route-sort="@ViewBag.IdSort">ID</a>
+                    </th>
+                    <th scope="col">
+                        <a asp-action="Table" asp-controller="Margin" asp-route-sort="@ViewBag.StartDateSort">Start acting from</a>
+                    </th>
+                    <th scope="col">
+                        <a asp-action="Table" asp-controller="Margin" asp-route-sort="@ViewBag.ValueSort">Value</a>
+                    </th>
+                    <th scope="col">Car Model</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+
+                <tbody>
+                @foreach (var margin in margins)
+                {
+                    <tr>
+                        <th scope="row">@margin.Id</th>
+                        <td>@margin.StartDate</td>
+                        <td>@margin.Value</td>
+                        <td>@margin.CarModel.LineName @margin.CarModel.ModelName @margin.CarModel.TrimCode</td>
+                        <td>
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@margin.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

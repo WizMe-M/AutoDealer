@@ -10,7 +10,7 @@ public class AutoController : MvcController
     public async Task<IActionResult> Table()
     {
         var autos = await Client.GetAsync<Auto[]>("autos");
-        return View(autos.Value ?? ArraySegment<Auto>.Empty);
+        return View(autos.Value ?? Array.Empty<Auto>());
     }
 
     [HttpGet]

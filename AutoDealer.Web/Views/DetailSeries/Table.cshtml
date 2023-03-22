@@ -20,9 +20,9 @@
 </form>
 
 @{
-    var series = (ArraySegment<DetailSeries>)ViewBag.Details;
+    var series = (DetailSeries[])ViewBag.Details;
 
-    @if (series.Count == 0)
+    @if (series.Length == 0)
     {
         <h2 class="text-center">There are no detail series yet</h2>
     }

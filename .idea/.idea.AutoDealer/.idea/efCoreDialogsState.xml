@@ -6,7 +6,7 @@
         <entry key="Common:947be0d2-cbb1-478f-98d4-742f7ded636c:dbContext" value="AutoDealer.DAL.Database.AutoDealerContext" />
         <entry key="Common:buildConfiguration" value="Debug" />
         <entry key="Common:idempotent" value="true" />
-        <entry key="Common:noBuild" value="true" />
+        <entry key="Common:noBuild" value="false" />
         <entry key="Common:noTransactions" value="false" />
         <entry key="Common:outputFilePath" value="AutoDealer.DAL\scripts\script.sql" />
         <entry key="Common:outputFolder" value="..\AutoDealer.DAL\Migrations" />

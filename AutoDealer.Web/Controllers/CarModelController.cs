@@ -11,7 +11,7 @@ public class CarModelController : MvcController
     public async Task<IActionResult> Table()
     {
         var apiResult = await Client.GetAsync<CarModel[]>("car_models");
-        return View(apiResult.Value ?? ArraySegment<CarModel>.Empty);
+        return View(apiResult.Value ?? Array.Empty<CarModel>());
     }
 
     [HttpGet]

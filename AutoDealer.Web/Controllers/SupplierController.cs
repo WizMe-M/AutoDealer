@@ -11,7 +11,7 @@ public class SupplierController : MvcController
     public async Task<IActionResult> Table()
     {
         var clients = await Client.GetAsync<Supplier[]>("suppliers");
-        return View(clients.Value ?? ArraySegment<Supplier>.Empty);
+        return View(clients.Value ?? Array.Empty<Supplier>());
     }
 
     [HttpGet]

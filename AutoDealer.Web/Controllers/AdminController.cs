@@ -10,6 +10,6 @@ public class AdminController : MvcController
     public async Task<IActionResult> Users()
     {
         var result = await Client.GetAsync<User[]>("users");
-        return View(result.Value ?? ArraySegment<User>.Empty);
+        return View(result.Value ?? Array.Empty<User>());
     }
 }

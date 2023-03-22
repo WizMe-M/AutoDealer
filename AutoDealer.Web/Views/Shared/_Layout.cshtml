@@ -26,22 +26,27 @@
 
                     @if (User.IsInRole(nameof(Post.DatabaseAdmin)))
                     {
-                        await Html.RenderPartialAsync("Admin/NavBar");
+                        await Html.RenderPartialAsync("NavBars/AdminNavBar");
                     }
 
                     @if (User.IsInRole(nameof(Post.Storekeeper)))
                     {
-                        await Html.RenderPartialAsync("Store/NavBar");
+                        await Html.RenderPartialAsync("NavBars/StoreNavBar");
                     }
 
                     @if (User.IsInRole(nameof(Post.PurchaseSpecialist)))
                     {
-                        await Html.RenderPartialAsync("Supply/NavBar");
+                        await Html.RenderPartialAsync("NavBars/PurchaseNavBar");
                     }
 
                     @if (User.IsInRole(nameof(Post.AssemblyChief)))
                     {
-                        await Html.RenderPartialAsync("Chief/NavBar");
+                        await Html.RenderPartialAsync("NavBars/ChiefNavBar");
+                    }
+
+                    @if (User.IsInRole(nameof(Post.Seller)))
+                    {
+                        await Html.RenderPartialAsync("NavBars/SellerNavBar");
                     }
                 </ul>
             </div>
