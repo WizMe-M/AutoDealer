@@ -92,7 +92,7 @@ public class DetailSeriesController : DbContextController<DetailSeries>
     protected override async Task LoadReferencesAsync(DetailSeries entity)
     {
         await Context.DetailSeries.Entry(entity)
-            .Collection(e => e.TrimDetails).Query()
+            .Collection(e => e.CarModelDetails).Query()
             .Include(trimDetail => trimDetail.CarModel).LoadAsync();
     }
 }

@@ -81,7 +81,7 @@ public class CarModelController : DbContextController<CarModel>
 
     [Authorize(Roles = nameof(Post.AssemblyChief))]
     [HttpPatch("{id:int}/set-details")]
-    public async Task<IActionResult> SetDetailsForTrim(int id, [FromBody] IEnumerable<DetailCount> detailCountPairs)
+    public async Task<IActionResult> SetDetailsForCarModel(int id, [FromBody] IEnumerable<DetailCount> detailCountPairs)
     {
         var found = Find(id);
         if (found is null)

@@ -12,7 +12,9 @@ public enum Post
 
     [Display(Name = "Purchasing specialist")]
     PurchaseSpecialist,
+
     [Display(Name = "Warehouse employee")] Storekeeper,
+
     [Display(Name = "Sales specialist")] Seller,
 
     [Display(Name = "Certification specialist")]
@@ -38,8 +40,6 @@ public partial class Employee
     [JsonIgnore] public virtual IEnumerable<Contract> Contracts { get; } = new List<Contract>();
 
     [JsonIgnore] public virtual IEnumerable<Sale> Sales { get; } = new List<Sale>();
-
-    [JsonIgnore] public virtual IEnumerable<Test> Tests { get; } = new List<Test>();
 
     [JsonIgnore] public virtual User? User { get; set; }
 }

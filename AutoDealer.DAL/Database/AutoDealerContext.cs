@@ -42,7 +42,7 @@ public partial class AutoDealerContext : DbContext
 
     public virtual DbSet<CarModel> CarModels { get; set; }
 
-    public virtual DbSet<CarModelDetail> TrimDetails { get; set; }
+    public virtual DbSet<CarModelDetail> CarModelDetails { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -113,7 +113,7 @@ public partial class AutoDealerContext : DbContext
             entity.HasOne(d => d.CarModel).WithMany(p => p.Autos)
                 .HasForeignKey(d => d.IdCarModel)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("fk_autos_trims");
+                .HasConstraintName("fk_autos_car_models");
         });
 
         modelBuilder.Entity<CarModel>(entity =>
@@ -132,7 +132,7 @@ public partial class AutoDealerContext : DbContext
 
         modelBuilder.Entity<CarModelDetail>(entity =>
         {
-            entity.HasKey(e => new { IdTrim = e.IdCarModel, e.IdDetailSeries }).HasName("pk_car_model_details");
+            entity.HasKey(e => new { e.IdCarModel, e.IdDetailSeries }).HasName("pk_car_model_details");
 
             entity.ToTable("car_model_details");
 
@@ -140,7 +140,7 @@ public partial class AutoDealerContext : DbContext
             entity.Property(e => e.IdDetailSeries).HasColumnName("id_detail_series");
             entity.Property(e => e.Count).HasColumnName("count");
 
-            entity.HasOne(d => d.DetailSeries).WithMany(p => p.TrimDetails)
+            entity.HasOne(d => d.DetailSeries).WithMany(p => p.CarModelDetails)
                 .HasForeignKey(d => d.IdDetailSeries)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("fk_car_model_details_detail_series");
@@ -148,7 +148,7 @@ public partial class AutoDealerContext : DbContext
             entity.HasOne(d => d.CarModel).WithMany(p => p.CarModelDetails)
                 .HasForeignKey(d => d.IdCarModel)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_car_model_details_trims");
+                .HasConstraintName("fk_car_model_details_car_models");
         });
 
         modelBuilder.Entity<Client>(entity =>
@@ -308,7 +308,7 @@ public partial class AutoDealerContext : DbContext
             entity.HasOne(d => d.CarModel).WithMany(p => p.Margins)
                 .HasForeignKey(d => d.IdCarModel)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("fk_margins_trims");
+                .HasConstraintName("fk_margins_car_models");
         });
 
         modelBuilder.Entity<Sale>(entity =>
