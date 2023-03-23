@@ -10,7 +10,7 @@ public class MarginController : DbContextController<Margin>
     }
 
     [HttpGet]
-    public IActionResult GetAll(MarginSort? sort)
+    public IActionResult GetAll([FromQuery] MarginSort? sort)
     {
         var margins = Context.Margins
             .Include(margin => margin.CarModel)
@@ -31,7 +31,7 @@ public class MarginController : DbContextController<Margin>
     }
 
     [HttpGet("{carModelId:int}")]
-    public IActionResult GetMarginsForModel(int carModelId, MarginSort? sort)
+    public IActionResult GetMarginsForModel(int carModelId, [FromQuery] MarginSort? sort)
     {
         var margins = Context.Margins
             .Where(margin => margin.IdCarModel == carModelId)
@@ -53,7 +53,7 @@ public class MarginController : DbContextController<Margin>
     }
 
     [HttpGet("get-in-range")]
-    public IActionResult GetMarginsInRange(DateOnly? from, DateOnly? to, MarginSort? sort)
+    public IActionResult GetMarginsInRange([FromQuery] DateOnly? from, [FromQuery] DateOnly? to, [FromQuery] MarginSort? sort)
     {
         var startDate = from ?? DateOnly.MinValue;
         var endDate = to ?? DateOnly.MaxValue;

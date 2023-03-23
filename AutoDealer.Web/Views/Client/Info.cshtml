@@ -1,0 +1,16 @@
+﻿@model Client
+
+@{ ViewBag.Title = "Client Info"; }
+
+<h2 class="text-center">Client Info</h2>
+
+<h4 class="row mt-3">Full name</h4>
+<div class="row">@Model.LastName @Model.FirstName @Model.MiddleName</div>
+
+<h4 class="row mt-3">Passport</h4>
+<div class="row">Series-number are @Model.PassportSeries @Model.PassportNumber</div>
+<div class="row">Issuer is @Model.PassportIssuer</div>
+<div class="row">Department code is @Model.PassportDepartmentCode</div>
+
+<h4 class="row mt-3">Birth info</h4>
+<div class="row">Born at @Model.Birthdate in @Model.Birthplace</div>

@@ -9,6 +9,10 @@
     {
       "library": "jquery@3.6.4",
       "destination": "wwwroot\\lib\\jquery"
+    },
+    {
+      "library": "Chart.js@4.2.1",
+      "destination": "wwwroot\\lib\\Chart.js"
     }
   ]
 }

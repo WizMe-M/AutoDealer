@@ -1,0 +1,51 @@
+﻿@model Client[]
+
+@{
+    ViewBag.Title = "Clients";
+}
+
+<h2 class="text-center">Clients</h2>
+
+<a asp-action="Create" class="my-3 btn btn-success">Create client</a>
+
+@if (Model.Length == 0)
+{
+    <h2 class="text-center">There are no clients yet</h2>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Last name</th>
+            <th scope="col">First name</th>
+            <th scope="col">Middle name</th>
+            <th scope="col">Date of birth</th>
+            <th scope="col">Place of birth</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        @foreach (var client in Model)
+        {
+            <tr>
+                <th scope="row">@client.Id</th>
+                <td>@client.LastName</td>
+                <td>@client.FirstName</td>
+                <td>@(client.MiddleName ?? "-")</td>
+                <td>@client.Birthdate</td>
+                <td>@client.Birthplace</td>
+                <td>
+                    <a class="btn btn-primary" asp-action="Info" asp-route-id="@client.Id">Info</a>
+                </td>
+                <td>
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@client.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

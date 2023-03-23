@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Contract>
+﻿@model Contract[]
 
 @{ ViewBag.Title = "Contracts"; }
 
@@ -8,6 +8,7 @@
 {
     <a asp-controller="Contract" asp-action="Create" class="btn btn-success">Add contract</a>
 }
+
 @if (!Model.Any())
 {
     <h2 class="text-center">There are no contracts yet</h2>

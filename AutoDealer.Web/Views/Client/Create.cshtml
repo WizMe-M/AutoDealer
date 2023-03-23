@@ -1,0 +1,108 @@
+﻿@model ClientData
+
+@{
+    ViewBag.Title = "Create client";
+}
+
+<div class="shadow m-3 p-4">
+    <form asp-action="Create">
+        <h2 class="text-center">Create client</h2>
+
+        <div class="row g-2 gap-2">
+            <div class="col-12 mx-2">
+                <h4 class="text-center">Full name</h4>
+            </div>
+
+            <div class="col-12 input-group">
+                <span class="input-group-text">Full name</span>
+                <input asp-for="FullName.LastName" class="form-control" placeholder="Last">
+                <input asp-for="FullName.FirstName" class="form-control" placeholder="First">
+                <input asp-for="FullName.MiddleName" class="form-control" placeholder="Middle">
+            </div>
+
+            <div class="col-3">
+                <span asp-validation-for="FullName.LastName" class="text-danger"></span>
+            </div>
+
+            <div class="col-3">
+                <span asp-validation-for="FullName.FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="col-3">
+                <span asp-validation-for="FullName.MiddleName" class="text-danger"></span>
+            </div>
+        </div>
+
+        <hr class="my-4"/>
+
+        <div class="row g-3 gap-2">
+            <div class="col-12 mx-2">
+                <h4 class="text-center">Passport data</h4>
+            </div>
+
+            <div class="col-4">
+                <div class="form-floating">
+                    <input asp-for="Passport.Series" class="form-control" placeholder="Passport series">
+                    <label>Passport series</label>
+                    <span asp-validation-for="Passport.Series" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="form-floating">
+                    <input asp-for="Passport.Number" class="form-control" placeholder="Passport number">
+                    <label>Passport number</label>
+                    <span asp-validation-for="Passport.Number" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col-2">
+                <div class="form-floating">
+                    <input asp-for="Passport.DepartmentCode" class="form-control" placeholder="Department code">
+                    <label>Department code</label>
+                    <span asp-validation-for="Passport.DepartmentCode" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="form-floating">
+                    <textarea asp-for="Passport.Issuer" class="form-control" placeholder="Issuer"></textarea>
+                    <label asp-for="Passport.Issuer">Issuer</label>
+                    <span asp-validation-for="Passport.Issuer" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4"/>
+
+        <div class="row g-3 gap-2">
+            <div class="col-12 mx-2">
+                <h4 class="text-center">Birth data</h4>
+            </div>
+
+            <div class="col-4">
+                <div class="form-floating">
+                    <input asp-for="BirthData.Birthdate" class="form-control" placeholder="Date of birth" type="date">
+                    <label asp-for="BirthData.Birthdate">Date of birth</label>
+                    <span asp-validation-for="BirthData.Birthdate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="form-floating">
+                    <input asp-for="BirthData.Birthplace" class="form-control" placeholder="Place of birth">
+                    <label asp-for="BirthData.Birthplace">Place of birth</label>
+                    <span asp-validation-for="BirthData.Birthplace" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4"/>
+
+        <div class="my-3 g-3 d-flex justify-content-evenly">
+            <button class="btn btn-success" type="submit">Create</button>
+            <button class="btn btn-outline-primary" type="reset">Clear</button>
+            <a class="btn btn-danger" asp-action="Table">Cancel</a>
+        </div>
+    </form>
+</div>

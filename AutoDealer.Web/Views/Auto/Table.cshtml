@@ -14,7 +14,6 @@
 }
 else
 {
-    
     <table class="table">
         <thead>
         <tr>
@@ -24,8 +23,12 @@ else
             <th scope="col">Trim</th>
             <th scope="col">Cost</th>
             <th scope="col">Current status</th>
+            <th scope="col">Assembled on</th>
             <th scope="col"></th>
-            <th scope="col"></th>
+            @if (User.IsInRole(nameof(Post.Seller)))
+            {
+                <th scope="col"></th>
+            }
         </tr>
         </thead>
 
@@ -43,6 +46,21 @@ else
                 <td>
                     <a class="btn btn-primary" asp-controller="Auto" asp-action="Info" asp-route-id="@auto.Id">Info</a>
                 </td>
+                @if (User.IsInRole(nameof(Post.Seller)))
+                {
+                    @if (auto.Status is not AutoStatus.Sold)
+                    {
+                        <td>
+                            <a class="btn btn-success" asp-controller="Sale" asp-action="Sell" asp-route-id="@auto.Id">Sell</a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            <a class="btn btn-danger" asp-controller="Sale" asp-action="Return" asp-route-id="@auto.Id">Return</a>
+                        </td>
+                    }
+                }
             </tr>
         }
         </tbody>

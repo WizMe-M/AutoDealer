@@ -1,0 +1,84 @@
+﻿@model SaleData
+
+@{
+    ViewBag.Title = "Sell Auto";
+
+    var clients = ViewBag.Clients as Client[];
+    var autos = ViewBag.Autos as Auto[];
+    var sellers = ViewBag.Sellers as Employee[];
+}
+
+@if (clients is null)
+{
+    <div class="row row-cols-auto">
+        <h4 class="col text-danger">Clients are missing</h4>
+        <div class="col">
+            <a asp-controller="Client" asp-action="Create" class="btn btn-success">Create</a>
+        </div>
+    </div>
+}
+
+@if (autos is null)
+{
+    <h4 class="row text-danger">Autos are missing</h4>
+    <div class="row">Wait until Assembly Chief will add Autos</div>
+}
+
+@if (sellers is null)
+{
+    <h4 class="row text-danger">Sellers are missing</h4>
+    <div class="row">Wait until Administrator will add Sellers</div>
+}
+
+@if (clients is { } && autos is { } && sellers is { })
+{
+    var clientItems = clients.Select(client =>
+        new SelectListItem($"{client.LastName} {client.FirstName}", client.Id.ToString()));
+
+    var sellerItems = sellers.Select(seller =>
+        new SelectListItem($"{seller.LastName} {seller.FirstName}", seller.Id.ToString()));
+
+    var autoItems = autos.Select(auto => new SelectListItem(
+        $"{auto.CarModel.LineName} {auto.CarModel.ModelName} {auto.CarModel.TrimCode} #{auto.Id}",
+        auto.Id.ToString()));
+
+    <div class="shadow m-4 p-3">
+        <form asp-action="Sell">
+            <div class="d-flex justify-content-center">
+                <div class="row row-cols-1 gap-2 w-75">
+                    <div class="col my-4">
+                        <h2 class="text-center">Sell Auto</h2>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-floating">
+                            <select asp-for="AutoId" asp-items="autoItems" class="form-select"></select>
+                            <label asp-for="AutoId">Select auto</label>
+                            <span asp-validation-for="AutoId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-floating">
+                            <select asp-for="ClientId" asp-items="clientItems" class="form-select"></select>
+                            <label asp-for="ClientId">Select client</label>
+                            <span asp-validation-for="ClientId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-floating">
+                            <select asp-for="SellerId" asp-items="sellerItems" class="form-select"></select>
+                            <label asp-for="SellerId">Select seller</label>
+                            <span asp-validation-for="SellerId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col d-flex justify-content-center">
+                        <button class="btn btn-success" type="submit">Sell</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+}

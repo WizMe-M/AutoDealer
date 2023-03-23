@@ -10,7 +10,7 @@ public class CarModelController : DbContextController<CarModel>
     }
 
     [HttpGet]
-    public IActionResult GetAll(CarModelSort? sort)
+    public IActionResult GetAll([FromQuery] CarModelSort? sort)
     {
         var carModels = Context.CarModels
             .Include(carModel => carModel.CarModelDetails)

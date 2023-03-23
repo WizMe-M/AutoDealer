@@ -9,7 +9,7 @@ public class AutoController : DbContextController<Auto>
     }
 
     [HttpGet]
-    public IActionResult GetAll(AutoSort? sort, AutoStatus? filter)
+    public IActionResult GetAll([FromQuery] AutoSort? sort, [FromQuery] AutoStatus? filter)
     {
         Auto[] autos;
         if (filter is { })

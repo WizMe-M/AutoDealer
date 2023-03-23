@@ -10,7 +10,7 @@ public class EmployeeController : DbContextController<Employee>
     }
 
     [HttpGet]
-    public IActionResult GetAll(Post? filter)
+    public IActionResult GetAll([FromQuery] Post? filter)
     {
         var employees = filter is { }
             ? Context.Employees.Where(employee => employee.Post == filter).ToArray()

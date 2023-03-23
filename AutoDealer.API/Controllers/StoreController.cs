@@ -42,7 +42,7 @@ public class StoreController : DbContextController<Contract>
     }
 
     [HttpGet("details")]
-    public IActionResult GetDetails(DetailSort? sort)
+    public IActionResult GetDetails([FromQuery] DetailSort? sort)
     {
         var details = Context.Details
             .Include(detail => detail.DetailSeries)
