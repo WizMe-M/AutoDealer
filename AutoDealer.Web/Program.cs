@@ -5,6 +5,9 @@ ValidatorOptions.Global.LanguageManager.Culture = culture;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
+builder.Configuration.AddEnvironmentVariables();
+
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.Configure<JsonSerializerOptions>(options =>
 {
@@ -13,6 +16,12 @@ builder.Services.Configure<JsonSerializerOptions>(options =>
 });
 
 builder.Services.AddSingleton<ApiClient>();
+
+var connectionString = builder.Configuration.GetConnectionString("Default")!;
+var cs = ConnectionString.FromString(connectionString);
+builder.Services.AddSingleton(cs);
+
+builder.Services.AddSingleton<PostgresDumpService>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
