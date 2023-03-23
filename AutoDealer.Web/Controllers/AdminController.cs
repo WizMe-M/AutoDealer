@@ -23,6 +23,18 @@ public class AdminController : MvcController
         _dumpService.BackupDatabase("C:/backups/");
         return RedirectToAction("Users", "Admin");
     }
-    
-    
+
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var deleted = await Client.DeleteAsync<User>($"users/{id}/delete");
+        return RedirectToAction("Users", "Admin");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Restore(int id)
+    {
+        var deleted = await Client.PatchAsync<string, User>($"users/{id}/restore", string.Empty);
+        return RedirectToAction("Users", "Admin");
+    }
 }

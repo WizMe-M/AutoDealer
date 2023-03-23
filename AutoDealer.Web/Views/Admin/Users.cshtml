@@ -20,8 +20,7 @@ else
             <th scope="col">ID</th>
             <th scope="col">Email</th>
             <th scope="col">Post</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
+            <th scope="col">Deleted</th>
             <th scope="col"></th>
         </tr>
         </thead>
@@ -33,16 +32,18 @@ else
                 <th scope="row">@user.IdEmployee</th>
                 <td>@user.Email</td>
                 <td>@user.Employee.Post.DisplayName()</td>
-                <td>
-                    <a class="btn btn-outline-primary" asp-action="" asp-controller="" asp-route-id="@user.IdEmployee">Send auth</a>
-                </td>
-                <td>
-                    <a class="btn btn-warning" asp-action="" asp-controller="" asp-route-id="@user.IdEmployee">Update</a>
-                </td>
+                <td><input class="form-check" disabled="disabled" type="checkbox" asp-for="@user.Deleted"></td>
                 <td>
                     @if (user.IdEmployee != authorizedId)
                     {
-                        <a class="btn btn-danger" asp-action="" asp-controller="" asp-route-id="@user.IdEmployee">Delete</a>
+                        if (user.Deleted)
+                        {
+                            <a class="btn btn-success" asp-action="Restore" asp-route-id="@user.IdEmployee">Restore</a>
+                        }
+                        else
+                        {
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@user.IdEmployee">Delete</a>
+                        }                        
                     }
                 </td>
             </tr>

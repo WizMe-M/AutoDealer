@@ -87,7 +87,7 @@ public class UserController : DbContextController<User>
         {
             case null:
                 return Problem(detail: "User with such id doesn't exist", statusCode: StatusCodes.Status404NotFound);
-            case { Deleted: true }:
+            case { Deleted: false }:
                 return Problem(detail: "User is not deleted", statusCode: StatusCodes.Status400BadRequest);
         }
 
