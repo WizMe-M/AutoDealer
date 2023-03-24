@@ -1939,3 +1939,148 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE autos DROP CONSTRAINT fk_autos_trims;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE car_model_details DROP CONSTRAINT fk_car_model_details_detail_series;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE car_model_details DROP CONSTRAINT fk_car_model_details_trims;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE contract_details DROP CONSTRAINT fk_contract_details_contracts;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE contract_details DROP CONSTRAINT fk_contract_details_detail_series;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE margins DROP CONSTRAINT fk_margins_trims;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE test_autos DROP CONSTRAINT fk_test_autos_autos;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE test_autos DROP CONSTRAINT fk_test_autos_tests;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE tests DROP CONSTRAINT "FK_tests_employees_EmployeeId";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    DROP INDEX "IX_tests_EmployeeId";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE tests DROP COLUMN "EmployeeId";
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE autos ADD CONSTRAINT fk_autos_car_models FOREIGN KEY (id_car_model) REFERENCES car_models (id_car_model) ON DELETE RESTRICT;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE car_model_details ADD CONSTRAINT fk_car_model_details_car_models FOREIGN KEY (id_car_model) REFERENCES car_models (id_car_model) ON DELETE CASCADE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE car_model_details ADD CONSTRAINT fk_car_model_details_detail_series FOREIGN KEY (id_detail_series) REFERENCES detail_series (id_detail_series) ON DELETE CASCADE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE contract_details ADD CONSTRAINT fk_contract_details_contracts FOREIGN KEY (id_contract) REFERENCES contracts (id_contract) ON DELETE CASCADE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE contract_details ADD CONSTRAINT fk_contract_details_detail_series FOREIGN KEY (id_detail_series) REFERENCES detail_series (id_detail_series) ON DELETE RESTRICT;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE margins ADD CONSTRAINT fk_margins_car_models FOREIGN KEY (id_car_model) REFERENCES car_models (id_car_model) ON DELETE CASCADE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE test_autos ADD CONSTRAINT fk_test_autos_autos FOREIGN KEY (id_auto) REFERENCES autos (id_auto) ON DELETE RESTRICT;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    ALTER TABLE test_autos ADD CONSTRAINT fk_test_autos_tests FOREIGN KEY (id_test) REFERENCES tests (id_test) ON DELETE CASCADE;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20230322065932_FinalFixes') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20230322065932_FinalFixes', '7.0.3');
+    END IF;
+END $EF$;
+COMMIT;
+
