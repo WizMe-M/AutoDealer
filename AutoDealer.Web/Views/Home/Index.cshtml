@@ -2,5 +2,12 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @{
+        var role = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Role)?.Value;
+        var success = Enum.TryParse<Post>(role, out var post);
+        if (success)
+        {
+            <div class="fw-bold">@post.DisplayName()</div>
+        }
+    }
 </div>
