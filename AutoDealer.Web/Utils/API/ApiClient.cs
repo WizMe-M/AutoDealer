@@ -13,7 +13,7 @@ public class ApiClient
 #if DEBUG
         _httpClient.BaseAddress = new Uri("https://localhost:7138/");
 #else
-        ApiClient.BaseAddress = new Uri("https://api:44357/");
+        _httpClient.BaseAddress = new Uri("https://api:44357/");
 #endif
         _httpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "*/*");
     }
