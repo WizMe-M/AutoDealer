@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: ./AutoDealer.API/Dockerfile
     environment:
-      CONNECTIONSTRINGS__DEFAULT: User ID=postgres;Password=password;Host=db;Port=5432;Database=autodealer
+      CONNECTIONSTRINGS__DEFAULT: Host=db; Port=5432; Database=autodealer; User ID=postgres; Password=password
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: https://*:44357
     ports:
@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: ./AutoDealer.Web/Dockerfile
     environment:
-      CONNECTIONSTRINGS__DEFAULT: User ID=postgres;Password=password;Host=db;Port=5432;Database=autodealer
+      CONNECTIONSTRINGS__DEFAULT: Host=db; Port=5432; Database=autodealer; User ID=postgres; Password=password
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: https://*:44388
     ports:
