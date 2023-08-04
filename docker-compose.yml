@@ -14,10 +14,10 @@ services:
       - 4444:44357
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ./api.pfx:/root/.aspnet/https/api.pfx:ro
     links:
       - pgsql
-  
+
   web:
     container_name: web
     build:
@@ -31,10 +31,10 @@ services:
       - 8888:44388
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+      - ./web.pfx:/root/.aspnet/https/web.pfx:ro
     links:
       - api
-  
+
   pgsql:
     container_name: db
     restart: always
