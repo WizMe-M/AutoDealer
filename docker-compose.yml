@@ -9,12 +9,11 @@ services:
     environment:
       CONNECTIONSTRINGS__DEFAULT: Host=db; Port=5432; Database=autodealer; User ID=postgres; Password=password
       ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: https://*:44357
+      ASPNETCORE_URLS: http://*:44357
     ports:
       - 4444:44357
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ./api.pfx:/root/.aspnet/https/api.pfx:ro
     links:
       - pgsql
 
@@ -25,13 +24,12 @@ services:
       dockerfile: ./AutoDealer.Web/Dockerfile
     environment:
       CONNECTIONSTRINGS__DEFAULT: Host=db; Port=5432; Database=autodealer; User ID=postgres; Password=password
-      ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: https://*:44388
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://*:44388
     ports:
       - 8888:44388
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ./web.pfx:/root/.aspnet/https/web.pfx:ro
     links:
       - api
 
