@@ -142,6 +142,18 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
 {
     var context = serviceScope.ServiceProvider.GetService<AutoDealerContext>()!;
     await context.Database.MigrateAsync();
+    if (context.Database.GetDbConnection() is NpgsqlConnection npgsqlConnection)
+    {
+        await npgsqlConnection.OpenAsync();
+        try
+        {
+            await npgsqlConnection.ReloadTypesAsync();
+        }
+        finally
+        {
+            await npgsqlConnection.CloseAsync();
+        }
+    }
 }
 
 app.Run();
