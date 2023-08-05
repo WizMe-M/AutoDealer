@@ -22,9 +22,6 @@ else
             <th scope="col">
                 <a asp-action="Details" asp-controller="Store" asp-route-sort="@ViewBag.CostSort">Cost</a>
             </th>
-            <th scope="col">Expected supply date</th>
-            <th scope="col">Supplied on</th>
-            <th scope="col">Used in Auto</th>
         </tr>
         </thead>
 
@@ -35,16 +32,6 @@ else
                 <th scope="row">@detail.Id</th>
                 <td>@detail.DetailSeries.Code</td>
                 <td>@detail.Cost</td>
-                <td>@detail.Contract.SupplyDate</td>
-                <td>@detail.Contract.LadingBillIssueDate</td>
-                <td>
-                    @if (detail.Auto is {})
-                    {
-                        var model = detail.Auto!.CarModel;
-                        var modelName = $"{model.LineName} {model.ModelName} {model.TrimCode}";
-                        <div>@modelName</div>
-                    }
-                </td>
             </tr>
         }
         </tbody>
