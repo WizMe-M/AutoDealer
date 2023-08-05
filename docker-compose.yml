@@ -9,15 +9,14 @@ services:
     environment:
       CONNECTIONSTRINGS__DEFAULT: Host=db; Port=5432; Database=autodealer; User ID=postgres; Password=password
       ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: https://*:44357
+      ASPNETCORE_URLS: http://*:44357
     ports:
       - 4444:44357
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
     links:
       - pgsql
-  
+
   web:
     container_name: web
     build:
@@ -26,15 +25,14 @@ services:
     environment:
       CONNECTIONSTRINGS__DEFAULT: Host=db; Port=5432; Database=autodealer; User ID=postgres; Password=password
       ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: https://*:44388
+      ASPNETCORE_URLS: http://*:44388
     ports:
       - 8888:44388
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
-      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
     links:
       - api
-  
+
   pgsql:
     container_name: db
     restart: always

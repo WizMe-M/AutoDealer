@@ -86,11 +86,6 @@ public partial class AutoDealerContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasPostgresEnum<Post>();
-        modelBuilder.HasPostgresEnum<AutoStatus>();
-        modelBuilder.HasPostgresEnum<TestStatus>();
-        modelBuilder.HasPostgresEnum<LogType>();
-
         #region configure entities
 
         modelBuilder.Entity<Auto>(entity =>
